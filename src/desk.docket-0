@@ -1,0 +1,10 @@
+:~  title+'Example App'
+    info+'Example description'
+    color+0xa0.e2a7
+    base+'template'
+    image+'https://example.com/image.svg'
+    glob-http+['https://example.com/assets/glob-example.frontend.glob' example.frontend]
+    version+[0 0 1]
+    website+'https://example.com'
+    license+'MIT'
+==
