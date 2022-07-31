@@ -5,7 +5,7 @@ desk_path="$pier_path/$desk_name"
 
 while :
 do
-    rsync -avz ./base/* $desk_path
-    rsync -avz ./src/* $desk_path
+    rsync -aqz ./base/* $desk_path
+    rsync -aqz ./src/* $desk_path
     sleep 3
 done
