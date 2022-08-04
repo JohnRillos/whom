@@ -39,7 +39,7 @@
   ^-  (quip card _this)
   :: |^ :: add in when helper arms needed
   =|  cards=(list card)
-  ?:  %.y  [cards this(state *state-0)] :: reset state (for testing only)
+  :: ?:  %.y  [cards this(state *state-0)] :: reset state (for testing only)
   =+  !<(old=versioned-state old-vase)
   |-
   ?-  -.old
@@ -70,7 +70,12 @@
     ^-  (quip card _state)
     ?-    -.act
         %add-contact
-      :: todo: implement
+      =.  state
+      ?~  ship.contact.act
+        =/  id=@t  (scot %uvj eny.bowl)
+        state(earth-contacts (~(put by earth-contacts) id contact.act))
+      =/  ship=@p  u.ship.contact.act
+      state(urbit-contacts (~(put by urbit-contacts) ship contact.act))
       :_  state
       [give-update:main ~]
     ==
