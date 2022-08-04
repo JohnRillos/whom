@@ -29,10 +29,10 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  =.  state  [%0 ~ ~]
+  =.  state  *state-0
   [~ this]
 ::
-++  on-save  on-save:default
+++  on-save  !>(state)
 ::
 ++  on-load
   |=  old-vase=vase
