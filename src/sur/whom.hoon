@@ -6,6 +6,7 @@
 ::
 +$  action
   $%  [%add-contact =contact]
+      [%del-contact key=(each @p @t)]
   ==
 ::
 +$  update

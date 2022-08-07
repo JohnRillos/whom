@@ -69,13 +69,25 @@
     |=  act=action
     ^-  (quip card _state)
     ?-    -.act
+      ::
         %add-contact
       =.  state
         ?~  ship.contact.act
           =/  id=@t  random-id
           state(earth-contacts (~(put by earth-contacts) id contact.act))
         =/  ship=@p  u.ship.contact.act
+        ?:  (~(has by urbit-contacts) ship)  ~|("{<ship>} already exists in contacts!" !!)
         state(urbit-contacts (~(put by urbit-contacts) ship contact.act))
+      :_  state
+      [give-update:main ~]
+      ::
+        %del-contact
+      =.  state
+        ?:  -.key.act
+          =/  ship=@p  `@p`p.key.act
+          state(urbit-contacts (~(del by urbit-contacts) ship))
+        =/  id=@t  `@t`p.key.act
+        state(earth-contacts (~(del by earth-contacts) id))
       :_  state
       [give-update:main ~]
     ==
