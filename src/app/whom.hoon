@@ -71,14 +71,17 @@
     ?-    -.act
         %add-contact
       =.  state
-      ?~  ship.contact.act
-        =/  id=@t  (scot %uvj eny.bowl)
-        state(earth-contacts (~(put by earth-contacts) id contact.act))
-      =/  ship=@p  u.ship.contact.act
-      state(urbit-contacts (~(put by urbit-contacts) ship contact.act))
+        ?~  ship.contact.act
+          =/  id=@t  random-id
+          state(earth-contacts (~(put by earth-contacts) id contact.act))
+        =/  ship=@p  u.ship.contact.act
+        state(urbit-contacts (~(put by urbit-contacts) ship contact.act))
       :_  state
       [give-update:main ~]
     ==
+  ++  random-id
+    ^-  @t
+    (scot %uvj eny.bowl)
   --
 ::
 ++  on-arvo   on-arvo:default
