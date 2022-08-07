@@ -61,7 +61,7 @@
       %whom-action
     ~&  >  %whom-action
     =^  cards  state
-    (handle-action !<(action vase))
+      (handle-action !<(action vase))
     [cards this]
   ==
   ::

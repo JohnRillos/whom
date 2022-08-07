@@ -11,6 +11,6 @@
 ++  grab
   |%
   ++  noun  action
-  :: ++  json  action:dejs:whom
+  ++  json  action:dejs:whom
   --
 --
