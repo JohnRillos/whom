@@ -7,7 +7,7 @@
     ^-  $-(json ^action)
     %-  of
     :~  [%add-contact (ot contact+contact ~)]
-        [%del-contact (ot key+key ~)]
+        [%del-contact (ot key+contact-key ~)]
     ==
   ++  opt  :: handle missing keys / null values
     |*  [=fist]
@@ -18,9 +18,10 @@
   ++  contact
     %-  ou
     :~  ship+(opt (se %p))
-        name+(opt sa)
+        info+(un (op sym info-value))
+        custom+(un (om so))
     ==
-  ++  key
+  ++  contact-key
     |=  =json
     ?>  ?=([%s @t] json)
     ^-  (each @p @t)
@@ -28,5 +29,16 @@
     ?:  =('~' -.tape)
       [%.y ((se %p) json)]
     [%.n p.json]
+  ::
+  ++  info-value
+    |=  =json
+    ^-  contact-field
+    ?:  ?=([%s @t] json)
+      ^-  @t
+      (so json)
+    ?:  ?=([%o *] json)
+      :: todo: handle other contact-field types
+      ~&  >>>  "Invalid info value (object): {<json>}"  !!
+    ~&  >>>  "Invalid info value: {<json>}"  !!
   --
 --

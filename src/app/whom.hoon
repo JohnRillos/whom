@@ -39,7 +39,7 @@
   ^-  (quip card _this)
   :: |^ :: add in when helper arms needed
   =|  cards=(list card)
-  :: ?:  %.y  [cards this(state *state-0)] :: reset state (for testing only)
+  ?:  %.y  [cards this(state *state-0)] :: reset state (for testing only)
   =+  !<(old=versioned-state old-vase)
   |-
   ?-  -.old
@@ -72,6 +72,7 @@
       ::
         %add-contact
       =.  state
+        ?>  (validate-contact contact.act)
         ?~  ship.contact.act
           =/  id=@t  random-id
           state(earth-contacts (~(put by earth-contacts) id contact.act))
