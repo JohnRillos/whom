@@ -1,5 +1,5 @@
-/-  *mailer
-/+  mailer
+/-  *whom
+/+  whom
 ::
 |_  upd=update
 ++  grad  %noun
