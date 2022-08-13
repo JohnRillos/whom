@@ -36,13 +36,10 @@
     ^-  contact-field
     ?:  ?=([%s @t] json)
       (so json)
-    ?:  ?=([%o *] json)
-      (info-object json)
-    !!
-  ::
-  ++  info-object
-    %-  of
-    :~  [%date (ot year+ni month+ni day+ni ~)]
-    ==
+    ?.  ?=([%o *] json)  !!
+    %-  %-  of
+        :~  [%date (ot year+ni month+ni day+ni ~)]
+        ==
+    json
   --
 --
