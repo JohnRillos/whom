@@ -48,7 +48,7 @@
   (levy info validate-info-field)
 ::
 ++  validate-info-field
-  |=  field=[key=@tas val=contact-field]
+  |=  field=[@tas contact-field]
   ?:  ?=(contact-field-def field)  %.y
   ~&  >>>  "Invalid info field: {<field>}"  %.n
 --

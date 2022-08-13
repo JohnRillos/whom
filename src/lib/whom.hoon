@@ -32,13 +32,17 @@
   ::
   ++  info-value
     |=  =json
+    ~|  "Invalid info value: {<json>}"
     ^-  contact-field
     ?:  ?=([%s @t] json)
-      ^-  @t
       (so json)
     ?:  ?=([%o *] json)
-      :: todo: handle other contact-field types
-      ~&  >>>  "Invalid info value (object): {<json>}"  !!
-    ~&  >>>  "Invalid info value: {<json>}"  !!
+      (info-object json)
+    !!
+  ::
+  ++  info-object
+    %-  of
+    :~  [%date (ot year+ni month+ni day+ni ~)]
+    ==
   --
 --
