@@ -110,7 +110,13 @@
   (on-watch:default path)
 ::
 ++  on-leave  on-leave:default
-++  on-peek   on-peek:default
+++  on-peek
+  |=  =path
+  ^-  (unit (unit cage))
+  ?+  path  (on-peek:default path)
+      [%x %contacts %all ~]  ``contacts-0+!>([urbit-contacts earth-contacts])
+  ==
+::
 ++  on-agent  on-agent:default
 ++  on-fail   on-fail:default
 --

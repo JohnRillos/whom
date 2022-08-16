@@ -27,6 +27,7 @@
       [%phone @t]
       [%website @t]
       [%github @t]
+      [%twitter @t]
   ==
 ::
 +$  contact-field
@@ -39,6 +40,11 @@
       year=@ud
       month=@ud
       day=@ud
+  ==
+::
++$  contacts-0
+  $:  urbit-contacts=(map @p contact)
+      earth-contacts=(map @t contact)
   ==
 ::
 ++  validate-contact
