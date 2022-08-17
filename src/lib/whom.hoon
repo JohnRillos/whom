@@ -8,6 +8,7 @@
     %-  of
     :~  [%add-contact (ot contact+contact ~)]
         [%del-contact (ot key+contact-key ~)]
+        [%edit-contact (ot key+contact-key info+(op sym (mu info-value)) custom+(om (mu so)) ~)]
     ==
   ++  opt  :: handle missing keys / null values
     |*  [=fist]

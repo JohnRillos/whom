@@ -8,6 +8,7 @@
 +$  action
   $%  [%add-contact =contact]
       [%del-contact key=(each @p @t)]
+      [%edit-contact key=(each @p @t) info=(map @tas (unit contact-field)) custom=(map @t (unit @t))]
   ==
 ::
 +$  update

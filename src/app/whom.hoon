@@ -85,13 +85,53 @@
         %del-contact
       =.  state
         ?:  -.key.act
-          =/  ship=@p  `@p`p.key.act
-          state(urbit-contacts (~(del by urbit-contacts) ship))
-        =/  id=@t  `@t`p.key.act
-        state(earth-contacts (~(del by earth-contacts) id))
+          state(urbit-contacts (~(del by urbit-contacts) `@p`+.key.act))
+        state(earth-contacts (~(del by earth-contacts) `@t`+.key.act))
       :_  state
       [give-update:main ~]
+      ::
+        %edit-contact
+      =/  contact  (get-contact key.act)
+      =.  info.contact
+        ^+  info.contact  (edit-info-map info.act info.contact)
+      =.  custom.contact
+        ^+  custom.contact  (edit-custom-map custom.act custom.contact)
+      :_  (replace-contact key.act contact)
+      [give-update:main ~]
     ==
+  ::
+  ++  get-contact
+    |=  key=(each @p @t)
+    ^-  contact
+    ?:  -.key
+      =/  ship=@p  `@p`p.key
+      (~(got by urbit-contacts) ship)
+    =/  id=@t  `@t`p.key
+    (~(got by earth-contacts) id)
+  ::
+  ++  replace-contact
+    |=  [key=(each @p @t) =contact]
+    ^-  versioned-state
+    ?:  -.key
+      state(urbit-contacts (~(put by urbit-contacts) `@p`+.key contact))
+    state(earth-contacts (~(put by earth-contacts) `@t`+.key contact))
+  ::
+  ++  edit-info-map
+    |=  [changes=(map @tas (unit contact-field)) old=(map @tas contact-field)]
+    ^-  (map @tas contact-field)
+    =/  acc-type  $_  old
+    %-  ~(rep by changes)
+    |=  [change=[@tas (unit contact-field)] acc=acc-type]
+    (~(mar by acc) change)
+  ::
+  ++  edit-custom-map
+    |=  [changes=(map @t (unit @t)) old=(map @t @t)]
+    ^-  (map @t @t)
+    =/  acc-type  $_  old
+    %-  ~(rep by changes)
+    |=  [change=[@t (unit @t)] acc=acc-type]
+    (~(mar by acc) change)
+  ::
   ++  random-id
     ^-  @t
     (scot %uvj eny.bowl)
