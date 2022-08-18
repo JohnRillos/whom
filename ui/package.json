@@ -1,11 +1,11 @@
 {
-  "name": "%APPSLUG%",
+  "name": "whom",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc && vite build",
-    "serve": "vite preview",
+    "serve": "vite preview --host",
     "test": "tsc --noEmit",
     "tsc": "tsc --noEmit"
   },
@@ -16,6 +16,7 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
+    "@types/node": "^18.7.6",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@urbit/vite-plugin-urbit": "^0.8.0",
