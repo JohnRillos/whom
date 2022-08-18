@@ -154,7 +154,7 @@
   |=  =path
   ^-  (unit (unit cage))
   ?+  path  (on-peek:default path)
-      [%x %contacts %all ~]  ``contacts-0+!>([urbit-contacts earth-contacts])
+      [%x %contacts %all ~]  ``contacts-raw-0+!>([urbit-contacts earth-contacts])
   ==
 ::
 ++  on-agent  on-agent:default

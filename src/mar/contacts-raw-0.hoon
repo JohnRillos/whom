@@ -1,16 +1,16 @@
 /-  *whom
 /+  whom
 ::
-|_  con=contacts-0
+|_  con=contacts-raw-0
 ++  grad  %noun
 ++  grow
   |%
   ++  noun  con
-  ++  json  (contacts-0:enjs:whom con)
+  ++  json  (contacts-raw-0:enjs:whom con)
   --
 ::
 ++  grab
   |%
-  ++  noun  contacts-0
+  ++  noun  contacts-raw-0
   --
 --

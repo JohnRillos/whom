@@ -6,7 +6,7 @@
 ++  grow
   |%
   ++  noun  upd
-  :: ++  json  (update:enjs:whom upd)
+  ++  json  (update:enjs:whom upd)
   --
 ::
 ++  grab

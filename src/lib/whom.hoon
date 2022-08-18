@@ -47,8 +47,16 @@
 ++  enjs
   =,  enjs:format
   |%
-  ++  contacts-0
-    |=  con=^contacts-0
+  ++  update
+    |=  upd=^update
+    ^-  json
+    %-  pairs:enjs:format
+    :~  urbit-contacts+(urbit-contacts urbit-contacts.upd)
+        earth-contacts+(earth-contacts earth-contacts.upd)
+    ==
+  ::
+  ++  contacts-raw-0
+    |=  con=^contacts-raw-0
     ^-  json
     %-  pairs:enjs:format
     :~  urbit-contacts+(urbit-contacts urbit-contacts.con)
