@@ -1,6 +1,6 @@
 {
-  "name": "%APPNAME%",
-  "short_name": "%APPNAME%",
+  "name": "Whom",
+  "short_name": "Whom",
   "icons": [
     {
       "src": "/apps/grid/android-chrome-512x512.png",
