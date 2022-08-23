@@ -51,16 +51,16 @@
     |=  upd=^update
     ^-  json
     %-  pairs:enjs:format
-    :~  urbit-contacts+(urbit-contacts urbit-contacts.upd)
-        earth-contacts+(earth-contacts earth-contacts.upd)
+    :~  [`@tas`'urbitContacts' (urbit-contacts urbit-contacts.upd)]
+        [`@tas`'earthContacts' (earth-contacts earth-contacts.upd)]
     ==
   ::
   ++  contacts-raw-0
     |=  con=^contacts-raw-0
     ^-  json
     %-  pairs:enjs:format
-    :~  urbit-contacts+(urbit-contacts urbit-contacts.con)
-        earth-contacts+(earth-contacts earth-contacts.con)
+    :~  [`@tas`'urbitContacts' (urbit-contacts urbit-contacts.con)]
+        [`@tas`'earthContacts' (earth-contacts earth-contacts.con)]
     ==
   ::
   ++  urbit-contacts

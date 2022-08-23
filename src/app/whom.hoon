@@ -96,7 +96,8 @@
         ^+  info.contact  (edit-info-map info.act info.contact)
       =.  custom.contact
         ^+  custom.contact  (edit-custom-map custom.act custom.contact)
-      :_  (replace-contact key.act contact)
+      =.  state  (replace-contact key.act contact)
+      :_  state
       [give-update:main ~]
     ==
   ::
