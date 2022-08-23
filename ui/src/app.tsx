@@ -1,39 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
-import { Charges, ChargeUpdateInitial, scryCharges } from '@urbit/api';
-import { AppTile } from './components/AppTile';
+import { ContactTile } from './components/ContactTile';
+import { Contact, Contacts } from './types/ContactTypes';
+import { GallUpdate } from './types/GallTypes';
+import { Subscribe } from './logic/Subscribe';
 
-const api = new Urbit('', '', window.desk);
-api.ship = window.ship;
+const urbit = new Urbit('', '', '');
+urbit.ship = window.ship;
+
+async function scryContacts(): Promise<Contacts> {
+  return urbit.scry<Contacts>({ app: 'whom', path: '/contacts/all' });
+}
+
+function unifiedContactsList(contacts: Contacts): Contact[] {
+  return Object.values(contacts.urbitContacts).concat(Object.values(contacts.earthContacts));
+}
 
 export function App() {
-  const [apps, setApps] = useState<Charges>();
+  const [contacts, setContacts] = useState<Contacts>();
 
   useEffect(() => {
-    async function init() {
-      const charges = (await api.scry<ChargeUpdateInitial>(scryCharges)).initial;
-      setApps(charges);
-    }
-
-    init();
+    scryContacts()
+      .then(res => setContacts(res))
+      .then(() => Subscribe(handleUpdate));
   }, []);
+
+  function handleUpdate(update: GallUpdate) {
+    if (update.app === 'whom' && update.data) {
+      setContacts({
+        urbitContacts: update.data.urbitContacts,
+        earthContacts: update.data.earthContacts
+      });
+    }
+  };
 
   return (
     <main className="flex items-center justify-center min-h-screen">
       <div className="max-w-md space-y-6 py-20">
-        <h1 className="text-3xl font-bold">Welcome to Whom</h1>
-        <p>Here&apos;s your urbit&apos;s installed apps:</p>
-        {apps && (
+        <h1 className="text-3xl font-bold">Contacts</h1>
+        {contacts && (
           <ul className="space-y-4">
-            {Object.entries(apps).map(([desk, app]) => (
-              <li key={desk} className="flex items-center space-x-3 text-sm leading-tight">
-                <AppTile {...app} />
-                <div className="flex-1 text-black">
-                  <p>
-                    <strong>{app.title || desk}</strong>
-                  </p>
-                  {app.info && <p>{app.info}</p>}
-                </div>
+            {unifiedContactsList(contacts).map((contact: Contact) => (
+              <li key={contact.ship} className="flex items-center space-x-3 text-sm leading-tight">
+                <ContactTile {...contact} />
               </li>
             ))}
           </ul>
