@@ -1,15 +1,26 @@
-import { Contact, InfoValue, InfoDate} from '../types/ContactTypes';
-import React, { useState } from 'react';
+import { Contact, InfoValue, InfoDate } from '../types/ContactTypes';
+import React from 'react';
 
-const displayKeys: {[key: string]: string} = {
+const displayFieldNames: { [key: string]: string } = {
   "first-name": "First Name",
+  "middle-name": "Middle Name",
   "last-name": "Last Name",
+  "nickname": "Nickname",
   "dob": "Date of Birth",
-  "note": "Note"
+  "note": "Note",
+  "job": "Occupation",
+  "phone": "Phone #",
+  "email": "Email",
+  "website": "Website",
+  "github": "GitHub",
+  "twitter": "Twitter"
 };
 
+const fieldPositions: { [key: string]: number } =
+  Object.fromEntries(Object.keys(displayFieldNames).map((key, i) => ([key, i])));
+
 function getDisplayKey(key: string) {
-  return displayKeys[key] || key;
+  return displayFieldNames[key] || key;
 }
 
 function getFieldType(val: InfoValue) {
@@ -24,7 +35,11 @@ function renderTextValue(val: string) {
 }
 
 function renderDateValue({ date }: InfoDate) {
-  return `${date.year}/${date.month}/${date.day}`;
+  return (
+    <span>
+      {`${date.year}/${date.month}/${date.day}`}
+    </span>
+  );
 }
 
 function renderInfoValue(val: InfoValue) {
@@ -36,8 +51,12 @@ function renderInfoValue(val: InfoValue) {
 }
 
 function renderField(key: string, val: InfoValue) {
-  return <p>{`${getDisplayKey(key)}: ${renderInfoValue(val)}`}</p>;
-};
+  return (
+    <div>
+      <span>{getDisplayKey(key)}: </span>{renderInfoValue(val)}
+    </div>
+  );
+}
 
 function getFullName(contact: Contact) {
   var first = contact.info['first-name'];
@@ -52,15 +71,30 @@ function getDisplayName(contact: Contact) {
   return getFullName(contact);
 }
 
+function sortInfoFields(info: { [key: string]: InfoValue }): [string, InfoValue][] {
+  return Object.entries(info).sort(([keyA], [keyB]) => {
+    if (keyA in fieldPositions && keyB in fieldPositions) {
+      return fieldPositions[keyA] - fieldPositions[keyB];
+    }
+    if (keyA in fieldPositions) {
+      return -1;
+    }
+    if (keyB in fieldPositions) {
+      return 1;
+    }
+    return keyA > keyB ? 1 : -1;
+  });
+}
+
 export const ContactTile = (contact: Contact) => {
   return (
-    <div className="flex-1 text-black">
+    <div className='flex-1 text-black'>
       <p>
         <strong>{getDisplayName(contact)}</strong>
       </p>
       <ul>
-        {Object.entries(contact.info) // todo: sort fields
-          .map(([key, val]: [string, InfoValue]) => (
+        {sortInfoFields(contact.info)
+          .map(([key, val]) => (
             <li key={key}>
               {renderField(key, val)}
             </li>
