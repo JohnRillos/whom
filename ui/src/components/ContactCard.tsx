@@ -1,5 +1,6 @@
-import { Contact, InfoValue, InfoDate } from '../types/ContactTypes';
 import React from 'react';
+import { Contact, InfoValue, InfoDate } from '../types/ContactTypes';
+import { getDisplayName } from '../util/ContactUtil';
 
 const displayFieldNames: { [key: string]: string } = {
   "first-name": "First Name",
@@ -58,19 +59,6 @@ function renderField(key: string, val: InfoValue) {
   );
 }
 
-function getFullName(contact: Contact) {
-  var first = contact.info['first-name'];
-  var last = contact.info['last-name'];
-  return [first, last].filter(s => !!s).join(' ');
-}
-
-function getDisplayName(contact: Contact) {
-  if (contact.ship) {
-    return contact.ship;
-  }
-  return getFullName(contact);
-}
-
 function sortInfoFields(info: { [key: string]: InfoValue }): [string, InfoValue][] {
   return Object.entries(info).sort(([keyA], [keyB]) => {
     if (keyA in fieldPositions && keyB in fieldPositions) {
@@ -86,7 +74,13 @@ function sortInfoFields(info: { [key: string]: InfoValue }): [string, InfoValue]
   });
 }
 
-export const ContactTile = (contact: Contact) => {
+function sortCustomFields(info: { [key: string]: string }): [string, string][] {
+  return Object.entries(info).sort(([keyA], [keyB]) => {
+    return keyA > keyB ? 1 : -1;
+  });
+}
+
+export const ContactCard = (contact: Contact) => {
   return (
     <div className='flex-1 text-black'>
       <p>
@@ -94,6 +88,14 @@ export const ContactTile = (contact: Contact) => {
       </p>
       <ul>
         {sortInfoFields(contact.info)
+          .map(([key, val]) => (
+            <li key={key}>
+              {renderField(key, val)}
+            </li>
+          ))}
+      </ul>
+      <ul>
+        {sortCustomFields(contact.custom)
           .map(([key, val]) => (
             <li key={key}>
               {renderField(key, val)}

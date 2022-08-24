@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
-import { ContactTile } from './components/ContactTile';
+import { Subscribe } from './api/Subscribe';
+import { ContactCard } from './components/ContactCard';
 import { Contact, Contacts } from './types/ContactTypes';
 import { GallUpdate } from './types/GallTypes';
-import { Subscribe } from './logic/Subscribe';
+import { getDisplayName } from './util/ContactUtil';
 
 const urbit = new Urbit('', '', '');
 urbit.ship = window.ship;
@@ -12,8 +13,17 @@ async function scryContacts(): Promise<Contacts> {
   return urbit.scry<Contacts>({ app: 'whom', path: '/contacts/all' });
 }
 
+function sortContacts(contacts: Contact[]): Contact[] {
+  return contacts.sort((a,b) => {
+    var sortByA = getDisplayName(a).replace('~', '').toLowerCase();
+    var sortByB = getDisplayName(b).replace('~', '').toLowerCase();
+    return sortByA > sortByB ? 1 : -1;
+  });
+}
+
 function unifiedContactsList(contacts: Contacts): Contact[] {
-  return Object.values(contacts.urbitContacts).concat(Object.values(contacts.earthContacts));
+  return sortContacts(
+    Object.values(contacts.urbitContacts).concat(Object.values(contacts.earthContacts)));
 }
 
 export function App() {
@@ -42,7 +52,7 @@ export function App() {
           <ul className="space-y-4">
             {unifiedContactsList(contacts).map((contact: Contact) => (
               <li key={contact.ship} className="flex items-center space-x-3 text-sm leading-tight">
-                <ContactTile {...contact} />
+                <ContactCard {...contact} />
               </li>
             ))}
           </ul>
