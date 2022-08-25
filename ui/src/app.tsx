@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
 import { Subscribe } from './api/Subscribe';
 import { ContactCard } from './components/ContactCard';
-import { Contact, Contacts } from './types/ContactTypes';
+import { Contacts, ContactWithKey } from './types/ContactTypes';
 import { GallUpdate } from './types/GallTypes';
-import { getDisplayName } from './util/ContactUtil';
+import { getDisplayName, withKey } from './util/ContactUtil';
 
 const urbit = new Urbit('', '', '');
 urbit.ship = window.ship;
@@ -13,17 +13,18 @@ async function scryContacts(): Promise<Contacts> {
   return urbit.scry<Contacts>({ app: 'whom', path: '/contacts/all' });
 }
 
-function sortContacts(contacts: Contact[]): Contact[] {
-  return contacts.sort((a,b) => {
+function sortContacts(contacts: ContactWithKey[]): ContactWithKey[] {
+  return contacts.sort((a, b) => {
     var sortByA = getDisplayName(a).replace('~', '').toLowerCase();
     var sortByB = getDisplayName(b).replace('~', '').toLowerCase();
     return sortByA > sortByB ? 1 : -1;
   });
 }
 
-function unifiedContactsList(contacts: Contacts): Contact[] {
-  return sortContacts(
-    Object.values(contacts.urbitContacts).concat(Object.values(contacts.earthContacts)));
+function unifiedContactsList(contacts: Contacts): ContactWithKey[] {
+  var entries = Object.entries(contacts.urbitContacts)
+    .concat(Object.entries(contacts.earthContacts));
+  return sortContacts(entries.map(withKey));
 }
 
 export function App() {
@@ -49,9 +50,9 @@ export function App() {
       <div className="max-w-md space-y-6 py-20">
         <h1 className="text-3xl font-bold">Contacts</h1>
         {contacts && (
-          <ul className="space-y-4">
-            {unifiedContactsList(contacts).map((contact: Contact) => (
-              <li key={contact.ship} className="flex items-center space-x-3 text-sm leading-tight">
+          <ul className="divide-y divide-solid">
+            {unifiedContactsList(contacts).map((contact: ContactWithKey) => (
+              <li key={contact.key} className="flex items-center space-x-3 leading-tight">
                 <ContactCard {...contact} />
               </li>
             ))}
