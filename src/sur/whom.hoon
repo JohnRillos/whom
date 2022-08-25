@@ -21,6 +21,7 @@
       [%middle-name @t]
       [%last-name @t]
       [%nickname @t]
+      [%label @t]
       [%note @t]
       [%dob local-date]
       [%job @t]
