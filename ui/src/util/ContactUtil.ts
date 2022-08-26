@@ -17,7 +17,7 @@ export function getDisplayName(contact: Contact): string {
   if (fullName) {
     return fullName;
   }
-  var label = contact.info.label as string | undefined;
+  var label = contact.info.label;
   return label || '???';
 }
 

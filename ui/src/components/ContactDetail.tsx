@@ -1,5 +1,5 @@
 import React from 'react';
-import { Contact, InfoValue, InfoDate, InfoKey } from '../types/ContactTypes';
+import { Contact, InfoValue, InfoDate, InfoKey, InfoFields } from '../types/ContactTypes';
 import { getDisplayName } from '../util/ContactUtil';
 
 const displayFieldNames: Record<InfoKey, string> = {
@@ -15,7 +15,7 @@ const displayFieldNames: Record<InfoKey, string> = {
   "email": "Email",
   "website": "Website",
   "github": "GitHub",
-  "twitter": "Twitter"
+  "twitter": "Twitter",
 };
 
 const fieldPositions: { [key: string]: number } =
@@ -68,7 +68,7 @@ function renderCustomField(key: string, val: InfoValue) {
   );
 }
 
-function sortInfoFields(info: Record<InfoKey, InfoValue>): [InfoKey, InfoValue][] {
+function sortInfoFields(info: InfoFields): [InfoKey, InfoValue][] {
    var entries = Object.entries(info) as [InfoKey, InfoValue][];
    return entries.sort(([keyA], [keyB]) => {
     if (keyA in fieldPositions && keyB in fieldPositions) {
@@ -90,14 +90,14 @@ function sortCustomFields(info: { [key: string]: string }): [string, string][] {
   });
 }
 
-export const ContactDetail = (contact: Contact) => {
+export const ContactDetail = (props: {contact: Contact}) => {
   return (
     <div className='flex-1 text-black'>
       <p>
-        <strong>{getDisplayName(contact)}</strong>
+        <strong>{getDisplayName(props.contact)}</strong>
       </p>
       <ul>
-        {sortInfoFields(contact.info)
+        {sortInfoFields(props.contact.info)
           .map(([key, val]) => (
             <li key={key}>
               {renderInfoField(key, val)}
@@ -105,7 +105,7 @@ export const ContactDetail = (contact: Contact) => {
           ))}
       </ul>
       <ul>
-        {sortCustomFields(contact.custom)
+        {sortCustomFields(props.contact.custom)
           .map(([key, val]) => (
             <li key={key}>
               {renderCustomField(key, val)}
