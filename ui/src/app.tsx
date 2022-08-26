@@ -13,10 +13,11 @@ async function scryContacts(): Promise<Contacts> {
   return urbit.scry<Contacts>({ app: 'whom', path: '/contacts/all' });
 }
 
+// todo: add option to sort either @p or name
 function sortContacts(contacts: ContactWithKey[]): ContactWithKey[] {
   return contacts.sort((a, b) => {
-    var sortByA = getDisplayName(a).replace('~', '').toLowerCase();
-    var sortByB = getDisplayName(b).replace('~', '').toLowerCase();
+    var sortByA = getDisplayName(a).toLowerCase();
+    var sortByB = getDisplayName(b).toLowerCase();
     return sortByA > sortByB ? 1 : -1;
   });
 }

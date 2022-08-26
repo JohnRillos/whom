@@ -18,7 +18,7 @@ export function getDisplayName(contact: Contact): string {
     return fullName;
   }
   var label = contact.info.label as string | undefined;
-  return label || '< New Contact >';
+  return label || '???';
 }
 
 export function withKey(entry:[string, Contact]): ContactWithKey {
