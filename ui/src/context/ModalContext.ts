@@ -3,18 +3,18 @@ import { Contacts } from '../types/ContactTypes';
 
 export type AppContextType = {
   contacts: Contacts | null,
-  selectedContact: string | null,
+  selectedContactKey: string | null,
   selectContact: (key: string) => void,
-  isOpen: boolean,
+  isModalOpen: boolean,
   openModal: () => void,
   closeModal: () => void
 }
 
 const initialContext: AppContextType = {
   contacts: null,
-  selectedContact: null,
+  selectedContactKey: null,
   selectContact: () => {},
-  isOpen: false,
+  isModalOpen: false,
   openModal: () => {},
   closeModal: () => {}
 }

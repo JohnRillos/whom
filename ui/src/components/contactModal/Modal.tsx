@@ -1,15 +1,15 @@
-import { Dialog, Transition } from '@headlessui/react'
-import React from 'react'
-import { Fragment, useContext } from 'react'
-import { ModalContext } from '../context/ModalContext'
-import { ContactDetail } from './ContactDetail'
+import { Dialog, Transition } from '@headlessui/react';
+import React from 'react';
+import { Fragment, useContext } from 'react';
+import { ModalContext } from '../../context/ModalContext';
+import { ContactDetail } from './ContactDetail';
 
 export default function Modal() {
-  let { isOpen, closeModal } = useContext(ModalContext);
+  let { isModalOpen, closeModal } = useContext(ModalContext);
 
   return (
     <>
-      <Transition appear show={isOpen} as={Fragment}>
+      <Transition appear show={isModalOpen} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <Transition.Child
             as={Fragment}
@@ -34,7 +34,7 @@ export default function Modal() {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel
-                  className="bg-standard outline outline-black dark:outline dark:outline-neutral-500 max-w-xl transform overflow-hidden rounded-2xl p-6 shadow-xl transition-all"
+                  className="bg-standard outline outline-black dark:outline dark:outline-neutral-500 max-w-xl transform overflow-hidden rounded-2xl p-4 shadow-xl transition-all"
                 >
                   <ContactDetail/>
                 </Dialog.Panel>

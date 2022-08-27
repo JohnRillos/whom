@@ -1,8 +1,10 @@
 import React from 'react';
 import { useContext } from 'react';
-import { ModalContext } from '../context/ModalContext';
-import { Contact, InfoValue, InfoDate, InfoKey, InfoFields } from '../types/ContactTypes';
-import { getContact, getDisplayName } from '../util/ContactUtil';
+import { ModalContext } from '../../context/ModalContext';
+import { Contact, InfoValue, InfoDate, InfoKey, InfoFields } from '../../types/ContactTypes';
+import { getContact, getDisplayName } from '../../util/ContactUtil';
+import CloseButton from '../buttons/CloseButton';
+import EditButton from '../buttons/EditButton';
 
 const displayFieldNames: Record<InfoKey, string> = {
   "first-name": "First Name",
@@ -57,7 +59,7 @@ function renderInfoValue(val: InfoValue) {
 function renderInfoField(key: InfoKey, val: InfoValue) {
   return (
     <div>
-      <span>{getDisplayKey(key)}: </span>{renderInfoValue(val)}
+      <span className=''>{getDisplayKey(key)}: </span>{renderInfoValue(val)}
     </div>
   );
 }
@@ -68,6 +70,13 @@ function renderCustomField(key: string, val: InfoValue) {
       <span>{key}: </span>{renderInfoValue(val)}
     </div>
   );
+}
+
+function renderShipName(contact: Contact) {
+  if (contact.ship) {
+    return <>Urbit: {contact.ship}</>
+  }
+  return null;
 }
 
 function sortInfoFields(info: InfoFields): [InfoKey, InfoValue][] {
@@ -93,35 +102,49 @@ function sortCustomFields(info: { [key: string]: string }): [string, string][] {
 }
 
 export function ContactDetail(): JSX.Element {
-  const { contacts, selectedContact } = useContext(ModalContext);
-  if (!contacts || !selectedContact) {
+  const { contacts, selectedContactKey, closeModal } = useContext(ModalContext);
+  if (!contacts || !selectedContactKey) {
     return <p>Error</p>;
   }
-  const contact = getContact(contacts, selectedContact);
+  const contact = getContact(contacts, selectedContactKey);
   if (!contact) {
     return <p>Error</p>;
   }
+
+  function renderMenu() {
+    return (
+      <div className='flex flex-col w-full max-w-fit ml-2'>
+        <CloseButton onClick={closeModal}/>
+        <EditButton onClick={() => {}}/>
+      </div>
+    );
+  }
+
   return (
-    <div className='flex-1 text-left'>
-      <p>
-        <strong>{getDisplayName(contact)}</strong>
-      </p>
-      <ul>
-        {sortInfoFields(contact.info)
-          .map(([key, val]) => (
-            <li key={key}>
-              {renderInfoField(key, val)}
-            </li>
-          ))}
-      </ul>
-      <ul>
-        {sortCustomFields(contact.custom)
-          .map(([key, val]) => (
-            <li key={key}>
-              {renderCustomField(key, val)}
-            </li>
-          ))}
-      </ul>
+    <div className='flex'>
+      <div className='text-left'>
+        <p>
+          <strong>{getDisplayName(contact)}</strong>
+        </p>
+        {renderShipName(contact)}
+        <ul>
+          {sortInfoFields(contact.info)
+            .map(([key, val]) => (
+              <li key={key}>
+                {renderInfoField(key, val)}
+              </li>
+            ))}
+        </ul>
+        <ul>
+          {sortCustomFields(contact.custom)
+            .map(([key, val]) => (
+              <li key={key}>
+                {renderCustomField(key, val)}
+              </li>
+            ))}
+        </ul>
+      </div>
+      {renderMenu()}
     </div>
   );
 };

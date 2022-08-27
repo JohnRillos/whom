@@ -5,7 +5,7 @@ import { ContactList } from './components/ContactList';
 import { ModalContext, AppContextType } from './context/ModalContext';
 import { Contacts } from './types/ContactTypes';
 import { GallUpdate } from './types/GallTypes';
-import Modal from './components/Modal';
+import Modal from './components/contactModal/Modal';
 
 const urbit = new Urbit('', '', '');
 urbit.ship = window.ship;
@@ -16,7 +16,7 @@ async function scryContacts(): Promise<Contacts> {
 
 export function App() {
   const [contacts, setContacts] = useState<Contacts>();
-  const [selectedContact, setSelectedContact] = useState<string>();
+  const [selectedContactKey, setSelectedContact] = useState<string>();
   const [modalOpen, setModalOpen] = useState<boolean>();
 
   useEffect(() => {
@@ -36,9 +36,9 @@ export function App() {
 
   const modalContext: AppContextType = {
     contacts: contacts || null,
-    selectedContact: selectedContact || null,
+    selectedContactKey: selectedContactKey || null,
     selectContact: (key) => setSelectedContact(key),
-    isOpen: modalOpen || false,
+    isModalOpen: modalOpen || false,
     openModal: () => setModalOpen(true),
     closeModal: () => setModalOpen(false)
   };
