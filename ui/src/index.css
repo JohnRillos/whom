@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .bg-standard {
+    @apply bg-neutral-100 dark:bg-black text-black dark:text-gray-200
+  }
+}

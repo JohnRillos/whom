@@ -10,6 +10,7 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
+    "@headlessui/react": "^1.6.6",
     "@urbit/api": "^2.0.0",
     "@urbit/http-api": "^2.0.0",
     "react": "^17.0.2",

@@ -1,9 +1,11 @@
 import React from 'react';
+import { useContext } from 'react';
 import { ContactCard } from './ContactCard';
+import { ModalContext } from '../context/ModalContext';
 import { Contacts, ContactWithKey } from '../types/ContactTypes';
 import { getDisplayName, withKey } from '../util/ContactUtil';
 
-// todo: add option to sort either @p or name
+// todo: add option to sort by either @p or name
 function sortContacts(contacts: ContactWithKey[]): ContactWithKey[] {
   return contacts.sort((a, b) => {
     var sortByA = getDisplayName(a).toLowerCase();
@@ -18,14 +20,17 @@ function unifiedContactsList(contacts: Contacts): ContactWithKey[] {
   return sortContacts(entries.map(withKey));
 }
 
-export const ContactList = (props: {contacts: Contacts}) => {
+export const ContactList = () => {
+  const { contacts } = useContext(ModalContext);
   return (
-    <ul className="divide-y divide-solid divide-gray-400/50">
-      {unifiedContactsList(props.contacts).map((contact: ContactWithKey) => (
-        <li key={contact.key} className="flex items-center space-x-3 leading-tight">
-          <ContactCard contact={contact}/>
-        </li>
-      ))}
-    </ul>
+    <div className="h-full w-full overflow-y-auto">
+      <ul className="m-auto max-w-fit divide-y divide-gray-400/50">
+        {unifiedContactsList(contacts!!).map((contact: ContactWithKey) => (
+          <li key={contact.key} className="flex items-center space-x-3 leading-tight">
+            <ContactCard contact={contact}/>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

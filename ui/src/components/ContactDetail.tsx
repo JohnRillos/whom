@@ -1,6 +1,8 @@
 import React from 'react';
+import { useContext } from 'react';
+import { ModalContext } from '../context/ModalContext';
 import { Contact, InfoValue, InfoDate, InfoKey, InfoFields } from '../types/ContactTypes';
-import { getDisplayName } from '../util/ContactUtil';
+import { getContact, getDisplayName } from '../util/ContactUtil';
 
 const displayFieldNames: Record<InfoKey, string> = {
   "first-name": "First Name",
@@ -90,14 +92,22 @@ function sortCustomFields(info: { [key: string]: string }): [string, string][] {
   });
 }
 
-export const ContactDetail = (props: {contact: Contact}) => {
+export function ContactDetail(): JSX.Element {
+  const { contacts, selectedContact } = useContext(ModalContext);
+  if (!contacts || !selectedContact) {
+    return <p>Error</p>;
+  }
+  const contact = getContact(contacts, selectedContact);
+  if (!contact) {
+    return <p>Error</p>;
+  }
   return (
-    <div className='flex-1 text-black'>
+    <div className='flex-1 text-left'>
       <p>
-        <strong>{getDisplayName(props.contact)}</strong>
+        <strong>{getDisplayName(contact)}</strong>
       </p>
       <ul>
-        {sortInfoFields(props.contact.info)
+        {sortInfoFields(contact.info)
           .map(([key, val]) => (
             <li key={key}>
               {renderInfoField(key, val)}
@@ -105,7 +115,7 @@ export const ContactDetail = (props: {contact: Contact}) => {
           ))}
       </ul>
       <ul>
-        {sortCustomFields(props.contact.custom)
+        {sortCustomFields(contact.custom)
           .map(([key, val]) => (
             <li key={key}>
               {renderCustomField(key, val)}

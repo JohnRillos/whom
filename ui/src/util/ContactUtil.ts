@@ -1,4 +1,4 @@
-import { Contact, ContactWithKey } from '../types/ContactTypes';
+import { Contact, Contacts, ContactWithKey } from '../types/ContactTypes';
 
 function getFullName(contact: Contact): string {
   var first = contact.info['first-name'];
@@ -26,4 +26,8 @@ export function withKey(entry:[string, Contact]): ContactWithKey {
     key: entry[0],
     ...entry[1],
   };
+}
+
+export function getContact(contacts: Contacts, contactKey: string): Contact | undefined {
+  return contacts.urbitContacts[contactKey] || contacts.earthContacts[contactKey];
 }
