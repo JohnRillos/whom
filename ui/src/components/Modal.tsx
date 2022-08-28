@@ -1,10 +1,9 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React from 'react';
 import { Fragment, useContext } from 'react';
-import { AppContext } from '../../context/AppContext';
-import { ContactDetail } from './ContactDetail';
+import { AppContext } from '../context/AppContext';
 
-export default function Modal() {
+export default function Modal(props:{children:JSX.Element}) {
   let { isModalOpen, closeModal } = useContext(AppContext);
 
   return (
@@ -36,7 +35,7 @@ export default function Modal() {
                 <Dialog.Panel
                   className="bg-standard outline outline-black dark:outline dark:outline-neutral-500 max-w-xl transform overflow-hidden rounded-2xl p-4 shadow-xl transition-all"
                 >
-                  <ContactDetail/>
+                  {props.children}
                 </Dialog.Panel>
               </Transition.Child>
             </div>

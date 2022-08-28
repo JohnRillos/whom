@@ -1,5 +1,10 @@
 import { Contact, Contacts, ContactWithKey } from '../types/ContactTypes';
 
+export const initialContacts: Contacts = {
+  urbitContacts: {},
+  earthContacts: {}
+}
+
 function getFullName(contact: Contact): string {
   var first = contact.info['first-name'];
   var last = contact.info['last-name'];

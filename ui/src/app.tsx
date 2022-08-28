@@ -2,22 +2,22 @@ import React, { useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
 import { Subscribe } from './api/Subscribe';
 import { ContactList } from './components/ContactList';
+import Modal from './components/Modal';
+import ContactDetail from './components/contactDetail/ContactDetail';
 import { AppContext, AppContextType, initialContext } from './context/AppContext';
 import { Contacts } from './types/ContactTypes';
 import { GallUpdate } from './types/GallTypes';
-import Modal from './components/contactModal/Modal';
-
-// const urbit = new Urbit('', '', '');
-// urbit.ship = window.ship;
+import { initialContacts } from './util/ContactUtil';
 
 async function scryContacts(urbit: Urbit): Promise<Contacts> {
   return urbit.scry<Contacts>({ app: 'whom', path: '/contacts/all' });
 }
 
 export function App() {
-  const [contacts, setContacts] = useState<Contacts>();
+  const [contacts, setContacts] = useState<Contacts>(initialContacts);
   const [selectedContactKey, setSelectedContact] = useState<string>();
   const [modalOpen, setModalOpen] = useState<boolean>();
+  const [editContactMode, setEditContactMode] = useState<boolean>(false);
 
   useEffect(() => {
     scryContacts(initialContext.api)
@@ -36,12 +36,20 @@ export function App() {
 
   const appContext: AppContextType = {
     api: initialContext.api,
-    contacts: contacts || null,
+    contacts: contacts,
     selectedContactKey: selectedContactKey || null,
     selectContact: (key) => setSelectedContact(key),
     isModalOpen: modalOpen || false,
-    openModal: () => setModalOpen(true),
-    closeModal: () => setModalOpen(false)
+    openModal: () => {
+      setEditContactMode(false);
+      setModalOpen(true);
+    },
+    closeModal: () => {
+      setModalOpen(false);
+      setTimeout(() => setEditContactMode(false), 300);
+    },
+    editContactMode: editContactMode,
+    setEditContactMode: setEditContactMode
   };
 
   return (
@@ -51,7 +59,9 @@ export function App() {
           <h1 className="text-center text-3xl font-bold pb-4">Contacts</h1>
           {contacts && <ContactList/>}
         </div>
-        <Modal/>
+        <Modal>
+          <ContactDetail/>
+        </Modal>
       </AppContext.Provider>
     </main>
   );

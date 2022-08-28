@@ -9,7 +9,9 @@ const icon = (
 const CloseButton = (props: {onClick: () => void}) => {
   return (
     <button onClick={props.onClick} title='Close'>
-      {icon}
+      <div className='hover:text-blue-500 -mt-1'>
+        {icon}
+      </div>
     </button>
   );
 };

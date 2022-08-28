@@ -19,16 +19,15 @@ const deleteContact = (api: Urbit, contactKey: string) => {
 }
 
 export default function Menu() {
-  const { api, closeModal, selectedContactKey } = useContext(AppContext);
-
+  const { api, closeModal, selectedContactKey, editContactMode, setEditContactMode } = useContext(AppContext);
   return (
     <div className='flex flex-col items-center w-full max-w-fit ml-2 space-y-1'>
       <CloseButton onClick={closeModal}/>
-      <EditButton onClick={() => {}}/>
+      <EditButton onClick={() => setEditContactMode(true)} disabled={editContactMode}/>
       <DeleteButton onClick={() => {
         closeModal();
         deleteContact(api, selectedContactKey!!);
-      }}/>
+      }} disabled={editContactMode}/>
     </div>
   );
 }

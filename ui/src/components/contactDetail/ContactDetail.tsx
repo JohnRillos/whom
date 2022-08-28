@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
 import { Contact, InfoValue, InfoDate, InfoKey, InfoFields } from '../../types/ContactTypes';
 import { getContact, getDisplayName, withKey } from '../../util/ContactUtil';
+import EditForm from './EditForm';
 import Menu from './Menu';
 
 const displayFieldNames: Record<InfoKey, string> = {
@@ -36,44 +37,53 @@ function getFieldType(val: InfoValue) {
 }
 
 function renderTextValue(val: string) {
-  return val;
+  return <p>{val}</p>;
 }
 
 function renderDateValue({ date }: InfoDate) {
   return (
-    <span>
+    <p>
       {`${date.year}/${date.month}/${date.day}`}
-    </span>
+    </p>
   );
 }
 
-function renderInfoValue(val: InfoValue) {
+function renderInfoValue(val: InfoValue): JSX.Element {
   switch (getFieldType(val)) {
     case 'string': return renderTextValue(val as string);
     case 'date': return renderDateValue(val as InfoDate);
-    default: return JSON.stringify(val);
+    default: return <p>{JSON.stringify(val)}</p>;
   }
 }
 
 function renderInfoField(key: InfoKey, val: InfoValue) {
   return (
-    <div>
-      <span className=''>{getDisplayKey(key)}: </span>{renderInfoValue(val)}
+    <div className='flex'>
+      <p className='flex-none font-semibold mr-2'>{getDisplayKey(key)}: </p>
+      <div className='inline-block'>
+        {renderInfoValue(val)}
+      </div>
     </div>
   );
 }
 
 function renderCustomField(key: string, val: InfoValue) {
   return (
-    <div>
-      <span>{key}: </span>{renderInfoValue(val)}
+    <div className='flex'>
+      <p className='flex-none font-semibold mr-2'>{key}: </p>
+      <div className='inline-block'>
+        {renderInfoValue(val)}
+      </div>
     </div>
   );
 }
 
 function renderShipName(contact: Contact) {
   if (contact.ship) {
-    return <>Urbit: {contact.ship}</>
+    return <>
+      <span className='font-semibold mr-2'>Urbit: </span>
+      {contact.ship}
+    </>
   }
   return null;
 }
@@ -100,40 +110,45 @@ function sortCustomFields(info: { [key: string]: string }): [string, string][] {
   });
 }
 
-export function ContactDetail(): JSX.Element {
-  const { contacts, selectedContactKey } = useContext(AppContext);
-  if (!contacts || !selectedContactKey) {
+function renderContact(contact: Contact) {
+  return (
+    <div className='text-left'>
+      <p className='mb-2'>
+        <strong>{getDisplayName(contact)}</strong>
+      </p>
+      {renderShipName(contact)}
+      <ul>
+        {sortInfoFields(contact.info)
+          .map(([key, val]) => (
+            <li key={key}>
+              {renderInfoField(key, val)}
+            </li>
+          ))}
+      </ul>
+      <ul>
+        {sortCustomFields(contact.custom)
+          .map(([key, val]) => (
+            <li key={key}>
+              {renderCustomField(key, val)}
+            </li>
+          ))}
+      </ul>
+    </div>
+  )
+}
+
+export default function ContactDetail(): JSX.Element {
+  const { contacts, selectedContactKey, editContactMode } = useContext(AppContext);
+  if (!selectedContactKey) {
     return <p>Error</p>;
   }
   const contact = getContact(contacts, selectedContactKey);
   if (!contact) {
     return <p>Error</p>;
   }
-
   return (
     <div className='flex'>
-      <div className='text-left'>
-        <p>
-          <strong>{getDisplayName(contact)}</strong>
-        </p>
-        {renderShipName(contact)}
-        <ul>
-          {sortInfoFields(contact.info)
-            .map(([key, val]) => (
-              <li key={key}>
-                {renderInfoField(key, val)}
-              </li>
-            ))}
-        </ul>
-        <ul>
-          {sortCustomFields(contact.custom)
-            .map(([key, val]) => (
-              <li key={key}>
-                {renderCustomField(key, val)}
-              </li>
-            ))}
-        </ul>
-      </div>
+      {editContactMode ? <EditForm contact={contact}/> : renderContact(contact)}
       <Menu/>
     </div>
   );

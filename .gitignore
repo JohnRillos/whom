@@ -8,3 +8,5 @@ ui/*.local
 ui/stats.html
 ui/.eslintcache
 ui/.vercel
+
+.vscode

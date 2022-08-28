@@ -6,10 +6,12 @@ const icon = (
   </svg>
 );
 
-const DeleteButton = (props: {onClick: () => void}) => {
+const DeleteButton = (props: {onClick: () => void, disabled: boolean}) => {
+  const colorClass = props.disabled ? 'opacity-40' : 'hover:text-red-500'
+
   return (
-    <button onClick={props.onClick} title='Delete Contact'>
-      <div className='hover:text-red-500'>
+    <button onClick={props.onClick} title='Delete Contact' disabled={props.disabled}>
+      <div className={colorClass}>
         {icon}
       </div>
     </button>
