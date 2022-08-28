@@ -2,10 +2,10 @@ import React from 'react';
 import { useContext } from 'react'
 import { ContactWithKey } from '../types/ContactTypes';
 import { getDisplayName } from '../util/ContactUtil';
-import { ModalContext } from '../context/ModalContext'
+import { AppContext } from '../context/AppContext'
 
 export const ContactCard = (props:{contact:ContactWithKey}) => {
-  let { selectContact, openModal } = useContext(ModalContext);
+  let { selectContact, openModal } = useContext(AppContext);
 
   return (
     <button

@@ -1,7 +1,9 @@
+import Urbit from '@urbit/http-api';
 import { createContext } from 'react';
 import { Contacts } from '../types/ContactTypes';
 
 export type AppContextType = {
+  api: Urbit,
   contacts: Contacts | null,
   selectedContactKey: string | null,
   selectContact: (key: string) => void,
@@ -10,7 +12,14 @@ export type AppContextType = {
   closeModal: () => void
 }
 
+function getUrbitApi(): Urbit {
+  const api = new Urbit('', '', '');
+  api.ship = window.ship;
+  return api;
+}
+
 const initialContext: AppContextType = {
+  api: getUrbitApi(),
   contacts: null,
   selectedContactKey: null,
   selectContact: () => {},
@@ -19,6 +28,6 @@ const initialContext: AppContextType = {
   closeModal: () => {}
 }
 
-const ModalContext = createContext(initialContext);
+const AppContext = createContext(initialContext);
 
-export { ModalContext, initialContext };
+export { AppContext, initialContext };

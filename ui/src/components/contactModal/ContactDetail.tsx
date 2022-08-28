@@ -1,10 +1,9 @@
 import React from 'react';
 import { useContext } from 'react';
-import { ModalContext } from '../../context/ModalContext';
+import { AppContext } from '../../context/AppContext';
 import { Contact, InfoValue, InfoDate, InfoKey, InfoFields } from '../../types/ContactTypes';
-import { getContact, getDisplayName } from '../../util/ContactUtil';
-import CloseButton from '../buttons/CloseButton';
-import EditButton from '../buttons/EditButton';
+import { getContact, getDisplayName, withKey } from '../../util/ContactUtil';
+import Menu from './Menu';
 
 const displayFieldNames: Record<InfoKey, string> = {
   "first-name": "First Name",
@@ -102,22 +101,13 @@ function sortCustomFields(info: { [key: string]: string }): [string, string][] {
 }
 
 export function ContactDetail(): JSX.Element {
-  const { contacts, selectedContactKey, closeModal } = useContext(ModalContext);
+  const { contacts, selectedContactKey } = useContext(AppContext);
   if (!contacts || !selectedContactKey) {
     return <p>Error</p>;
   }
   const contact = getContact(contacts, selectedContactKey);
   if (!contact) {
     return <p>Error</p>;
-  }
-
-  function renderMenu() {
-    return (
-      <div className='flex flex-col w-full max-w-fit ml-2'>
-        <CloseButton onClick={closeModal}/>
-        <EditButton onClick={() => {}}/>
-      </div>
-    );
   }
 
   return (
@@ -144,7 +134,7 @@ export function ContactDetail(): JSX.Element {
             ))}
         </ul>
       </div>
-      {renderMenu()}
+      <Menu/>
     </div>
   );
 };

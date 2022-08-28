@@ -8,7 +8,7 @@ const icon = (
 
 const CloseButton = (props: {onClick: () => void}) => {
   return (
-    <button onClick={props.onClick}>
+    <button onClick={props.onClick} title='Close'>
       {icon}
     </button>
   );

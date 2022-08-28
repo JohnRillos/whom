@@ -8,8 +8,10 @@ const icon = (
 
 const EditButton = (props: {onClick: () => void}) => {
   return (
-    <button onClick={props.onClick}>
-      {icon}
+    <button onClick={props.onClick} title='Edit Contact'>
+      <div className='hover:text-blue-500 -mt-1'>
+        {icon}
+      </div>
     </button>
   );
 };

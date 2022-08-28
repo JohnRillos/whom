@@ -1,7 +1,7 @@
 import React from 'react';
 import { useContext } from 'react';
 import { ContactCard } from './ContactCard';
-import { ModalContext } from '../context/ModalContext';
+import { AppContext } from '../context/AppContext';
 import { Contacts, ContactWithKey } from '../types/ContactTypes';
 import { getDisplayName, withKey } from '../util/ContactUtil';
 
@@ -21,7 +21,7 @@ function unifiedContactsList(contacts: Contacts): ContactWithKey[] {
 }
 
 export const ContactList = () => {
-  const { contacts } = useContext(ModalContext);
+  const { contacts } = useContext(AppContext);
   return (
     <div className="h-full w-full overflow-y-auto">
       <ul className="m-auto max-w-fit divide-y divide-gray-400/50">

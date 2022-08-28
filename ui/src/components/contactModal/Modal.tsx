@@ -1,11 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React from 'react';
 import { Fragment, useContext } from 'react';
-import { ModalContext } from '../../context/ModalContext';
+import { AppContext } from '../../context/AppContext';
 import { ContactDetail } from './ContactDetail';
 
 export default function Modal() {
-  let { isModalOpen, closeModal } = useContext(ModalContext);
+  let { isModalOpen, closeModal } = useContext(AppContext);
 
   return (
     <>

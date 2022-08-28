@@ -1,10 +1,7 @@
 import Urbit from '@urbit/http-api';
 import { GallApp, GallUpdate } from '../types/GallTypes';
 
-const Subscribe = (handleUpdate: (update: GallUpdate) => any): Urbit => {
-  let api = new Urbit('', '', '');
-  api.ship = window.ship;
-
+const Subscribe = (api: Urbit, handleUpdate: (update: GallUpdate) => any) => {
   let subscribe = (app: GallApp, path: string) => {
     api.subscribe({
       app: app,
@@ -15,7 +12,6 @@ const Subscribe = (handleUpdate: (update: GallUpdate) => any): Urbit => {
     });
   };
   subscribe('whom', '/updates');
-  return api;
 };
 
 export { Subscribe };
