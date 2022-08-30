@@ -1,107 +1,19 @@
+import { Dialog } from '@headlessui/react';
 import React from 'react';
 import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
-import { Contact, InfoValue, InfoDate, InfoKey, InfoFields } from '../../types/ContactTypes';
-import { getContact, getDisplayName, withKey } from '../../util/ContactUtil';
+import { Contact, InfoValue, InfoDate, InfoKey } from '../../types/ContactTypes';
+import { getContact, getDisplayName, getFieldDisplayName, getFieldType, OrderedInfoKeys } from '../../util/ContactUtil';
 import EditForm from './EditForm';
+import DateField from './fields/DateField';
+import TextField from './fields/TextField';
 import Menu from './Menu';
 
-const displayFieldNames: Record<InfoKey, string> = {
-  "first-name": "First Name",
-  "middle-name": "Middle Name",
-  "last-name": "Last Name",
-  "nickname": "Nickname",
-  "label": "Label",
-  "dob": "Date of Birth",
-  "note": "Note",
-  "job": "Occupation",
-  "phone": "Phone #",
-  "email": "Email",
-  "website": "Website",
-  "github": "GitHub",
-  "twitter": "Twitter",
-};
-
-const fieldPositions: { [key: string]: number } =
-  Object.fromEntries(Object.keys(displayFieldNames).map((key, i) => ([key, i])));
-
-function getDisplayKey(key: InfoKey) {
-  return displayFieldNames[key] || key;
-}
-
-function getFieldType(val: InfoValue) {
-  if (typeof val === 'string') {
-    return 'string';
-  }
-  return Object.keys(val)[0];
-}
-
-function renderTextValue(val: string) {
-  return <p>{val}</p>;
-}
-
-function renderDateValue({ date }: InfoDate) {
-  return (
-    <p>
-      {`${date.year}/${date.month}/${date.day}`}
-    </p>
-  );
-}
-
-function renderInfoValue(val: InfoValue): JSX.Element {
-  switch (getFieldType(val)) {
-    case 'string': return renderTextValue(val as string);
-    case 'date': return renderDateValue(val as InfoDate);
-    default: return <p>{JSON.stringify(val)}</p>;
-  }
-}
-
-function renderInfoField(key: InfoKey, val: InfoValue) {
-  return (
-    <div className='flex'>
-      <p className='flex-none font-semibold mr-2'>{getDisplayKey(key)}: </p>
-      <div className='inline-block'>
-        {renderInfoValue(val)}
-      </div>
-    </div>
-  );
-}
-
-function renderCustomField(key: string, val: InfoValue) {
-  return (
-    <div className='flex'>
-      <p className='flex-none font-semibold mr-2'>{key}: </p>
-      <div className='inline-block'>
-        {renderInfoValue(val)}
-      </div>
-    </div>
-  );
-}
-
 function renderShipName(contact: Contact) {
-  if (contact.ship) {
-    return <>
-      <span className='font-semibold mr-2'>Urbit: </span>
-      {contact.ship}
-    </>
+  if (!contact.ship) {
+    return null;
   }
-  return null;
-}
-
-function sortInfoFields(info: InfoFields): [InfoKey, InfoValue][] {
-   var entries = Object.entries(info) as [InfoKey, InfoValue][];
-   return entries.sort(([keyA], [keyB]) => {
-    if (keyA in fieldPositions && keyB in fieldPositions) {
-      return fieldPositions[keyA] - fieldPositions[keyB];
-    }
-    if (keyA in fieldPositions) {
-      return -1;
-    }
-    if (keyB in fieldPositions) {
-      return 1;
-    }
-    return keyA > keyB ? 1 : -1;
-  });
+  return <TextField label='Urbit' value={contact.ship}/>
 }
 
 function sortCustomFields(info: { [key: string]: string }): [string, string][] {
@@ -110,31 +22,53 @@ function sortCustomFields(info: { [key: string]: string }): [string, string][] {
   });
 }
 
+function renderInfoField(key: InfoKey, val: InfoValue | undefined) {
+  const label = getFieldDisplayName(key);
+  switch (getFieldType(key)) {
+    case 'string':
+      return <TextField label={label} value={val as string | undefined}/>;
+    case 'InfoDate':
+      return <DateField label={label} value={val as InfoDate | undefined}/>;
+    default:
+      return JSON.stringify(val);
+  }
+}
+
+function renderInfoFields(contact: Contact) {
+  return (
+    <ul>
+      {OrderedInfoKeys.map((key: InfoKey) => ({
+        key: key,
+        value: contact.info[key]
+      }))
+      .filter((arg: { key: string, value: InfoValue | undefined}) => arg.value !== undefined)
+      .map((arg: {key: InfoKey, value: InfoValue | undefined}) => (
+        <li key={arg.key}>
+          {renderInfoField(arg.key, arg.value)}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 function renderContact(contact: Contact) {
   return (
-    <div className='text-left'>
+    <div className='text-left h-fit'>
       <p className='mb-2'>
         <strong>{getDisplayName(contact)}</strong>
       </p>
       {renderShipName(contact)}
-      <ul>
-        {sortInfoFields(contact.info)
-          .map(([key, val]) => (
-            <li key={key}>
-              {renderInfoField(key, val)}
-            </li>
-          ))}
-      </ul>
+      {renderInfoFields(contact)}
       <ul>
         {sortCustomFields(contact.custom)
           .map(([key, val]) => (
             <li key={key}>
-              {renderCustomField(key, val)}
+              <TextField label={key} value={val}/>
             </li>
           ))}
       </ul>
     </div>
-  )
+  );
 }
 
 export default function ContactDetail(): JSX.Element {

@@ -1,5 +1,5 @@
 import Urbit from '@urbit/http-api';
-import { Contact } from './ContactTypes';
+import { Contact, InfoKey, InfoValue } from './ContactTypes';
 
 export declare type GallApp = 'whom';
 
@@ -15,5 +15,27 @@ export declare type WhomUpdate = {
   },
   earthContacts: {
     [key: string]: Contact
+  }
+};
+
+export type WhomAction = AddContactAction | EditContactAction | DeleteContactAction;
+
+type AddContactAction = {
+  'add-contact': {
+    contact: Contact
+  }
+};
+
+type EditContactAction = {
+  'edit-contact': {
+    key: string,
+    info: Record<InfoKey, InfoValue>,
+    custom: Record<string, string>
+  }
+};
+
+type DeleteContactAction = {
+  'del-contact': {
+    key: string
   }
 };

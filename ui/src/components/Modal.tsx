@@ -22,7 +22,7 @@ export default function Modal(props:{children:JSX.Element}) {
             <div className="fixed inset-0 bg-gray-300/75 dark:bg-black/75" />
           </Transition.Child>
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="flex min-h-full items-center justify-center p-4">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -33,7 +33,7 @@ export default function Modal(props:{children:JSX.Element}) {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel
-                  className="bg-standard outline outline-black dark:outline dark:outline-neutral-500 max-w-xl transform overflow-hidden rounded-2xl p-4 shadow-xl transition-all"
+                  className="bg-standard outline outline-black dark:outline dark:outline-neutral-500 max-w-xl transform rounded-2xl p-4 shadow-xl transition-all"
                 >
                   {props.children}
                 </Dialog.Panel>

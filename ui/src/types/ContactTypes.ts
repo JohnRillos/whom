@@ -29,9 +29,11 @@ export type InfoFields = {
   'website'?: string,
   'github'?: string,
   'twitter'?: string,
-}
+};
 
 export declare type InfoValue = string | InfoDate;
+
+export declare type InfoValueTypeName = 'string' | 'InfoDate';
 
 export declare type InfoDate = {
   date: {
