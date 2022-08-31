@@ -55,9 +55,9 @@ export function App() {
   return (
     <main className="fixed w-full h-full bg-standard flex">
       <AppContext.Provider value={appContext} >
-        <div className="h-full w-full mx-auto flex flex-col p-4 overflow-hidden">
-          <h1 className="text-center text-3xl font-bold pb-4">Contacts</h1>
-          {contacts && <ContactList/>}
+        <div className="h-full w-full mx-auto flex flex-col overflow-hidden">
+          <h1 className="text-center text-3xl font-bold py-4">Contacts</h1>
+          <ContactList/>
         </div>
         <Modal>
           <ContactDetail/>

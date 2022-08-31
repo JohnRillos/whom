@@ -4,6 +4,12 @@
 
 @layer components {
   .bg-standard {
-    @apply bg-neutral-100 dark:bg-black text-black dark:text-gray-200
+    @apply bg-light dark:bg-black text-black dark:text-light
+  }
+  .button-primary {
+    @apply bg-black dark:bg-light border border-black dark:border-light text-light dark:text-black
+  }
+  .button-secondary {
+    @apply bg-light dark:bg-black border border-black dark:border-light text-black dark:text-light
   }
 }

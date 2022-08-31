@@ -1,4 +1,3 @@
-import { Dialog } from '@headlessui/react';
 import React from 'react';
 import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
@@ -30,7 +29,7 @@ function renderInfoField(key: InfoKey, val: InfoValue | undefined) {
     case 'InfoDate':
       return <DateField label={label} value={val as InfoDate | undefined}/>;
     default:
-      return JSON.stringify(val);
+      return <span>{JSON.stringify(val)}</span>;
   }
 }
 

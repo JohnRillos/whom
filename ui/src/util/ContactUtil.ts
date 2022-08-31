@@ -33,8 +33,9 @@ export function withKey(entry: [string, Contact]): ContactWithKey {
   };
 }
 
-export function getContact(contacts: Contacts, contactKey: string): Contact | undefined {
-  return contacts.urbitContacts[contactKey] || contacts.earthContacts[contactKey];
+export function getContact(contacts: Contacts, contactKey: string): ContactWithKey | undefined {
+  const contact = contacts.urbitContacts[contactKey] || contacts.earthContacts[contactKey];
+  return contact ? withKey([contactKey, contact]) : undefined;
 }
 
 const INFO_FIELD_DEFS: Record<InfoKey, InfoFieldDef> = {
