@@ -3,13 +3,11 @@ import React from 'react';
 import { Fragment, useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 
-export default function Modal(props:{children:JSX.Element}) {
-  let { isModalOpen, closeModal } = useContext(AppContext);
-
+export default function Modal(props: {isOpen: boolean, closeModal: () => void, children: JSX.Element}) {
   return (
     <>
-      <Transition appear show={isModalOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+      <Transition appear show={props.isOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={props.closeModal}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"

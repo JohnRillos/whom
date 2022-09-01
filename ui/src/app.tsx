@@ -8,6 +8,7 @@ import { AppContext, AppContextType, initialContext } from './context/AppContext
 import { Contacts } from './types/ContactTypes';
 import { GallUpdate } from './types/GallTypes';
 import { initialContacts } from './util/ContactUtil';
+import AddContactForm from './components/AddContactForm';
 
 async function scryContacts(urbit: Urbit): Promise<Contacts> {
   return urbit.scry<Contacts>({ app: 'whom', path: '/contacts/all' });
@@ -16,7 +17,8 @@ async function scryContacts(urbit: Urbit): Promise<Contacts> {
 export function App() {
   const [contacts, setContacts] = useState<Contacts>(initialContacts);
   const [selectedContactKey, setSelectedContact] = useState<string>();
-  const [modalOpen, setModalOpen] = useState<boolean>();
+  const [isAddContactModalOpen, setAddContactModalOpen] = useState<boolean>(false);
+  const [isDetailModalOpen, setDetailModalOpen] = useState<boolean>();
   const [editContactMode, setEditContactMode] = useState<boolean>(false);
 
   useEffect(() => {
@@ -39,13 +41,14 @@ export function App() {
     contacts: contacts,
     selectedContactKey: selectedContactKey || null,
     selectContact: (key) => setSelectedContact(key),
-    isModalOpen: modalOpen || false,
+    closeAddContactModal: () => setAddContactModalOpen(false),
+    isModalOpen: isDetailModalOpen || false,
     openModal: () => {
       setEditContactMode(false);
-      setModalOpen(true);
+      setDetailModalOpen(true);
     },
     closeModal: () => {
-      setModalOpen(false);
+      setDetailModalOpen(false);
       setTimeout(() => setEditContactMode(false), 300);
     },
     editContactMode: editContactMode,
@@ -59,7 +62,16 @@ export function App() {
           <h1 className="text-center text-3xl font-bold py-4">Contacts</h1>
           <ContactList/>
         </div>
-        <Modal>
+        <button
+          className='absolute bottom-8 right-8 px-1 py-1 rounded-3xl border-2 text-lg button-secondary hover:button-primary shadow-md'
+          onClick={() => setAddContactModalOpen(true)}
+          >
+          Add Contact
+        </button>
+        <Modal isOpen={isAddContactModalOpen} closeModal={() => setAddContactModalOpen(false)}>
+          <AddContactForm/>
+        </Modal>
+        <Modal isOpen={appContext.isModalOpen} closeModal={appContext.closeModal}>
           <ContactDetail/>
         </Modal>
       </AppContext.Provider>
