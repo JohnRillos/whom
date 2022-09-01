@@ -3,9 +3,9 @@ import { editContact } from '../../api/ContactPokes';
 import { AppContext } from '../../context/AppContext';
 import { Contact, InfoValue, InfoDate, InfoKey, ContactWithKey, InfoFields } from '../../types/ContactTypes';
 import { getDisplayName, getFieldType, getFieldDisplayName, OrderedInfoKeys } from '../../util/ContactUtil';
-import TextField from './fields/TextField';
-import DateInput from './input/DateInput';
-import TextInput from './input/TextInput';
+import TextField from '../fields/TextField';
+import DateInput from '../input/DateInput';
+import TextInput from '../input/TextInput';
 
 function renderShipName(contact: Contact) {
   return <TextField label='Urbit' value={contact.ship} />

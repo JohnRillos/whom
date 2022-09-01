@@ -1,5 +1,5 @@
 import React from 'react';
-import { InfoDate } from '../../../types/ContactTypes';
+import { InfoDate } from '../../types/ContactTypes';
 
 function renderLabel(label: string, val: InfoDate | undefined) {
   const opacity = !val ? 'opacity-50' : '';
@@ -18,8 +18,9 @@ function renderValue(value: InfoDate | undefined) {
   );
 }
 
-export default function DateField(
-  props: {label: string, value: InfoDate | undefined}
+// todo: implement as a real input form
+export default function DateInput(
+  props: { label: string, value: InfoDate | undefined }
 ): JSX.Element {
   return (
     <div className='flex'>

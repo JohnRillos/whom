@@ -4,8 +4,8 @@ import { AppContext } from '../../context/AppContext';
 import { Contact, InfoValue, InfoDate, InfoKey } from '../../types/ContactTypes';
 import { getContact, getDisplayName, getFieldDisplayName, getFieldType, OrderedInfoKeys } from '../../util/ContactUtil';
 import EditForm from './EditForm';
-import DateField from './fields/DateField';
-import TextField from './fields/TextField';
+import DateField from '../fields/DateField';
+import TextField from '../fields/TextField';
 import Menu from './Menu';
 
 function renderShipName(contact: Contact) {

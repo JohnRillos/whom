@@ -3,9 +3,9 @@ import { createContact } from '../api/ContactPokes';
 import { AppContext } from '../context/AppContext';
 import { InfoValue, InfoDate, InfoKey, InfoFields } from '../types/ContactTypes';
 import { getFieldType, getFieldDisplayName, OrderedInfoKeys } from '../util/ContactUtil';
-import DateInput from './contactDetail/input/DateInput';
-import ShipInput from './contactDetail/input/ShipInput';
-import TextInput from './contactDetail/input/TextInput';
+import DateInput from './input/DateInput';
+import ShipInput from './input/ShipInput';
+import TextInput from './input/TextInput';
 
 function sortCustomFields(info: { [key: string]: string }): [string, string][] {
   return Object.entries(info).sort(([keyA], [keyB]) => {
