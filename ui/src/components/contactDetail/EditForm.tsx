@@ -37,7 +37,7 @@ export default function EditForm(props: { contact: ContactWithKey }) {
       Object.entries(info).filter(([key, val]) => {
         return props.contact.info[key as InfoKey] !== val;
       }).map(([key, val]) => {
-        if (val == '') {
+        if (val == '' || val == undefined) {
           return [key, null];
         }
         return [key, val];
@@ -52,6 +52,17 @@ export default function EditForm(props: { contact: ContactWithKey }) {
       setInfoFields({
         ...infoFields,
         [key]: value as InfoValue
+      })
+    }
+  }
+
+  function onInfoDateChange(key: InfoKey): (arg: InfoDate | undefined) => void {
+    return (value: InfoDate | undefined) => {
+      console.log('key:', key);
+      console.log('value:', value);
+      setInfoFields({
+        ...infoFields,
+        [key]: value as InfoValue | undefined
       })
     }
   }
@@ -73,7 +84,7 @@ export default function EditForm(props: { contact: ContactWithKey }) {
       case 'string':
         return <TextInput label={label} value={val as string | undefined} onChange={onInfoTextChange(key)} />;
       case 'InfoDate':
-        return <DateInput label={label} value={val as InfoDate | undefined} />;
+        return <DateInput label={label} value={val as InfoDate | undefined} onChange={onInfoDateChange(key)}/>;
       default:
         return <span>error</span>;
     }

@@ -45,6 +45,17 @@ export default function AddContactForm() {
     }
   }
 
+  function onInfoDateChange(key: InfoKey): (arg: InfoDate | undefined) => void {
+    return (value: InfoDate | undefined) => {
+      console.log('key:', key);
+      console.log('value:', value);
+      setInfoFields({
+        ...infoFields,
+        [key]: value as InfoValue | undefined
+      })
+    }
+  }
+
   function onCustomTextChange(key: string): (arg: string) => void {
     return (value: string) => {
       console.log('key:', key);
@@ -66,7 +77,7 @@ export default function AddContactForm() {
       case 'string':
         return <TextInput label={label} value={val as string | undefined} onChange={onInfoTextChange(key)} />;
       case 'InfoDate':
-        return <DateInput label={label} value={val as InfoDate | undefined} />;
+        return <DateInput label={label} value={val as InfoDate | undefined} onChange={onInfoDateChange(key)}/>;
       default:
         return <span>error</span>;
     }
