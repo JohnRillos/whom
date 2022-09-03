@@ -82,45 +82,45 @@
     |=  =contact
     ^-  json
     %-  pairs:enjs:format
-    :~  ship+(unit-patp ship.contact)
-        info+(contact-info info.contact)
-        custom+(custom-info custom.contact)
+    :~  ship+(enjs-unit-patp ship.contact)
+        info+(enjs-info info.contact)
+        custom+(enjs-custom custom.contact)
     ==
   ::
-  ++  unit-patp
+  ++  enjs-unit-patp
     |=  patp=(unit @p)
     ^-  json
     ?~  patp  ~
     [%s (crip <u.patp>)]
   ::
-  ++  contact-info
+  ++  enjs-info
     |=  info=(map @tas contact-field)
     ^-  json
     %-  pairs:enjs:format
-    (turn ~(tap by info) info-field)
+    (turn ~(tap by info) enjs-contact-field)
   ::
-  ++  info-field
+  ++  enjs-contact-field
     |=  [key=@tas val=contact-field]
     ^-  [@t json]
     :-  key
     ?-  val
       @t          [%s val]
-      local-date  (l-date val)
+      info-date  (enjs-date val)
     ==
   ::
-  ++  custom-info
+  ++  enjs-custom
     |=  info=(map @t @t)
     ^-  json
     %-  pairs:enjs:format
-    (turn ~(tap by info) custom-field)
+    (turn ~(tap by info) enjs-custom-field)
   ::
-  ++  custom-field
+  ++  enjs-custom-field
     |=  [key=@t val=@t]
     ^-  [@t json]
     [key [%s val]]
   ::
-  ++  l-date
-    |=  date=local-date
+  ++  enjs-date
+    |=  date=info-date
     %-  pairs
     :~  :-  %date
         %-  pairs

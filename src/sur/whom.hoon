@@ -21,7 +21,7 @@
       [%nickname @t]
       [%label @t]
       [%note @t]
-      [%dob local-date]
+      [%dob info-date]
       [%job @t]
       [%email @t]
       [%phone @t]
@@ -32,10 +32,10 @@
 ::
 +$  contact-field
   $%  @t
-      local-date
+      info-date
   ==
 ::
-+$  local-date
++$  info-date
   $:  %date
       year=@ud
       month=@ud
