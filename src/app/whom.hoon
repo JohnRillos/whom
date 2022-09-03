@@ -86,22 +86,12 @@
       [[give-update:main ~] state]
       ::
         %edit-contact
-      =/  contact  (get-contact key.act)
+      =/  contact  (~(got by contacts) key.act)
       =.  info.contact  (edit-info-map info.act info.contact)
       =.  custom.contact  (edit-custom-map custom.act custom.contact)
-      =.  state  (replace-contact key.act contact)
+      =.  state  state(contacts (~(put by contacts) key.act contact))
       [[give-update:main ~] state]
     ==
-  ::
-  ++  get-contact
-    |=  key=(each @p @t)
-    ^-  contact
-    (~(got by contacts) key)
-  ::
-  ++  replace-contact
-    |=  [key=(each @p @t) =contact]
-    ^-  versioned-state
-    state(contacts (~(put by contacts) key contact))
   ::
   ++  edit-info-map
     |=  [changes=(map @tas (unit contact-field)) old=(map @tas contact-field)]
@@ -128,9 +118,9 @@
   |=  =path
   ^-  (quip card _this)
   ?>  (team:title our.bowl src.bowl)
-  ?.  ?=([%updates ~] path)
-    (on-watch:default path)
-  [[give-update:main ~] this]
+  ?+  path  (on-watch:default path)
+    [%updates ~]  [[give-update:main ~] this]
+  ==
 ::
 ++  on-leave  on-leave:default
 ++  on-peek
