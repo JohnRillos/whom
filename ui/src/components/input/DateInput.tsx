@@ -63,8 +63,6 @@ export default function DateInput(
   }
 
   function handleDateChange(value: Date | undefined) {
-    console.log('handleDateChange.value', value);
-    console.log('transformed: ', toInfoDate(value))
     props.onChange(toInfoDate(value));
   }
 

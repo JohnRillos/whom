@@ -47,8 +47,6 @@ export default function EditForm(props: { contact: ContactWithKey }) {
 
   function onInfoTextChange(key: InfoKey): (arg: string) => void {
     return (value: string) => {
-      console.log('key:', key);
-      console.log('value:', value);
       setInfoFields({
         ...infoFields,
         [key]: value as InfoValue
@@ -58,8 +56,6 @@ export default function EditForm(props: { contact: ContactWithKey }) {
 
   function onInfoDateChange(key: InfoKey): (arg: InfoDate | undefined) => void {
     return (value: InfoDate | undefined) => {
-      console.log('key:', key);
-      console.log('value:', value);
       setInfoFields({
         ...infoFields,
         [key]: value as InfoValue | undefined
@@ -69,8 +65,6 @@ export default function EditForm(props: { contact: ContactWithKey }) {
 
   function onCustomTextChange(key: string): (arg: string) => void {
     return (value: string) => {
-      console.log('key:', key);
-      console.log('value:', value);
       setCustomFields({
         ...customFields,
         [key]: value
