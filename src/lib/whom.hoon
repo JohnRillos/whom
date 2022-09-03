@@ -54,8 +54,8 @@
     :~  contacts+(enjs-contacts contacts.upd)
     ==
   ::
-  ++  contacts-raw-0
-    |=  con=^contacts-raw-0
+  ++  contacts-0
+    |=  con=^contacts-0
     (enjs-contacts con)
   ::
   ++  enjs-contacts

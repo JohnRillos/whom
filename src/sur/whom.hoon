@@ -42,7 +42,7 @@
       day=@ud
   ==
 ::
-+$  contacts-raw-0
++$  contacts-0
   (map (each @p @t) contact)
 ::
 ++  validate-contact

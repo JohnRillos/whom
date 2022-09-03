@@ -127,7 +127,7 @@
   |=  =path
   ^-  (unit (unit cage))
   ?+  path  (on-peek:default path)
-    [%x %contacts %all ~]  ``contacts-raw-0+!>(contacts)
+    [%x %contacts %all ~]  ``contacts-0+!>(contacts)
   ==
 ::
 ++  on-agent  on-agent:default
