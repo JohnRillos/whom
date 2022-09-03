@@ -51,43 +51,34 @@
     |=  upd=^update
     ^-  json
     %-  pairs:enjs:format
-    :~  [`@tas`'urbitContacts' (urbit-contacts urbit-contacts.upd)]
-        [`@tas`'earthContacts' (earth-contacts earth-contacts.upd)]
+    :~  contacts+(enjs-contacts contacts.upd)
     ==
   ::
   ++  contacts-raw-0
     |=  con=^contacts-raw-0
+    (enjs-contacts con)
+  ::
+  ++  enjs-contacts
+    |=  contacts=(map (each @p @t) contact)
     ^-  json
     %-  pairs:enjs:format
-    :~  [`@tas`'urbitContacts' (urbit-contacts urbit-contacts.con)]
-        [`@tas`'earthContacts' (earth-contacts earth-contacts.con)]
+    (turn ~(tap by contacts) enjs-contacts-entry)
+  ::
+  ++  enjs-contacts-entry
+    |=  [key=(each @p @t) =contact]
+    ^-  [@tas json]
+    :-  (enjs-key key)
+    (enjs-contact contact)
+  ::
+  ++  enjs-key
+    |=  key=(each @p @t)
+    ^-  @tas
+    ?-  -.key
+      %.y  (crip <p.key>)
+      %.n  p.key
     ==
   ::
-  ++  urbit-contacts
-    |=  contacts=(map @p contact)
-    ^-  json
-    %-  pairs:enjs:format
-    (turn ~(tap by contacts) urbit-contact)
-  ::
-  ++  urbit-contact
-    |=  [key=@p =contact]
-    ^-  [@tas json]
-    :-  `@tas`(crip <key>)
-    (any-contact contact)
-  ::
-  ++  earth-contacts
-    |=  contacts=(map @t contact)
-    ^-  json
-    %-  pairs:enjs:format
-    (turn ~(tap by contacts) earth-contact)
-  ::
-  ++  earth-contact
-    |=  [key=@t =contact]
-    ^-  [@tas json]
-    :-  `@tas`key
-    (any-contact contact)
-  ::
-  ++  any-contact
+  ++  enjs-contact
     |=  =contact
     ^-  json
     %-  pairs:enjs:format

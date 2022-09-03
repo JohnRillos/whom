@@ -1,10 +1,5 @@
 import { Contact, Contacts, ContactWithKey, InfoKey, InfoValueTypeName } from '../types/ContactTypes';
 
-export const initialContacts: Contacts = {
-  urbitContacts: {},
-  earthContacts: {}
-}
-
 function getFullName(contact: Contact): string {
   var first = contact.info['first-name'];
   var last = contact.info['last-name'];
@@ -33,8 +28,8 @@ export function withKey(entry: [string, Contact]): ContactWithKey {
   };
 }
 
-export function getContact(contacts: Contacts, contactKey: string): ContactWithKey | undefined {
-  const contact = contacts.urbitContacts[contactKey] || contacts.earthContacts[contactKey];
+export function getContactWithKey(contacts: Contacts, contactKey: string): ContactWithKey | undefined {
+  const contact = contacts[contactKey];
   return contact ? withKey([contactKey, contact]) : undefined;
 }
 

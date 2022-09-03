@@ -7,7 +7,6 @@ import ContactDetail from './components/contactDetail/ContactDetail';
 import { AppContext, AppContextType, initialContext } from './context/AppContext';
 import { Contacts } from './types/ContactTypes';
 import { GallUpdate } from './types/GallTypes';
-import { initialContacts } from './util/ContactUtil';
 import AddContactForm from './components/AddContactForm';
 
 async function scryContacts(urbit: Urbit): Promise<Contacts> {
@@ -15,7 +14,7 @@ async function scryContacts(urbit: Urbit): Promise<Contacts> {
 }
 
 export function App() {
-  const [contacts, setContacts] = useState<Contacts>(initialContacts);
+  const [contacts, setContacts] = useState<Contacts>({});
   const [selectedContactKey, setSelectedContact] = useState<string>();
   const [isAddContactModalOpen, setAddContactModalOpen] = useState<boolean>(false);
   const [isDetailModalOpen, setDetailModalOpen] = useState<boolean>();
@@ -29,10 +28,7 @@ export function App() {
 
   function handleUpdate(update: GallUpdate) {
     if (update.app === 'whom' && update.data) {
-      setContacts({
-        urbitContacts: update.data.urbitContacts,
-        earthContacts: update.data.earthContacts
-      });
+      setContacts(update.data.contacts);
     }
   };
 

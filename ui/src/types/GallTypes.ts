@@ -1,5 +1,5 @@
 import Urbit from '@urbit/http-api';
-import { Contact, InfoFields } from './ContactTypes';
+import { Contact, Contacts, InfoFields } from './ContactTypes';
 
 export declare type GallApp = 'whom';
 
@@ -10,12 +10,7 @@ export declare type GallUpdate = {
 };
 
 export declare type WhomUpdate = {
-  urbitContacts: {
-    [key: string]: Contact
-  },
-  earthContacts: {
-    [key: string]: Contact
-  }
+  contacts: Contacts
 };
 
 export type WhomAction = AddContactAction | EditContactAction | DeleteContactAction;

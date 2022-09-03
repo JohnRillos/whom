@@ -15,9 +15,7 @@ function sortContacts(contacts: ContactWithKey[]): ContactWithKey[] {
 }
 
 function unifiedContactsList(contacts: Contacts): ContactWithKey[] {
-  var entries = Object.entries(contacts.urbitContacts)
-    .concat(Object.entries(contacts.earthContacts));
-  return sortContacts(entries.map(withKey));
+  return sortContacts(Object.entries(contacts).map(withKey));
 }
 
 export const ContactList = () => {

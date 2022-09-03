@@ -10,8 +10,7 @@
 ::
 +$  state-0
   $:  %0
-      urbit-contacts=(map @p contact)
-      earth-contacts=(map @t contact)
+      contacts=(map (each @p @t) contact)
   ==
 --
 ::
@@ -73,64 +72,49 @@
         %add-contact
       =.  state
         ?>  (validate-contact contact.act)
-        ?~  ship.contact.act
-          =/  id=@t  random-id
-          state(earth-contacts (~(put by earth-contacts) id contact.act))
-        =/  ship=@p  u.ship.contact.act
-        ?:  (~(has by urbit-contacts) ship)  ~|("{<ship>} already exists in contacts!" !!)
-        state(urbit-contacts (~(put by urbit-contacts) ship contact.act))
-      :_  state
-      [give-update:main ~]
+        =/  key=(each @p @t)
+          ?~  ship.contact.act
+            [%.n random-id]
+          [%.y u.ship.contact.act]
+        ?:  (~(has by contacts) key)  ~|("{<p.key>} already exists in contacts!" !!)
+        state(contacts (~(put by contacts) key contact.act))
+      [[give-update:main ~] state]
       ::
         %del-contact
       =.  state
-        ?:  -.key.act
-          state(urbit-contacts (~(del by urbit-contacts) `@p`+.key.act))
-        state(earth-contacts (~(del by earth-contacts) `@t`+.key.act))
-      :_  state
-      [give-update:main ~]
+        state(contacts (~(del by contacts) key.act))
+      [[give-update:main ~] state]
       ::
         %edit-contact
       =/  contact  (get-contact key.act)
-      =.  info.contact
-        ^+  info.contact  (edit-info-map info.act info.contact)
-      =.  custom.contact
-        ^+  custom.contact  (edit-custom-map custom.act custom.contact)
+      =.  info.contact  (edit-info-map info.act info.contact)
+      =.  custom.contact  (edit-custom-map custom.act custom.contact)
       =.  state  (replace-contact key.act contact)
-      :_  state
-      [give-update:main ~]
+      [[give-update:main ~] state]
     ==
   ::
   ++  get-contact
     |=  key=(each @p @t)
     ^-  contact
-    ?:  -.key
-      =/  ship=@p  `@p`p.key
-      (~(got by urbit-contacts) ship)
-    =/  id=@t  `@t`p.key
-    (~(got by earth-contacts) id)
+    (~(got by contacts) key)
   ::
   ++  replace-contact
     |=  [key=(each @p @t) =contact]
     ^-  versioned-state
-    ?:  -.key
-      state(urbit-contacts (~(put by urbit-contacts) `@p`+.key contact))
-    state(earth-contacts (~(put by earth-contacts) `@t`+.key contact))
+    state(contacts (~(put by contacts) key contact))
   ::
   ++  edit-info-map
     |=  [changes=(map @tas (unit contact-field)) old=(map @tas contact-field)]
-    ^-  (map @tas contact-field)
-    =/  acc-type  $_  old
+    ^+  old
     %-  ~(rep by changes)
-    |=  [change=[@tas (unit contact-field)] acc=acc-type]
+    |=  [change=[@tas (unit contact-field)] acc=_old]
     (~(mar by acc) change)
   ::
   ++  edit-custom-map
     |=  [changes=(map @t (unit @t)) old=(map @t @t)]
-    ^-  (map @t @t)
-    =/  acc-type  $_  old
+    ^+  old
     %-  ~(rep by changes)
-    |=  [change=[@t (unit @t)] acc=acc-type]
+    |=  [change=[@t (unit @t)] acc=_old]
     (~(mar by acc) change)
   ::
   ++  random-id
@@ -144,18 +128,16 @@
   |=  =path
   ^-  (quip card _this)
   ?>  (team:title our.bowl src.bowl)
-  ?:  ?=([%updates ~] path)
-    =/  =update  [urbit-contacts earth-contacts]
-    :_  this
-    [[%give %fact [/updates]~ %whom-update !>(update)] ~]
-  (on-watch:default path)
+  ?.  ?=([%updates ~] path)
+    (on-watch:default path)
+  [[give-update:main ~] this]
 ::
 ++  on-leave  on-leave:default
 ++  on-peek
   |=  =path
   ^-  (unit (unit cage))
   ?+  path  (on-peek:default path)
-      [%x %contacts %all ~]  ``contacts-raw-0+!>([urbit-contacts earth-contacts])
+    [%x %contacts %all ~]  ``contacts-raw-0+!>(contacts)
   ==
 ::
 ++  on-agent  on-agent:default
@@ -165,7 +147,7 @@
 ::
 ++  give-update
   ^-  card
-  =/  =update  [urbit-contacts earth-contacts]
+  =/  =update  contacts
   [%give %fact [/updates]~ %whom-update !>(update)]
 ::
 --

@@ -12,9 +12,7 @@
   ==
 ::
 +$  update
-  $:  urbit-contacts=(map @p contact)
-      earth-contacts=(map @t contact)
-  ==
+  $:(contacts=(map (each @p @t) contact))
 ::
 +$  contact-field-def
   $%  [%first-name @t]
@@ -45,9 +43,7 @@
   ==
 ::
 +$  contacts-raw-0
-  $:  urbit-contacts=(map @p contact)
-      earth-contacts=(map @t contact)
-  ==
+  (map (each @p @t) contact)
 ::
 ++  validate-contact
   |=  =contact

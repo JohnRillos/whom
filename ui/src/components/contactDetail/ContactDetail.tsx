@@ -2,7 +2,7 @@ import React from 'react';
 import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
 import { Contact, InfoValue, InfoDate, InfoKey } from '../../types/ContactTypes';
-import { getContact, getDisplayName, getFieldDisplayName, getFieldType, OrderedInfoKeys } from '../../util/ContactUtil';
+import { getContactWithKey, getDisplayName, getFieldDisplayName, getFieldType, OrderedInfoKeys } from '../../util/ContactUtil';
 import EditForm from './EditForm';
 import DateField from '../fields/DateField';
 import TextField from '../fields/TextField';
@@ -75,7 +75,7 @@ export default function ContactDetail(): JSX.Element {
   if (!selectedContactKey) {
     return <p>Error</p>;
   }
-  const contact = getContact(contacts, selectedContactKey);
+  const contact = getContactWithKey(contacts, selectedContactKey);
   if (!contact) {
     return <p>Error</p>;
   }
