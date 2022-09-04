@@ -99,13 +99,6 @@
     |=  [change=[@tas (unit info-field)] acc=_old]
     (~(mar by acc) change)
   ::
-  ++  edit-custom-map
-    |=  [changes=(map @t (unit @t)) old=(map @t @t)]
-    ^+  old
-    %-  ~(rep by changes)
-    |=  [change=[@t (unit @t)] acc=_old]
-    (~(mar by acc) change)
-  ::
   ++  random-id
     ^-  @t
     (scot %uvj eny.bowl)
