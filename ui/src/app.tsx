@@ -10,7 +10,7 @@ import { GallUpdate } from './types/GallTypes';
 import AddContactForm from './components/AddContactForm';
 
 async function scryContacts(urbit: Urbit): Promise<Contacts> {
-  return urbit.scry<Contacts>({ app: 'whom', path: '/contacts/all' });
+  return urbit.scry<Contacts>({ app: 'whom', path: '/contacts' });
 }
 
 export function App() {
