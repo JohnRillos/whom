@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { editContact } from '../../api/ContactPokes';
 import { AppContext } from '../../context/AppContext';
 import { Contact, InfoValue, InfoDate, ContactWithKey, InfoFields } from '../../types/ContactTypes';
-import { getDisplayName, getFieldType, getFieldDisplayName, OrderedInfoKeys } from '../../util/ContactUtil';
+import { getDisplayName } from '../../util/ContactUtil';
 import TextField from '../fields/TextField';
 import DateInput from '../input/DateInput';
 import TextInput from '../input/TextInput';
@@ -12,7 +12,7 @@ function renderShipName(contact: Contact) {
 }
 
 export default function EditForm(props: { contact: ContactWithKey }) {
-  const { api, setEditContactMode } = useContext(AppContext);
+  const { api, setEditContactMode, fieldSettings } = useContext(AppContext);
   let [infoFields, setInfoFields] = useState<InfoFields>(props.contact.info);
 
   function submitChanges() {
@@ -56,11 +56,11 @@ export default function EditForm(props: { contact: ContactWithKey }) {
   }
 
   function renderInfoField(key: string, val: InfoValue | undefined) {
-    const label = getFieldDisplayName(key);
-    switch (getFieldType(key)) {
-      case 'string':
-        return <TextInput label={label} value={val as string | undefined} onChange={onInfoTextChange(key)} />;
-      case 'InfoDate':
+    const label = fieldSettings.defs[key]?.name || key;
+    switch (fieldSettings.defs[key]?.type) {
+      case 'text':
+        return <TextInput label={label} value={val as string | undefined} onChange={onInfoTextChange(key)}/>;
+      case 'date':
         return <DateInput label={label} value={val as InfoDate | undefined} onChange={onInfoDateChange(key)}/>;
       default:
         return <span>error</span>;
@@ -70,7 +70,7 @@ export default function EditForm(props: { contact: ContactWithKey }) {
   function renderInfoFields() {
     return (
       <ul>
-        {OrderedInfoKeys.map((key: string) => {
+        {fieldSettings.order.map((key: string) => {
           return <li key={key}>
             {renderInfoField(key, infoFields[key])}
           </li>

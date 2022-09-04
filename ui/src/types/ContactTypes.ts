@@ -18,8 +18,6 @@ export type InfoFields = {
 
 export declare type InfoValue = string | InfoDate;
 
-export declare type InfoValueTypeName = 'string' | 'InfoDate';
-
 export declare type InfoDate = {
   date: {
     year: number,

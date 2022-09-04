@@ -116,5 +116,17 @@
             day+(numb day.date)
         ==
     ==
+  ::
+  ++  field-defs
+    |=  fields=(list [key=@tas field-def])
+    a+(turn fields enjs-field-def)
+  ::
+  ++  enjs-field-def
+    |=  [key=@tas name=@t type=@tas]
+    %-  pairs
+    :~  key+s+key
+        name+s+name
+        type+s+type
+    ==
   --
 --

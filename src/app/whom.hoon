@@ -119,7 +119,8 @@
   |=  =path
   ^-  (unit (unit cage))
   ?+  path  (on-peek:default path)
-    [%x %contacts ~]  ``contacts-0+!>(contacts)
+    [%x %contacts ~]  ``whom-contacts-0+!>(contacts)
+    [%x %settings %fields ~]  ``whom-fields+!>(canon-list:field-util) :: todo: include user-made defs
   ==
 ::
 ++  on-agent  on-agent:default

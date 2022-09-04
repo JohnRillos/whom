@@ -1,6 +1,7 @@
 import Urbit from '@urbit/http-api';
 import { createContext } from 'react';
 import { Contacts } from '../types/ContactTypes';
+import { FieldSettings } from '../types/SettingTypes';
 
 export type AppContextType = {
   api: Urbit,
@@ -13,6 +14,7 @@ export type AppContextType = {
   closeModal: () => void,
   editContactMode: boolean,
   setEditContactMode: (value: boolean) => void,
+  fieldSettings: FieldSettings
 }
 
 function getUrbitApi(): Urbit {
@@ -31,7 +33,8 @@ const initialContext: AppContextType = {
   openModal: () => {},
   closeModal: () => {},
   editContactMode: false,
-  setEditContactMode: () => {}
+  setEditContactMode: () => {},
+  fieldSettings: { defs: {}, order: [] }
 }
 
 const AppContext = createContext(initialContext);

@@ -8,9 +8,15 @@ import { AppContext, AppContextType, initialContext } from './context/AppContext
 import { Contacts } from './types/ContactTypes';
 import { GallUpdate } from './types/GallTypes';
 import AddContactForm from './components/AddContactForm';
+import { buildFieldSettings } from './util/FieldUtil';
+import { FieldDef, FieldSettings } from './types/SettingTypes';
 
 async function scryContacts(urbit: Urbit): Promise<Contacts> {
   return urbit.scry<Contacts>({ app: 'whom', path: '/contacts' });
+}
+
+async function scryFieldDefs(urbit: Urbit): Promise<FieldDef[]> {
+  return urbit.scry<FieldDef[]>({ app: 'whom', path: '/settings/fields' });
 }
 
 export function App() {
@@ -19,11 +25,17 @@ export function App() {
   const [isAddContactModalOpen, setAddContactModalOpen] = useState<boolean>(false);
   const [isDetailModalOpen, setDetailModalOpen] = useState<boolean>();
   const [editContactMode, setEditContactMode] = useState<boolean>(false);
+  const [fieldSettings, setFieldSettings] = useState<FieldSettings>(initialContext.fieldSettings);
 
   useEffect(() => {
-    scryContacts(initialContext.api)
+    const api = initialContext.api
+    scryFieldDefs(api)
+      .then(res => {
+        setFieldSettings(buildFieldSettings(res))
+      })
+      .then(() => scryContacts(api))
       .then(res => setContacts(res))
-      .then(() => Subscribe(initialContext.api, handleUpdate));
+      .then(() => Subscribe(api, handleUpdate));
   }, []);
 
   function handleUpdate(update: GallUpdate) {
@@ -48,7 +60,8 @@ export function App() {
       setTimeout(() => setEditContactMode(false), 300);
     },
     editContactMode: editContactMode,
-    setEditContactMode: setEditContactMode
+    setEditContactMode: setEditContactMode,
+    fieldSettings: fieldSettings,
   };
 
   return (

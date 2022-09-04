@@ -2,13 +2,12 @@ import React, { useContext, useState } from 'react';
 import { createContact } from '../api/ContactPokes';
 import { AppContext } from '../context/AppContext';
 import { InfoValue, InfoDate, InfoFields } from '../types/ContactTypes';
-import { getFieldType, getFieldDisplayName, OrderedInfoKeys } from '../util/ContactUtil';
 import DateInput from './input/DateInput';
 import ShipInput from './input/ShipInput';
 import TextInput from './input/TextInput';
 
 export default function AddContactForm() {
-  const { api, closeAddContactModal } = useContext(AppContext);
+  const { api, closeAddContactModal, fieldSettings } = useContext(AppContext);
   let [ship, setShip] = useState<string | null>(null);
   let [infoFields, setInfoFields] = useState<InfoFields>({});
 
@@ -49,11 +48,11 @@ export default function AddContactForm() {
   }
 
   function renderInfoField(key: string, val: InfoValue | undefined) {
-    const label = getFieldDisplayName(key);
-    switch (getFieldType(key)) {
-      case 'string':
+    const label = fieldSettings.defs[key]?.name || key;
+    switch (fieldSettings.defs[key]?.type) {
+      case 'text':
         return <TextInput label={label} value={val as string | undefined} onChange={onInfoTextChange(key)} />;
-      case 'InfoDate':
+      case 'date':
         return <DateInput label={label} value={val as InfoDate | undefined} onChange={onInfoDateChange(key)}/>;
       default:
         return <span>error</span>;
@@ -63,7 +62,7 @@ export default function AddContactForm() {
   function renderInfoFields() {
     return (
       <ul>
-        {OrderedInfoKeys.map((key: string) => {
+        {fieldSettings.order.map((key: string) => {
           return <li key={key}>
             {renderInfoField(key, infoFields[key])}
           </li>
