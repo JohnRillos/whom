@@ -1,4 +1,4 @@
-import { Contact, Contacts, ContactWithKey, InfoKey, InfoValueTypeName } from '../types/ContactTypes';
+import { Contact, Contacts, ContactWithKey, InfoValueTypeName } from '../types/ContactTypes';
 
 function getFullName(contact: Contact): string {
   var first = contact.info['first-name'];
@@ -33,7 +33,8 @@ export function getContactWithKey(contacts: Contacts, contactKey: string): Conta
   return contact ? withKey([contactKey, contact]) : undefined;
 }
 
-const INFO_FIELD_DEFS: Record<InfoKey, InfoFieldDef> = {
+// TODO: fetch field defs from gall instead
+const INFO_FIELD_DEFS: Record<string, InfoFieldDef> = {
   'first-name': { display: 'First Name', type: 'string' },
   'middle-name': { display: 'Middle Name', type: 'string' },
   'last-name': { display: 'Last Name', type: 'string' },
@@ -54,12 +55,12 @@ type InfoFieldDef = {
   type: InfoValueTypeName
 }
 
-export const OrderedInfoKeys: InfoKey[] = Object.keys(INFO_FIELD_DEFS) as InfoKey[];
+export const OrderedInfoKeys: string[] = Object.keys(INFO_FIELD_DEFS) as string[];
 
-export function getFieldDisplayName(key: InfoKey): string {
+export function getFieldDisplayName(key: string): string {
   return INFO_FIELD_DEFS[key].display;
 }
 
-export function getFieldType(key: InfoKey): InfoValueTypeName {
+export function getFieldType(key: string): InfoValueTypeName {
   return INFO_FIELD_DEFS[key].type;
 }

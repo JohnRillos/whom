@@ -1,29 +1,21 @@
 import React, { useContext, useState } from 'react';
 import { createContact } from '../api/ContactPokes';
 import { AppContext } from '../context/AppContext';
-import { InfoValue, InfoDate, InfoKey, InfoFields } from '../types/ContactTypes';
+import { InfoValue, InfoDate, InfoFields } from '../types/ContactTypes';
 import { getFieldType, getFieldDisplayName, OrderedInfoKeys } from '../util/ContactUtil';
 import DateInput from './input/DateInput';
 import ShipInput from './input/ShipInput';
 import TextInput from './input/TextInput';
 
-function sortCustomFields(info: { [key: string]: string }): [string, string][] {
-  return Object.entries(info).sort(([keyA], [keyB]) => {
-    return keyA > keyB ? 1 : -1;
-  });
-}
-
 export default function AddContactForm() {
   const { api, closeAddContactModal } = useContext(AppContext);
   let [ship, setShip] = useState<string | null>(null);
   let [infoFields, setInfoFields] = useState<InfoFields>({});
-  let [customFields, setCustomFields] = useState<Record<string, string>>({});
 
   function submitChanges() {
     createContact(api, {
       ship: ship,
       info: sanitizeInfo(infoFields),
-      custom: customFields
     })
     closeAddContactModal();
   }
@@ -34,7 +26,7 @@ export default function AddContactForm() {
     );
   }
 
-  function onInfoTextChange(key: InfoKey): (arg: string) => void {
+  function onInfoTextChange(key: string): (arg: string) => void {
     return (value: string) => {
       setInfoFields({
         ...infoFields,
@@ -43,7 +35,7 @@ export default function AddContactForm() {
     }
   }
 
-  function onInfoDateChange(key: InfoKey): (arg: InfoDate | undefined) => void {
+  function onInfoDateChange(key: string): (arg: InfoDate | undefined) => void {
     return (value: InfoDate | undefined) => {
       setInfoFields({
         ...infoFields,
@@ -52,20 +44,11 @@ export default function AddContactForm() {
     }
   }
 
-  function onCustomTextChange(key: string): (arg: string) => void {
-    return (value: string) => {
-      setCustomFields({
-        ...customFields,
-        [key]: value
-      })
-    }
-  }
-
   function renderShipName() {
     return <ShipInput label='Urbit' value={ship || undefined} onChange={setShip}/>
   }
 
-  function renderInfoField(key: InfoKey, val: InfoValue | undefined) {
+  function renderInfoField(key: string, val: InfoValue | undefined) {
     const label = getFieldDisplayName(key);
     switch (getFieldType(key)) {
       case 'string':
@@ -80,28 +63,13 @@ export default function AddContactForm() {
   function renderInfoFields() {
     return (
       <ul>
-        {OrderedInfoKeys.map((key: InfoKey) => {
+        {OrderedInfoKeys.map((key: string) => {
           return <li key={key}>
             {renderInfoField(key, infoFields[key])}
           </li>
         })}
       </ul>
     );
-  }
-
-  function renderCustomField(key: string, val: string) {
-    return <TextInput label={key} value={val} onChange={onCustomTextChange(key)} />;
-  }
-
-  function renderCustomFields() {
-    return (<>
-      <p>Custom Fields</p>
-      <ul>
-        {sortCustomFields(customFields).map(([key, val]) =>
-          <li key={key}>{renderCustomField(key, val)}</li>
-        )}
-      </ul>
-    </>);
   }
 
   return (
@@ -111,7 +79,6 @@ export default function AddContactForm() {
       </p>
       {renderShipName()}
       {renderInfoFields()}
-      {renderCustomFields()}
       <div className='mt-2 space-x-2'>
         <button
           type='submit'

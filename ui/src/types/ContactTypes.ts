@@ -3,29 +3,17 @@ export declare type Contacts = Record<string, Contact>
 export declare type Contact = {
   ship: string | null,
   info: InfoFields,
-  custom: Record<string, string>
 }
 
 export interface ContactWithKey extends Contact {
   key: string
 }
 
-export type InfoKey = keyof InfoFields;
-
 export type InfoFields = {
   'first-name'?: string,
-  'middle-name'?: string,
   'last-name'?: string,
-  'nickname'?: string,
   'label'?: string,
-  'dob'?: InfoDate,
-  'note'?: string,
-  'job'?: string,
-  'phone'?: string,
-  'email'?: string,
-  'website'?: string,
-  'github'?: string,
-  'twitter'?: string,
+  [key: string]: InfoValue | undefined
 };
 
 export declare type InfoValue = string | InfoDate;

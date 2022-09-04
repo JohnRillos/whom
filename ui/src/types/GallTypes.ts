@@ -1,5 +1,5 @@
 import Urbit from '@urbit/http-api';
-import { Contact, Contacts, InfoFields } from './ContactTypes';
+import { Contact, Contacts, InfoValue } from './ContactTypes';
 
 export declare type GallApp = 'whom';
 
@@ -24,8 +24,7 @@ type AddContactAction = {
 type EditContactAction = {
   'edit-contact': {
     key: string,
-    info: InfoFields,
-    custom: Record<string, string>
+    info: Record<string, InfoValue | null>
   }
 };
 

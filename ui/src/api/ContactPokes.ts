@@ -1,5 +1,5 @@
 import Urbit from "@urbit/http-api";
-import { Contact, InfoFields } from "../types/ContactTypes";
+import { Contact, InfoValue } from "../types/ContactTypes";
 import { WhomAction } from "../types/GallTypes";
 
 function poke(api: Urbit, action: WhomAction) {
@@ -17,14 +17,12 @@ export function createContact(api: Urbit, contact: Contact) {
 export function editContact(
     api: Urbit,
     key: string,
-    info: InfoFields,
-    custom: Record<string, string>
+    info: Record<string, InfoValue | null>
   ) {
   const json = {
     'edit-contact': {
       key,
-      info,
-      custom
+      info
     }
   };
   poke(api, json);

@@ -8,7 +8,7 @@
     %-  of
     :~  [%add-contact (ot contact+contact ~)]
         [%del-contact (ot key+contact-key ~)]
-        [%edit-contact (ot key+contact-key info+(op sym (mu info-value)) custom+(om (mu so)) ~)]
+        [%edit-contact (ot key+contact-key info+(op sym (mu info-value)) ~)]
     ==
   ++  opt  :: handle missing keys / null values
     |*  [=fist]
@@ -20,7 +20,6 @@
     %-  ou
     :~  ship+(opt (se %p))
         info+(un (op sym info-value))
-        custom+(un (om so))
     ==
   ++  contact-key
     |=  =json
@@ -34,7 +33,7 @@
   ++  info-value
     |=  =json
     ~|  "Invalid info value: {<json>}"
-    ^-  contact-field
+    ^-  info-field
     ?:  ?=([%s @t] json)
       (so json)
     ?.  ?=([%o *] json)  !!
@@ -84,7 +83,6 @@
     %-  pairs:enjs:format
     :~  ship+(enjs-unit-patp ship.contact)
         info+(enjs-info info.contact)
-        custom+(enjs-custom custom.contact)
     ==
   ::
   ++  enjs-unit-patp
@@ -94,30 +92,19 @@
     [%s (crip <u.patp>)]
   ::
   ++  enjs-info
-    |=  info=(map @tas contact-field)
+    |=  info=(map @tas info-field)
     ^-  json
     %-  pairs:enjs:format
-    (turn ~(tap by info) enjs-contact-field)
+    (turn ~(tap by info) enjs-info-field)
   ::
-  ++  enjs-contact-field
-    |=  [key=@tas val=contact-field]
+  ++  enjs-info-field
+    |=  [key=@tas val=info-field]
     ^-  [@t json]
     :-  key
     ?-  val
       @t          [%s val]
       info-date  (enjs-date val)
     ==
-  ::
-  ++  enjs-custom
-    |=  info=(map @t @t)
-    ^-  json
-    %-  pairs:enjs:format
-    (turn ~(tap by info) enjs-custom-field)
-  ::
-  ++  enjs-custom-field
-    |=  [key=@t val=@t]
-    ^-  [@t json]
-    [key [%s val]]
   ::
   ++  enjs-date
     |=  date=info-date

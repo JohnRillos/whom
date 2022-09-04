@@ -1,36 +1,57 @@
 |%
 +$  contact
   $:  ship=(unit @p)
-      info=(map @tas contact-field)
-      custom=(map @t @t)
+      info=(map @tas info-field)
   ==
 ::
 +$  action
   $%  [%add-contact =contact]
       [%del-contact key=(each @p @t)]
-      [%edit-contact key=(each @p @t) info=(map @tas (unit contact-field)) custom=(map @t (unit @t))]
+      [%edit-contact key=(each @p @t) info=(map @tas (unit info-field))]
   ==
 ::
 +$  update
   $:(contacts=(map (each @p @t) contact))
 ::
-+$  contact-field-def
-  $%  [%first-name @t]
-      [%middle-name @t]
-      [%last-name @t]
-      [%nickname @t]
-      [%label @t]
-      [%note @t]
-      [%dob info-date]
-      [%job @t]
-      [%email @t]
-      [%phone @t]
-      [%website @t]
-      [%github @t]
-      [%twitter @t]
-  ==
++$  field-def
+  [name=@t type=field-type-tag]
 ::
-+$  contact-field
++$  field-type-tag  ?(%text %date)
+::
+++  field-util
+  |%
+  ::
+  ++  canon-map
+    (~(gas by *(map @tas field-def)) canon-list)
+  ::
+  ++  canon-list
+    ^-  (list [key=@tas field-def])
+    :~  :-  %first-name   :-  'First Name'     %text
+        :-  %middle-name  :-  'Middle Name'    %text
+        :-  %last-name    :-  'Last Name'      %text
+        :-  %nickname     :-  'Nickname'       %text
+        :-  %label        :-  'Label'          %text
+        :-  %note         :-  'Note'           %text
+        :-  %dob          :-  'Date of Birth'  %date
+        :-  %job          :-  'Occupation'     %text
+        :-  %email        :-  'Email'          %text
+        :-  %phone        :-  'Phone #'        %text
+        :-  %website      :-  'Website'        %text
+        :-  %github       :-  'Github'         %text
+        :-  %twitter      :-  'Twitter'        %text
+    ==
+  ::
+  ++  is-valid
+    |=  [key=@tas val=info-field]
+    =/  def=(unit field-def)  (~(get by canon-map) key)
+    ?~  def  %.y  :: todo: not canon -> check user-made defs
+    ?-  type.u.def
+      %text  ?=(@t val)
+      %date  ?=(info-date val)
+    ==
+  --
+::
++$  info-field
   $%  @t
       info-date
   ==
@@ -44,15 +65,4 @@
 ::
 +$  contacts-0
   (map (each @p @t) contact)
-::
-++  validate-contact
-  |=  =contact
-  ^-  ?
-  =/  info=(list [@tas contact-field])  ~(tap by info.contact)
-  (levy info validate-info-field)
-::
-++  validate-info-field
-  |=  field=[@tas contact-field]
-  ?:  ?=(contact-field-def field)  %.y
-  ~&  >>>  "Invalid info field: {<field>}"  %.n
 --

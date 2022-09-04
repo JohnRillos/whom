@@ -71,7 +71,7 @@
       ::
         %add-contact
       =.  state
-        ?>  (validate-contact contact.act)
+        ?>  (is-contact-valid:main contact.act)
         =/  key=(each @p @t)
           ?~  ship.contact.act
             [%.n random-id]
@@ -88,16 +88,15 @@
         %edit-contact
       =/  contact  (~(got by contacts) key.act)
       =.  info.contact  (edit-info-map info.act info.contact)
-      =.  custom.contact  (edit-custom-map custom.act custom.contact)
       =.  state  state(contacts (~(put by contacts) key.act contact))
       [[give-update:main ~] state]
     ==
   ::
   ++  edit-info-map
-    |=  [changes=(map @tas (unit contact-field)) old=(map @tas contact-field)]
+    |=  [changes=(map @tas (unit info-field)) old=(map @tas info-field)]
     ^+  old
     %-  ~(rep by changes)
-    |=  [change=[@tas (unit contact-field)] acc=_old]
+    |=  [change=[@tas (unit info-field)] acc=_old]
     (~(mar by acc) change)
   ::
   ++  edit-custom-map
@@ -140,4 +139,13 @@
   =/  =update  contacts
   [%give %fact [/updates]~ %whom-update !>(update)]
 ::
+++  is-contact-valid
+  |=  =contact
+  =/  info=(list [@tas info-field])  ~(tap by info.contact)
+  (levy info is-field-valid)
+::
+++  is-field-valid
+  |=  field=[key=@tas val=info-field]
+  ?:  (is-valid:field-util field)  %.y
+  ~&  >>>  "Invalid field: {<field>}"  %.n
 --

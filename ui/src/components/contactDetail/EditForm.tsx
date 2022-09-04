@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { editContact } from '../../api/ContactPokes';
 import { AppContext } from '../../context/AppContext';
-import { Contact, InfoValue, InfoDate, InfoKey, ContactWithKey, InfoFields } from '../../types/ContactTypes';
+import { Contact, InfoValue, InfoDate, ContactWithKey, InfoFields } from '../../types/ContactTypes';
 import { getDisplayName, getFieldType, getFieldDisplayName, OrderedInfoKeys } from '../../util/ContactUtil';
 import TextField from '../fields/TextField';
 import DateInput from '../input/DateInput';
@@ -11,31 +11,23 @@ function renderShipName(contact: Contact) {
   return <TextField label='Urbit' value={contact.ship} />
 }
 
-function sortCustomFields(info: { [key: string]: string }): [string, string][] {
-  return Object.entries(info).sort(([keyA], [keyB]) => {
-    return keyA > keyB ? 1 : -1;
-  });
-}
-
 export default function EditForm(props: { contact: ContactWithKey }) {
   const { api, setEditContactMode } = useContext(AppContext);
   let [infoFields, setInfoFields] = useState<InfoFields>(props.contact.info);
-  let [customFields, setCustomFields] = useState<Record<string, string>>(props.contact.custom);
 
   function submitChanges() {
     editContact(
       api,
       props.contact.key,
       sanitizeInfo(infoFields),
-      customFields
     );
     setEditContactMode(false);
   }
 
-  function sanitizeInfo(info: InfoFields): InfoFields {
+  function sanitizeInfo(info: InfoFields): Record<string, InfoValue | null> {
     return Object.fromEntries(
       Object.entries(info).filter(([key, val]) => {
-        return props.contact.info[key as InfoKey] !== val;
+        return props.contact.info[key] !== val;
       }).map(([key, val]) => {
         if (val == '' || val == undefined) {
           return [key, null];
@@ -45,7 +37,7 @@ export default function EditForm(props: { contact: ContactWithKey }) {
     );
   }
 
-  function onInfoTextChange(key: InfoKey): (arg: string) => void {
+  function onInfoTextChange(key: string): (arg: string) => void {
     return (value: string) => {
       setInfoFields({
         ...infoFields,
@@ -54,7 +46,7 @@ export default function EditForm(props: { contact: ContactWithKey }) {
     }
   }
 
-  function onInfoDateChange(key: InfoKey): (arg: InfoDate | undefined) => void {
+  function onInfoDateChange(key: string): (arg: InfoDate | undefined) => void {
     return (value: InfoDate | undefined) => {
       setInfoFields({
         ...infoFields,
@@ -63,16 +55,7 @@ export default function EditForm(props: { contact: ContactWithKey }) {
     }
   }
 
-  function onCustomTextChange(key: string): (arg: string) => void {
-    return (value: string) => {
-      setCustomFields({
-        ...customFields,
-        [key]: value
-      })
-    }
-  }
-
-  function renderInfoField(key: InfoKey, val: InfoValue | undefined) {
+  function renderInfoField(key: string, val: InfoValue | undefined) {
     const label = getFieldDisplayName(key);
     switch (getFieldType(key)) {
       case 'string':
@@ -87,28 +70,13 @@ export default function EditForm(props: { contact: ContactWithKey }) {
   function renderInfoFields() {
     return (
       <ul>
-        {OrderedInfoKeys.map((key: InfoKey) => {
+        {OrderedInfoKeys.map((key: string) => {
           return <li key={key}>
             {renderInfoField(key, infoFields[key])}
           </li>
         })}
       </ul>
     );
-  }
-
-  function renderCustomField(key: string, val: string) {
-    return <TextInput label={key} value={val} onChange={onCustomTextChange(key)} />;
-  }
-
-  function renderCustomFields() {
-    return (<>
-      <p>Custom Fields</p>
-      <ul>
-        {sortCustomFields(customFields).map(([key, val]) =>
-          <li key={key}>{renderCustomField(key, val)}</li>
-        )}
-      </ul>
-    </>);
   }
 
   return (
@@ -118,7 +86,6 @@ export default function EditForm(props: { contact: ContactWithKey }) {
       </p>
       {renderShipName(props.contact)}
       {renderInfoFields()}
-      {renderCustomFields()}
       <div className='mt-2 space-x-2'>
         <button
           type='submit'
