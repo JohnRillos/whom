@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { createContact } from '../api/ContactPokes';
 import { AppContext } from '../context/AppContext';
 import { InfoValue, InfoDate, InfoFields } from '../types/ContactTypes';
+import CloseButton from './buttons/CloseButton';
 import DateInput from './input/DateInput';
 import ShipInput from './input/ShipInput';
 import TextInput from './input/TextInput';
@@ -72,25 +73,30 @@ export default function AddContactForm() {
   }
 
   return (
-    <div className='h-fit text-left'>
-      <p className='mb-2'>
-        <strong>New Contact</strong>
-      </p>
-      {renderShipName()}
-      {renderInfoFields()}
-      <div className='mt-2 space-x-2'>
-        <button
-          type='submit'
-          className='px-1 py-0.5 rounded-md button-primary font-bold hover:bg-blue-500 hover:border-blue-500'
-          onClick={submitChanges}>
-          Create
-        </button>
-        <button
-          type='button'
-          className='px-1 py-0.5 rounded-md button-secondary font-bold hover:bg-neutral-500/20'
-          onClick={closeAddContactModal}>
-          Cancel
-        </button>
+    <div className='flex'>
+      <div className='h-fit text-left'>
+        <p className='mb-2'>
+          <strong>New Contact</strong>
+        </p>
+        {renderShipName()}
+        {renderInfoFields()}
+        <div className='mt-2 space-x-2'>
+          <button
+            type='submit'
+            className='px-1 py-0.5 rounded-md button-primary font-bold hover:bg-blue-500 hover:border-blue-500'
+            onClick={submitChanges}>
+            Create
+          </button>
+          <button
+            type='button'
+            className='px-1 py-0.5 rounded-md button-secondary font-bold hover:bg-neutral-500/20'
+            onClick={closeAddContactModal}>
+            Cancel
+          </button>
+        </div>
+      </div>
+      <div className='flex-col items-center max-w-fit ml-2'>
+        <CloseButton onClick={closeAddContactModal}/>
       </div>
     </div>
   );

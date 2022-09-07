@@ -10,6 +10,8 @@ import { GallUpdate } from './types/GallTypes';
 import AddContactForm from './components/AddContactForm';
 import { buildFieldSettings } from './util/FieldUtil';
 import { FieldDef, FieldSettings } from './types/SettingTypes';
+import SettingsButton from './components/buttons/SettingsButton';
+import SettingsView from './components/settings/SettingsView';
 
 async function scryContacts(urbit: Urbit): Promise<Contacts> {
   return urbit.scry<Contacts>({ app: 'whom', path: '/contacts' });
@@ -26,6 +28,7 @@ export function App() {
   const [isDetailModalOpen, setDetailModalOpen] = useState<boolean>();
   const [editContactMode, setEditContactMode] = useState<boolean>(false);
   const [fieldSettings, setFieldSettings] = useState<FieldSettings>(initialContext.fieldSettings);
+  const [isSettingsModalOpen, setSettingsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const api = initialContext.api
@@ -68,6 +71,12 @@ export function App() {
     <main className="fixed w-full h-full bg-standard flex">
       <AppContext.Provider value={appContext} >
         <div className="h-full w-full mx-auto flex flex-col overflow-hidden">
+          <div className='absolute m-4'>
+            <SettingsButton
+              onClick={() => setSettingsModalOpen(true)}
+              disabled={false}
+            />
+          </div>
           <h1 className="text-center text-3xl font-bold py-4">Contacts</h1>
           <ContactList/>
         </div>
@@ -82,6 +91,9 @@ export function App() {
         </Modal>
         <Modal isOpen={appContext.isModalOpen} closeModal={appContext.closeModal}>
           <ContactDetail/>
+        </Modal>
+        <Modal isOpen={isSettingsModalOpen} closeModal={() => setSettingsModalOpen(false)}>
+          <SettingsView closeModal={() => setSettingsModalOpen(false)}/>
         </Modal>
       </AppContext.Provider>
     </main>

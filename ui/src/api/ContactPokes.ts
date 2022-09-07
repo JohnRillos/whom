@@ -1,6 +1,7 @@
 import Urbit from "@urbit/http-api";
 import { Contact, InfoValue } from "../types/ContactTypes";
 import { WhomAction } from "../types/GallTypes";
+import { FieldDef } from "../types/SettingTypes";
 
 function poke(api: Urbit, action: WhomAction) {
   api.poke({
@@ -30,4 +31,15 @@ export function editContact(
 
 export function deleteContact(api: Urbit, contactKey: string) {
   poke(api, { 'del-contact': { key: contactKey, } });
+}
+
+export function addCustomField(api: Urbit, fieldDef: FieldDef) {
+  poke(api, { 'add-custom-field': {
+    key: fieldDef.key,
+    def: {
+      name: fieldDef.name,
+      type: fieldDef.type,
+      custom: true
+    }
+  }});
 }

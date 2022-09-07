@@ -6,7 +6,8 @@ export declare type FieldSettings = {
 export declare type FieldDef = {
   key: string,
   name: string,
-  type: FieldTypeTag
+  type: FieldTypeTag,
+  custom: boolean
 }
 
 export declare type FieldTypeTag = 'text' | 'date';

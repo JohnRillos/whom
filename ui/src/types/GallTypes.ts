@@ -1,5 +1,6 @@
 import Urbit from '@urbit/http-api';
 import { Contact, Contacts, InfoValue } from './ContactTypes';
+import { FieldDef, FieldTypeTag } from './SettingTypes';
 
 export declare type GallApp = 'whom';
 
@@ -13,7 +14,10 @@ export declare type WhomUpdate = {
   contacts: Contacts
 };
 
-export type WhomAction = AddContactAction | EditContactAction | DeleteContactAction;
+export type WhomAction = AddContactAction |
+  EditContactAction |
+  DeleteContactAction |
+  AddCustomFieldAction;
 
 type AddContactAction = {
   'add-contact': {
@@ -31,5 +35,16 @@ type EditContactAction = {
 type DeleteContactAction = {
   'del-contact': {
     key: string
+  }
+};
+
+type AddCustomFieldAction = {
+  'add-custom-field': {
+    key: string,
+    def: {
+      name: string,
+      type: FieldTypeTag,
+      custom: true
+    }
   }
 };

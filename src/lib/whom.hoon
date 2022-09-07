@@ -6,9 +6,10 @@
   ++  action
     ^-  $-(json ^action)
     %-  of
-    :~  [%add-contact (ot contact+contact ~)]
-        [%del-contact (ot key+contact-key ~)]
-        [%edit-contact (ot key+contact-key info+(op sym (mu info-value)) ~)]
+    :~  [%add-contact (ot contact+dj-contact ~)]
+        [%del-contact (ot key+dj-contact-key ~)]
+        [%edit-contact (ot key+dj-contact-key info+(op sym (mu dj-info-value)) ~)]
+        [%add-custom-field (ot key+(se %tas) def+dj-field-def ~)]
     ==
   ++  opt  :: handle missing keys / null values
     |*  [=fist]
@@ -16,12 +17,12 @@
     ?~  ujon  ~
     ?~  u.ujon  ~
     `(fist u.ujon)
-  ++  contact
+  ++  dj-contact
     %-  ou
     :~  ship+(opt (se %p))
-        info+(un (op sym info-value))
+        info+(un (op sym dj-info-value))
     ==
-  ++  contact-key
+  ++  dj-contact-key
     |=  =json
     ?>  ?=([%s @t] json)
     ^-  (each @p @t)
@@ -30,7 +31,7 @@
       [%.y ((se %p) json)]
     [%.n p.json]
   ::
-  ++  info-value
+  ++  dj-info-value
     |=  =json
     ~|  "Invalid info value: {<json>}"
     ^-  info-field
@@ -41,6 +42,18 @@
         :~  [%date (ot year+ni month+ni day+ni ~)]
         ==
     json
+  ::
+  ++  dj-field-def  (ot name+so type+dj-field-tag custom+bo ~)
+  ::
+  ++  dj-field-tag
+    |=  =json
+    =/  =term  ((se %tas) json)
+    ?:  ?=(field-type-tag term)  term
+    ~|  "Invalid field type: {<term>}"  !!
+  ::
+  ++  dj-yes
+    |=  =json
+    &
   --
 ::
 ++  enjs
@@ -122,11 +135,12 @@
     a+(turn fields enjs-field-def)
   ::
   ++  enjs-field-def
-    |=  [key=@tas name=@t type=@tas]
+    |=  [key=@tas name=@t type=@tas custom=?]
     %-  pairs
     :~  key+s+key
         name+s+name
         type+s+type
+        custom+b+custom
     ==
   --
 --

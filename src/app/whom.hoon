@@ -11,6 +11,7 @@
 +$  state-0
   $:  %0
       contacts=(map (each @p @t) contact)
+      custom-fields=(map @tas field-def)
   ==
 --
 ::
@@ -70,25 +71,30 @@
     ?-    -.act
       ::
         %add-contact
-      =.  state
-        ?>  (is-contact-valid:main contact.act)
-        =/  key=(each @p @t)
-          ?~  ship.contact.act
-            [%.n random-id]
-          [%.y u.ship.contact.act]
-        ?:  (~(has by contacts) key)  ~|("{<p.key>} already exists in contacts!" !!)
-        state(contacts (~(put by contacts) key contact.act))
+      ?>  (is-contact-valid:main contact.act)
+      =/  key=(each @p @t)
+        ?~  ship.contact.act  [%.n random-id]
+        [%.y u.ship.contact.act]
+      ~|  "{<p.key>} already exists in contacts!"  ?<  (~(has by contacts) key)
+      =.  state  state(contacts (~(put by contacts) key contact.act))
       [[give-update:main ~] state]
       ::
         %del-contact
-      =.  state
-        state(contacts (~(del by contacts) key.act))
+      =.  state  state(contacts (~(del by contacts) key.act))
       [[give-update:main ~] state]
       ::
         %edit-contact
       =/  contact  (~(got by contacts) key.act)
       =.  info.contact  (edit-info-map info.act info.contact)
       =.  state  state(contacts (~(put by contacts) key.act contact))
+      [[give-update:main ~] state]
+      ::
+        %add-custom-field
+      ?>  custom.def.act
+      ~|  "Field {<key.act>} already exists!"
+        ?<  (~(has by field-map:field-settings:main) key.act)
+      =.  state
+        state(custom-fields (~(put by custom-fields) key.act def.act))
       [[give-update:main ~] state]
     ==
   ::
@@ -120,7 +126,7 @@
   ^-  (unit (unit cage))
   ?+  path  (on-peek:default path)
     [%x %contacts ~]  ``whom-contacts-0+!>(contacts)
-    [%x %settings %fields ~]  ``whom-fields+!>(canon-list:field-util) :: todo: include user-made defs
+    [%x %settings %fields ~]  ``whom-fields+!>(field-list:field-settings:main)
   ==
 ::
 ++  on-agent  on-agent:default
@@ -140,6 +146,8 @@
 ::
 ++  is-field-valid
   |=  field=[key=@tas val=info-field]
-  ?:  (is-valid:field-util field)  %.y
+  ?:  (is-valid:field-settings field)  %.y
   ~&  >>>  "Invalid field: {<field>}"  %.n
+::
+++  field-settings  (field-util custom-fields)
 --
