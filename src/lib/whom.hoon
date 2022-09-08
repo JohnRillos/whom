@@ -130,7 +130,7 @@
         ==
     ==
   ::
-  ++  field-defs
+  ++  enjs-fields-0
     |=  fields=(list [key=@tas field-def])
     a+(turn fields enjs-field-def)
   ::

@@ -43,7 +43,12 @@ export function App() {
 
   function handleUpdate(update: GallUpdate) {
     if (update.app === 'whom' && update.data) {
-      setContacts(update.data.contacts);
+      if (update.path == '/updates') {
+        setContacts(update.data.contacts);
+      }
+      if (update.path == '/settings/fields') {
+        setFieldSettings(buildFieldSettings(update.data))
+      }
     }
   };
 

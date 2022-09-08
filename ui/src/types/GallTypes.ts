@@ -1,17 +1,24 @@
-import Urbit from '@urbit/http-api';
 import { Contact, Contacts, InfoValue } from './ContactTypes';
 import { FieldDef, FieldTypeTag } from './SettingTypes';
 
 export declare type GallApp = 'whom';
 
-export declare type GallUpdate = {
-  api?: Urbit,
-  app?: GallApp,
-  data?: WhomUpdate
+export declare type GallUpdate = ContactUpdate | FieldUpdate;
+
+export declare type SubscribePath = '/updates' | '/settings/fields';
+
+export declare type ContactUpdate = {
+  app: 'whom',
+  path: '/updates',
+  data: {
+    contacts: Contacts
+  }
 };
 
-export declare type WhomUpdate = {
-  contacts: Contacts
+export declare type FieldUpdate = {
+  app: 'whom',
+  path: '/settings/fields',
+  data: FieldDef[]
 };
 
 export type WhomAction = AddContactAction |

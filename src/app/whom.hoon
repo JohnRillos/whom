@@ -95,7 +95,7 @@
         ?<  (~(has by field-map:field-settings:main) key.act)
       =.  state
         state(custom-fields (~(put by custom-fields) key.act def.act))
-      [[give-update:main ~] state]
+      [[give-fields:main ~] state]
     ==
   ::
   ++  edit-info-map
@@ -118,6 +118,7 @@
   ?>  (team:title our.bowl src.bowl)
   ?+  path  (on-watch:default path)
     [%updates ~]  [[give-update:main ~] this]
+    [%settings %fields ~]  [[give-fields:main ~] this]
   ==
 ::
 ++  on-leave  on-leave:default
@@ -126,7 +127,7 @@
   ^-  (unit (unit cage))
   ?+  path  (on-peek:default path)
     [%x %contacts ~]  ``whom-contacts-0+!>(contacts)
-    [%x %settings %fields ~]  ``whom-fields+!>(field-list:field-settings:main)
+    [%x %settings %fields ~]  ``whom-fields-0+!>(field-list:field-settings:main)
   ==
 ::
 ++  on-agent  on-agent:default
@@ -138,6 +139,11 @@
   ^-  card
   =/  =update  contacts
   [%give %fact [/updates]~ %whom-update !>(update)]
+::
+++  give-fields
+  ^-  card
+  =/  =fields-0  field-list:field-settings
+  [%give %fact [/settings/fields]~ %whom-fields-0 !>(fields-0)]
 ::
 ++  is-contact-valid
   |=  =contact

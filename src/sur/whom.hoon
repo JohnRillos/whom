@@ -80,6 +80,7 @@
       day=@ud
   ==
 ::
-+$  contacts-0
-  (map (each @p @t) contact)
++$  contacts-0  (map (each @p @t) contact)
+::
++$  fields-0  (list [@tas field-def])
 --
