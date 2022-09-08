@@ -1,8 +1,10 @@
 import React, { useContext, useState } from 'react';
+import { isValidPatp } from 'urbit-ob';
 import { createContact } from '../api/ContactPokes';
 import { AppContext } from '../context/AppContext';
 import { InfoValue, InfoDate, InfoFields } from '../types/ContactTypes';
 import CloseButton from './buttons/CloseButton';
+import SubmitButton from './buttons/SubmitButton';
 import DateInput from './input/DateInput';
 import ShipInput from './input/ShipInput';
 import TextInput from './input/TextInput';
@@ -14,10 +16,20 @@ export default function AddContactForm() {
 
   function submitChanges() {
     createContact(api, {
-      ship: ship,
+      ship: ship || null,
       info: sanitizeInfo(infoFields),
     }, onError)
     closeAddContactModal();
+  }
+
+  function canSubmit() {
+    if (ship && !isValidPatp(ship)) {
+      return false;
+    }
+    if (!ship && !infoFields['first-name'] && !infoFields['last-name'] && !infoFields.label) {
+      return false;
+    }
+    return true;
   }
 
   function onError(error: any) {
@@ -85,12 +97,13 @@ export default function AddContactForm() {
         {renderShipName()}
         {renderInfoFields()}
         <div className='mt-2 space-x-2'>
-          <button
-            type='submit'
-            className='px-1 py-0.5 rounded-md button-primary font-bold hover:bg-blue-500 hover:border-blue-500'
-            onClick={submitChanges}>
+          <SubmitButton
+            className='font-bold'
+            onClick={submitChanges}
+            disabled={!canSubmit()}
+          >
             Create
-          </button>
+          </SubmitButton>
           <button
             type='button'
             className='px-1 py-0.5 rounded-md button-secondary font-bold hover:bg-neutral-500/20'

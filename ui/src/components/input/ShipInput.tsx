@@ -1,4 +1,5 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
+import { isValidPatp } from 'urbit-ob';
 
 function renderLabel(label: string, val: string | undefined) {
   const opacity = !val ? 'opacity-50' : '';
@@ -12,12 +13,18 @@ export default function ShipInput(
     onChange: (arg: string) => void
   }
 ): JSX.Element {
+  const isValid = !props.value || isValidPatp(props.value);
+
   function renderValue() {
+    const bg = isValid ? 'bg-transparent' : 'bg-red-500/10';
+    const border = isValid ? 'border-neutral-500' : 'border-red-500';
     return (
-      <input className='flex-shrink w-full bg-transparent border-b-2 border-dotted border-neutral-500 bg-standard'
+      <input className={`flex-shrink w-full ${bg} border-b-2 border-dotted ${border}`}
         type='text'
         onChange={handleEvent}
-        value={props.value}/>
+        value={props.value}
+        placeholder='~sampel-palnet'
+      />
     );
   }
 

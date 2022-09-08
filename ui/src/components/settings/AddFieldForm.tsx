@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { addCustomField } from '../../api/ContactPokes';
 import { AppContext } from '../../context/AppContext';
 import { FieldTypeTag } from '../../types/SettingTypes';
+import SubmitButton from '../buttons/SubmitButton';
 import SelectInput from '../input/SelectInput';
 import TextInput from '../input/TextInput';
 
@@ -26,13 +27,6 @@ export default function AddFieldForm(props: { closeForm: () => void }) {
 
   function canSubmit(): boolean {
     return !!key && !!name;
-  }
-
-  function buttonColorClassName(): string {
-    if (!canSubmit()) {
-      return 'opacity-50';
-    }
-    return 'hover:bg-blue-500 hover:border-blue-500';
   }
 
   return (
@@ -68,13 +62,13 @@ export default function AddFieldForm(props: { closeForm: () => void }) {
           />
         </div>
       </div>
-      <button
-        className={`px-1 py-0.5 mt-2 rounded-md button-primary ${buttonColorClassName()}`}
+      <SubmitButton
+        className='mt-2'
         onClick={onSubmit}
         disabled={!canSubmit()}
       >
         Submit
-      </button>
+      </SubmitButton>
     </div>
   );
 }

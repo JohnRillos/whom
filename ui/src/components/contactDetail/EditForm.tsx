@@ -8,7 +8,10 @@ import DateInput from '../input/DateInput';
 import TextInput from '../input/TextInput';
 
 function renderShipName(contact: Contact) {
-  return <TextField label='Urbit' value={contact.ship} />
+  if (!contact.ship) {
+    return null;
+  }
+  return <TextField label='Urbit' value={contact.ship}/>
 }
 
 export default function EditForm(props: { contact: ContactWithKey }) {
