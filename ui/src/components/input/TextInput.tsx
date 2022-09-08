@@ -9,7 +9,9 @@ export default function TextInput(
   props: {
     label: string,
     value: string | undefined,
-    onChange: (arg: string) => void
+    onChange: (arg: string) => void,
+    pattern?: RegExp,
+    placeholder?: string
   }
 ): JSX.Element {
   function renderValue() {
@@ -17,12 +19,20 @@ export default function TextInput(
       <input className='flex-shrink w-full bg-transparent border-b-2 border-dotted border-neutral-500 bg-standard'
         type='text'
         onChange={handleEvent}
-        value={props.value}/>
+        value={props.value}
+        placeholder={props.placeholder}
+      />
     );
   }
 
   function handleEvent(event: ChangeEvent<HTMLInputElement>) {
-    return props.onChange(event.target.value);
+    let value = event.target.value;
+    if (value && props.pattern) {
+      if(!props.pattern.test(value)) {
+        return;
+      }
+    }
+    return props.onChange(value);
   }
 
   return (
