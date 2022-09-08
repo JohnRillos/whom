@@ -20,8 +20,13 @@ export default function EditForm(props: { contact: ContactWithKey }) {
       api,
       props.contact.key,
       sanitizeInfo(infoFields),
+      onError
     );
     setEditContactMode(false);
+  }
+
+  function onError(error: any) {
+    console.error(error);
   }
 
   function sanitizeInfo(info: InfoFields): Record<string, InfoValue | null> {

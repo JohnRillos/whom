@@ -16,8 +16,12 @@ export default function AddContactForm() {
     createContact(api, {
       ship: ship,
       info: sanitizeInfo(infoFields),
-    })
+    }, onError)
     closeAddContactModal();
+  }
+
+  function onError(error: any) {
+    console.error(error);
   }
 
   function sanitizeInfo(info: InfoFields): InfoFields {

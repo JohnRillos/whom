@@ -17,7 +17,11 @@ export default function AddFieldForm(props: { closeForm: () => void }) {
       name: name!,
       type: type!,
       custom: true
-    })
+    }, onError)
+  }
+
+  function onError(error: any) {
+    console.error(error);
   }
 
   function canSubmit(): boolean {
