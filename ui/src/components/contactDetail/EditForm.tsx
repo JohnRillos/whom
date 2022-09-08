@@ -15,7 +15,7 @@ function renderShipName(contact: Contact) {
 }
 
 export default function EditForm(props: { contact: ContactWithKey }) {
-  const { api, setEditContactMode, fieldSettings } = useContext(AppContext);
+  const { api, displayError, setEditContactMode, fieldSettings } = useContext(AppContext);
   let [infoFields, setInfoFields] = useState<InfoFields>(props.contact.info);
 
   function submitChanges() {
@@ -28,8 +28,8 @@ export default function EditForm(props: { contact: ContactWithKey }) {
     setEditContactMode(false);
   }
 
-  function onError(error: any) {
-    console.error(error);
+  function onError(error: string | undefined) {
+    displayError(error || 'Error editing contact!');
   }
 
   function sanitizeInfo(info: InfoFields): Record<string, InfoValue | null> {

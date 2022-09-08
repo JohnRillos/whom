@@ -10,7 +10,7 @@ import ShipInput from './input/ShipInput';
 import TextInput from './input/TextInput';
 
 export default function AddContactForm() {
-  const { api, closeAddContactModal, fieldSettings } = useContext(AppContext);
+  const { api, closeAddContactModal, displayError, fieldSettings } = useContext(AppContext);
   let [ship, setShip] = useState<string | null>(null);
   let [infoFields, setInfoFields] = useState<InfoFields>({});
 
@@ -32,8 +32,8 @@ export default function AddContactForm() {
     return true;
   }
 
-  function onError(error: any) {
-    console.error(error);
+  function onError(error: string | undefined) {
+    displayError(error || 'Error creating contact!');
   }
 
   function sanitizeInfo(info: InfoFields): InfoFields {

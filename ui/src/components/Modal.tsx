@@ -1,7 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React from 'react';
-import { Fragment, useContext } from 'react';
-import { AppContext } from '../context/AppContext';
+import { Fragment } from 'react';
 
 export default function Modal(props: {isOpen: boolean, closeModal: () => void, children: JSX.Element}) {
   return (

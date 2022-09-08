@@ -5,6 +5,9 @@ import { FieldSettings } from '../types/SettingTypes';
 
 export type AppContextType = {
   api: Urbit,
+  errorMessage: string | null,
+  displayError: (message: string) => void,
+  dismissError: () => void,
   contacts: Contacts,
   selectedContactKey: string | null,
   selectContact: (key: string) => void,
@@ -25,6 +28,9 @@ function getUrbitApi(): Urbit {
 
 const initialContext: AppContextType = {
   api: getUrbitApi(),
+  errorMessage: null,
+  displayError: () => {},
+  dismissError: () => {},
   contacts: {},
   selectedContactKey: null,
   selectContact: () => {},

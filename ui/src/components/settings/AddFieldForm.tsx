@@ -7,7 +7,7 @@ import SelectInput from '../input/SelectInput';
 import TextInput from '../input/TextInput';
 
 export default function AddFieldForm(props: { closeForm: () => void }) {
-  const { api } = useContext(AppContext);
+  const { api, displayError } = useContext(AppContext);
   let [ key, setKey ] = useState<string>('');
   let [ name, setName ] = useState<string>('');
   let [ type, setType ] = useState<FieldTypeTag>('text');
@@ -21,8 +21,8 @@ export default function AddFieldForm(props: { closeForm: () => void }) {
     }, onError)
   }
 
-  function onError(error: any) {
-    console.error(error);
+  function onError(error: string | undefined) {
+    displayError(error || 'Error creating custom field!');
   }
 
   function canSubmit(): boolean {
@@ -63,12 +63,18 @@ export default function AddFieldForm(props: { closeForm: () => void }) {
         </div>
       </div>
       <SubmitButton
-        className='mt-2'
+        className='mt-2 mr-2'
         onClick={onSubmit}
         disabled={!canSubmit()}
       >
         Submit
       </SubmitButton>
+      <button
+        type='button'
+        className='px-1 py-0.5 rounded-md button-secondary hover:bg-neutral-500/20'
+        onClick={props.closeForm}>
+        Cancel
+      </button>
     </div>
   );
 }

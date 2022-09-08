@@ -12,6 +12,7 @@ import { buildFieldSettings } from './util/FieldUtil';
 import { FieldDef, FieldSettings } from './types/SettingTypes';
 import SettingsButton from './components/buttons/SettingsButton';
 import SettingsView from './components/settings/SettingsView';
+import ErrorNotification from './components/ErrorNotification';
 
 async function scryContacts(urbit: Urbit): Promise<Contacts> {
   return urbit.scry<Contacts>({ app: 'whom', path: '/contacts' });
@@ -29,6 +30,7 @@ export function App() {
   const [editContactMode, setEditContactMode] = useState<boolean>(false);
   const [fieldSettings, setFieldSettings] = useState<FieldSettings>(initialContext.fieldSettings);
   const [isSettingsModalOpen, setSettingsModalOpen] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const api = initialContext.api
@@ -54,6 +56,9 @@ export function App() {
 
   const appContext: AppContextType = {
     api: initialContext.api,
+    errorMessage: errorMessage,
+    displayError: setErrorMessage,
+    dismissError: () => setErrorMessage(null),
     contacts: contacts,
     selectedContactKey: selectedContactKey || null,
     selectContact: (key) => setSelectedContact(key),
@@ -100,6 +105,7 @@ export function App() {
         <Modal isOpen={isSettingsModalOpen} closeModal={() => setSettingsModalOpen(false)}>
           <SettingsView closeModal={() => setSettingsModalOpen(false)}/>
         </Modal>
+        <ErrorNotification/>
       </AppContext.Provider>
     </main>
   );

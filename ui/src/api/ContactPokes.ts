@@ -3,15 +3,17 @@ import { Contact, InfoValue } from "../types/ContactTypes";
 import { WhomAction } from "../types/GallTypes";
 import { FieldDef } from "../types/SettingTypes";
 
-function poke(api: Urbit, action: WhomAction, onError: (err: any) => void) {
+function poke(api: Urbit, action: WhomAction, onError: (err: string | undefined) => void) {
   api.poke({
     app: 'whom',
     mark: 'whom-action',
-    json: action
-  }).catch(onError);
+    json: action,
+    onSuccess: () => {console.log('Success!')},
+    onError: (err: string | undefined) => onError(err?.match(/".*\"/)?.[0])
+  });
 }
 
-export function createContact(api: Urbit, contact: Contact, onError: (err: any) => void) {
+export function createContact(api: Urbit, contact: Contact, onError: (err: string | undefined) => void) {
   poke(api, { 'add-contact': { contact } }, onError);
 }
 
@@ -19,7 +21,7 @@ export function editContact(
     api: Urbit,
     key: string,
     info: Record<string, InfoValue | null>,
-    onError: (err: any) => void
+    onError: (err: string | undefined) => void
   ) {
   const json = {
     'edit-contact': {
@@ -30,11 +32,11 @@ export function editContact(
   poke(api, json, onError);
 }
 
-export function deleteContact(api: Urbit, contactKey: string, onError: (err: any) => void) {
+export function deleteContact(api: Urbit, contactKey: string, onError: (err: string | undefined) => void) {
   poke(api, { 'del-contact': { key: contactKey, } }, onError);
 }
 
-export function addCustomField(api: Urbit, fieldDef: FieldDef, onError: (err: any) => void) {
+export function addCustomField(api: Urbit, fieldDef: FieldDef, onError: (err: string | undefined) => void) {
   poke(api, { 'add-custom-field': {
     key: fieldDef.key,
     def: {
