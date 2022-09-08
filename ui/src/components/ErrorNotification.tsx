@@ -2,7 +2,6 @@ import React from "react";
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 
-
 export default function ErrorNotification(): JSX.Element | null {
   const { errorMessage, dismissError } = useContext(AppContext);
   if (!errorMessage) {

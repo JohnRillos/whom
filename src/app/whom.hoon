@@ -155,5 +155,5 @@
   ?:  (is-valid:field-settings field)  %.y
   ~&  >>>  "Invalid field: {<field>}"  %.n
 ::
-++  field-settings  (field-util custom-fields)
+++  field-settings  ~(. field-util custom-fields)
 --

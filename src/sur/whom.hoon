@@ -11,8 +11,7 @@
       [%add-custom-field key=@tas def=field-def]
   ==
 ::
-+$  update
-  $:(contacts=(map (each @p @t) contact))
++$  update  contacts=contacts-0
 ::
 +$  field-def
   [name=@t type=field-type-tag custom=?]
@@ -20,8 +19,7 @@
 +$  field-type-tag  ?(%text %date)
 ::
 ++  field-util
-  |=  custom-map=(map @tas field-def)
-  |%
+  |_  custom-map=(map @tas field-def)
   ::
   ++  field-map
     ^-  (map @tas field-def)
@@ -36,19 +34,19 @@
   ::
   ++  canon-list
     ^-  (list [key=@tas field-def])
-    :~  :-  %first-name   :-  'First Name'     :-  %text  |
-        :-  %middle-name  :-  'Middle Name'    :-  %text  |
-        :-  %last-name    :-  'Last Name'      :-  %text  |
-        :-  %nickname     :-  'Nickname'       :-  %text  |
-        :-  %label        :-  'Label'          :-  %text  |
-        :-  %note         :-  'Note'           :-  %text  |
-        :-  %dob          :-  'Date of Birth'  :-  %date  |
-        :-  %job          :-  'Occupation'     :-  %text  |
-        :-  %email        :-  'Email'          :-  %text  |
-        :-  %phone        :-  'Phone #'        :-  %text  |
-        :-  %website      :-  'Website'        :-  %text  |
-        :-  %github       :-  'Github'         :-  %text  |
-        :-  %twitter      :-  'Twitter'        :-  %text  |
+    :~  :^  %first-name   'First Name'     %text  |
+        :^  %middle-name  'Middle Name'    %text  |
+        :^  %last-name    'Last Name'      %text  |
+        :^  %nickname     'Nickname'       %text  |
+        :^  %label        'Label'          %text  |
+        :^  %note         'Note'           %text  |
+        :^  %dob          'Date of Birth'  %date  |
+        :^  %job          'Occupation'     %text  |
+        :^  %email        'Email'          %text  |
+        :^  %phone        'Phone #'        %text  |
+        :^  %website      'Website'        %text  |
+        :^  %github       'Github'         %text  |
+        :^  %twitter      'Twitter'        %text  |
     ==
   ::
   ++  custom-list
@@ -56,7 +54,7 @@
   ::
   ++  sort-by-name
     |=  [a=[@tas def=field-def] b=[@tas def=field-def]]
-    (gth name.def.a name.def.b)
+    (aor name.def.a name.def.b)
   ::
   ++  is-valid
     |=  [key=@tas val=info-field]
