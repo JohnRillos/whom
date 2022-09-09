@@ -12,6 +12,7 @@
   $:  %0
       contacts=(map (each @p @t) contact)
       custom-fields=(map @tas field-def)
+      next-id=@ud
   ==
 --
 ::
@@ -73,28 +74,28 @@
         %add-contact
       ?>  (is-contact-valid:main contact.act)
       =/  key=(each @p @t)
-        ?~  ship.contact.act  [%.n random-id]
+        ?~  ship.contact.act  [%.n (scot %ud next-id)]
         [%.y u.ship.contact.act]
       ~|  "{<p.key>} already exists in contacts!"  ?<  (~(has by contacts) key)
-      =.  state  state(contacts (~(put by contacts) key contact.act))
+      =.  next-id  +(next-id)
+      =.  contacts  (~(put by contacts) key contact.act)
       [[give-update:main ~] state]
       ::
         %del-contact
-      =.  state  state(contacts (~(del by contacts) key.act))
+      =.  contacts  (~(del by contacts) key.act)
       [[give-update:main ~] state]
       ::
         %edit-contact
       =/  contact  (~(got by contacts) key.act)
       =.  info.contact  (edit-info-map info.act info.contact)
-      =.  state  state(contacts (~(put by contacts) key.act contact))
+      =.  contacts  (~(put by contacts) key.act contact)
       [[give-update:main ~] state]
       ::
         %add-custom-field
       ?>  custom.def.act
       ~|  "Field {<key.act>} already exists!"
         ?<  (~(has by field-map:field-settings:main) key.act)
-      =.  state
-        state(custom-fields (~(put by custom-fields) key.act def.act))
+      =.  custom-fields  (~(put by custom-fields) key.act def.act)
       [[give-fields:main ~] state]
     ==
   ::
