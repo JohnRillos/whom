@@ -19,7 +19,7 @@
 ::
 +$  info-field
   $%  [%text @t]
-      [%date date]
+      [%date @da]
   ==
 ::
 +$  contacts-0  (map (each @p @t) contact)

@@ -47,10 +47,10 @@
 ::
 ++  dj-date
   |=  =json
-  ^-  date
+  ^-  @da
   =/  parsed=[y=@ud m=@ud d=@ud]
     ((ot year+ni month+ni day+ni ~) json)
-  [[& y.parsed] m.parsed [d.parsed 0 0 0 ~]]
+  (year [[& y.parsed] m.parsed [d.parsed 0 0 0 ~]])
 ::
 ++  dj-field-def  (ot name+so type+dj-field-tag custom+bo ~)
 ::

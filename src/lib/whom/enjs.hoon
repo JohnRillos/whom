@@ -63,7 +63,8 @@
   ==
 ::
 ++  enjs-date
-  |=  =date
+  |=  atom=@da
+  =/  =date  (yore atom)
   %-  pairs
   :~  :-  %date
       %-  pairs
