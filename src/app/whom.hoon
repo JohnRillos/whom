@@ -55,7 +55,8 @@
       %noun
     ?+    q.vase  (on-poke:default mark vase)
         %print-state
-      ~&  >>  state
+      ~&  >>  state  [~ this]
+        %print-bowl
       ~&  >>>  bowl  [~ this]
     ==
     ::
