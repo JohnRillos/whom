@@ -6,7 +6,7 @@ function getFullName(contact: Contact): string {
   return [first, last].filter(s => !!s).join(' ');
 }
 
-export function getDisplayName(contact: Contact): string {
+export function getDisplayName(contact: ContactWithKey): string {
   var fullName = getFullName(contact);
   if (contact.ship) {
     if (fullName) {
@@ -22,9 +22,11 @@ export function getDisplayName(contact: Contact): string {
 }
 
 export function withKey(entry: [string, Contact]): ContactWithKey {
+  const [ key, contact ] = entry;
   return {
-    key: entry[0],
-    ...entry[1],
+    ...contact,
+    key: key,
+    ship: key.charAt(0) == '~' ? key : null,
   };
 }
 

@@ -15,10 +15,10 @@ export default function AddContactForm() {
   let [infoFields, setInfoFields] = useState<InfoFields>({});
 
   function submitChanges() {
-    createContact(api, {
-      ship: ship || null,
+    const contact = {
       info: sanitizeInfo(infoFields),
-    }, onError)
+    };
+    createContact(api, ship || null, contact, onError)
     closeAddContactModal();
   }
 

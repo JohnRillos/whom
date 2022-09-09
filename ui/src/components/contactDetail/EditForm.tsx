@@ -1,13 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { editContact } from '../../api/ContactPokes';
 import { AppContext } from '../../context/AppContext';
-import { Contact, InfoValue, InfoDate, ContactWithKey, InfoFields } from '../../types/ContactTypes';
+import { InfoValue, InfoDate, ContactWithKey, InfoFields } from '../../types/ContactTypes';
 import { getDisplayName } from '../../util/ContactUtil';
 import TextField from '../fields/TextField';
 import DateInput from '../input/DateInput';
 import TextInput from '../input/TextInput';
 
-function renderShipName(contact: Contact) {
+function renderShipName(contact: ContactWithKey) {
   if (!contact.ship) {
     return null;
   }

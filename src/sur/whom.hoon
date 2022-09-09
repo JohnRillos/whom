@@ -1,11 +1,10 @@
 |%
 +$  contact
-  $:  ship=(unit @p)
-      info=(map @tas info-field)
+  $:  info=(map @tas info-field)
   ==
 ::
 +$  action
-  $%  [%add-contact =contact]
+  $%  [%add-contact ship=(unit @p) =contact]
       [%del-contact key=(each @p @t)]
       [%edit-contact key=(each @p @t) info=(map @tas (unit info-field))]
       [%add-custom-field key=@tas def=field-def]

@@ -75,8 +75,8 @@
         %add-contact
       ?>  (is-contact-valid:main contact.act)
       =/  key=(each @p @t)
-        ?~  ship.contact.act  [%.n (scot %ud next-id)]
-        [%.y u.ship.contact.act]
+        ?~  ship.act  [%.n (scot %ud next-id)]
+        [%.y u.ship.act]
       ~|  "{<p.key>} already exists in contacts!"  ?<  (~(has by contacts) key)
       =.  next-id  +(next-id)
       =.  contacts  (~(put by contacts) key contact.act)

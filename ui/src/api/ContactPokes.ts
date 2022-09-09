@@ -13,8 +13,8 @@ function poke(api: Urbit, action: WhomAction, onError: (err: string | undefined)
   });
 }
 
-export function createContact(api: Urbit, contact: Contact, onError: (err: string | undefined) => void) {
-  poke(api, { 'add-contact': { contact } }, onError);
+export function createContact(api: Urbit, ship: string | null, contact: Contact, onError: (err: string | undefined) => void) {
+  poke(api, { 'add-contact': { ship, contact } }, onError);
 }
 
 export function editContact(

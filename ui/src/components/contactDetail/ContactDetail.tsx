@@ -1,7 +1,7 @@
 import React from 'react';
 import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
-import { Contact, InfoValue, InfoDate } from '../../types/ContactTypes';
+import { Contact, InfoValue, InfoDate, ContactWithKey } from '../../types/ContactTypes';
 import { getContactWithKey, getDisplayName } from '../../util/ContactUtil';
 import EditForm from './EditForm';
 import DateField from '../fields/DateField';
@@ -18,13 +18,13 @@ export default function ContactDetail(): JSX.Element {
     return <p>Error</p>;
   }
 
-  function renderShipName(contact: Contact) {
+  function renderShipName(contact: ContactWithKey) {
     if (!contact.ship) {
       return null;
     }
     return <TextField label='Urbit' value={contact.ship}/>
   }
-  
+
   function renderInfoField(key: string, val: InfoValue | undefined) {
     const label = fieldSettings.defs[key]?.name || key;
     switch (fieldSettings.defs[key]?.type) {
@@ -54,7 +54,7 @@ export default function ContactDetail(): JSX.Element {
     );
   }
   
-  function renderContact(contact: Contact) {
+  function renderContact(contact: ContactWithKey) {
     return (
       <div className='text-left h-fit'>
         <p className='mb-2'>

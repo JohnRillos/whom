@@ -28,6 +28,7 @@ export type WhomAction = AddContactAction |
 
 type AddContactAction = {
   'add-contact': {
+    ship: string | null,
     contact: Contact
   }
 };

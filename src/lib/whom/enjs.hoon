@@ -37,8 +37,7 @@
   |=  =contact
   ^-  json
   %-  pairs:enjs:format
-  :~  ship+(enjs-unit-patp ship.contact)
-      info+(enjs-info info.contact)
+  :~  info+(enjs-info info.contact)
   ==
 ::
 ++  enjs-unit-patp

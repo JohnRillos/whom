@@ -5,7 +5,7 @@
 ++  action
   ^-  $-(json ^action)
   %-  of
-  :~  [%add-contact (ot contact+dj-contact ~)]
+  :~  [%add-contact (ou ship+(opt (se %p)) contact+(un dj-contact) ~)]
       [%del-contact (ot key+dj-contact-key ~)]
       [%edit-contact (ot key+dj-contact-key info+(op sym (mu dj-info-value)) ~)]
       [%add-custom-field (ot key+(se %tas) def+dj-field-def ~)]
@@ -20,8 +20,7 @@
 ::
 ++  dj-contact
   %-  ou
-  :~  ship+(opt (se %p))
-      info+(un (op sym dj-info-value))
+  :~  info+(un (op sym dj-info-value))
   ==
 ::
 ++  dj-contact-key
