@@ -8,7 +8,7 @@ function poke(api: Urbit, action: WhomAction, onError: (err: string | undefined)
     app: 'whom',
     mark: 'whom-action',
     json: action,
-    onSuccess: () => {console.log('Success!')},
+    onSuccess: () => { console.log('Success!') },
     onError: (err: string | undefined) => onError(err?.match(/".*\"/)?.[0])
   });
 }

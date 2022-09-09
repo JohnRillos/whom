@@ -16,7 +16,7 @@ export default function TextInput(
 ): JSX.Element {
   function renderValue() {
     return (
-      <input className='flex-shrink w-full bg-transparent border-b-2 border-dotted border-neutral-500 bg-standard'
+      <input className='px-1 flex-shrink w-full bg-transparent border-b-2 border-dotted border-neutral-500 bg-standard'
         type='text'
         onChange={handleEvent}
         value={props.value}

@@ -19,6 +19,7 @@ export default function AddFieldForm(props: { closeForm: () => void }) {
       type: type!,
       custom: true
     }, onError)
+    props.closeForm();
   }
 
   function onError(error: string | undefined) {

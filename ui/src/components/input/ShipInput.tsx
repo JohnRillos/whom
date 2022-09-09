@@ -19,7 +19,7 @@ export default function ShipInput(
     const bg = isValid ? 'bg-transparent' : 'bg-red-500/10';
     const border = isValid ? 'border-neutral-500' : 'border-red-500';
     return (
-      <input className={`flex-shrink w-full ${bg} border-b-2 border-dotted ${border}`}
+      <input className={`px-1 flex-shrink w-full ${bg} border-b-2 border-dotted ${border}`}
         type='text'
         onChange={handleEvent}
         value={props.value}
