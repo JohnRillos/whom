@@ -18,15 +18,8 @@
 +$  field-type-tag  ?(%text %date)
 ::
 +$  info-field
-  $%  @t
-      info-date
-  ==
-::
-+$  info-date
-  $:  %date
-      year=@ud
-      month=@ud
-      day=@ud
+  $%  [%text @t]
+      [%date date]
   ==
 ::
 +$  contacts-0  (map (each @p @t) contact)

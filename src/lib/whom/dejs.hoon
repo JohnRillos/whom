@@ -38,12 +38,19 @@
   ~|  "Invalid info value: {<json>}"
   ^-  info-field
   ?:  ?=([%s @t] json)
-    (so json)
+    [%text (so json)]
   ?.  ?=([%o *] json)  !!
   %-  %-  of
-      :~  [%date (ot year+ni month+ni day+ni ~)]
+      :~  [%date dj-date]
       ==
   json
+::
+++  dj-date
+  |=  =json
+  ^-  date
+  =/  parsed=[y=@ud m=@ud d=@ud]
+    ((ot year+ni month+ni day+ni ~) json)
+  [[& y.parsed] m.parsed [d.parsed 0 0 0 ~]]
 ::
 ++  dj-field-def  (ot name+so type+dj-field-tag custom+bo ~)
 ::

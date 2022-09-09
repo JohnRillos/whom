@@ -58,18 +58,18 @@
   ^-  [@t json]
   :-  key
   ?-  val
-    @t          [%s val]
-    info-date  (enjs-date val)
+    [%text *]         [%s +.val]
+    [%date *]  (enjs-date +.val)
   ==
 ::
 ++  enjs-date
-  |=  date=info-date
+  |=  =date
   %-  pairs
   :~  :-  %date
       %-  pairs
-      :~  year+(numb year.date)
-          month+(numb month.date)
-          day+(numb day.date)
+      :~  year+(numb y.date)
+          month+(numb m.date)
+          day+(numb d.t.date)
       ==
   ==
 ::

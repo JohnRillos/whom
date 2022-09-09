@@ -43,9 +43,6 @@
     |=  [key=@tas val=info-field]
     =/  def=(unit field-def)  (~(get by field-map) key)
     ?~  def  %.n
-    ?-  type.u.def
-      %text  ?=(@t val)
-      %date  ?=(info-date val)
-    ==
+    =(type.u.def -.val)
   --
 --
