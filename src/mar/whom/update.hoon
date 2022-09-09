@@ -1,12 +1,12 @@
 /-  *whom
-/+  whom
+/+  whom-enjs
 ::
 |_  upd=update
 ++  grad  %noun
 ++  grow
   |%
   ++  noun  upd
-  ++  json  (update:enjs:whom upd)
+  ++  json  (update:whom-enjs upd)
   --
 ::
 ++  grab

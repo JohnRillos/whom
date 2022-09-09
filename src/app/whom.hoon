@@ -1,5 +1,5 @@
 /-  *whom
-/+  default-agent, dbug, verb
+/+  default-agent, dbug, verb, *whom-fields
 |%
 ::
 +$  card  card:agent:gall

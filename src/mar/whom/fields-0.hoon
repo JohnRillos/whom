@@ -1,12 +1,12 @@
 /-  *whom
-/+  whom
+/+  whom-enjs
 ::
 |_  fields=fields-0
 ++  grad  %noun
 ++  grow
   |%
   ++  noun  fields
-  ++  json  (enjs-fields-0:enjs:whom fields)
+  ++  json  (enjs-fields-0:whom-enjs fields)
   --
 ::
 ++  grab

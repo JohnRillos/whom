@@ -1,12 +1,12 @@
 /-  *whom
-/+  whom
+/+  whom-enjs
 ::
 |_  con=contacts-0
 ++  grad  %noun
 ++  grow
   |%
   ++  noun  con
-  ++  json  (contacts-0:enjs:whom con)
+  ++  json  (contacts-0:whom-enjs con)
   --
 ::
 ++  grab

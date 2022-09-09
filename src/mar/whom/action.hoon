@@ -1,5 +1,5 @@
 /-  *whom
-/+  whom
+/+  whom-dejs
 ::
 |_  act=action
 ++  grad  %noun
@@ -11,6 +11,6 @@
 ++  grab
   |%
   ++  noun  action
-  ++  json  action:dejs:whom
+  ++  json  action:whom-dejs
   --
 --
