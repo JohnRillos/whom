@@ -76,6 +76,8 @@
       ?>  (is-contact-valid:main contact.act)
       =/  key=(each @p @t)
         ?~  ship.act  [%.n (scot %ud next-id)]
+        ~|  'You cannot add yourself as a contact. Try creating a profile instead!'
+          ?<  =(our.bowl u.ship.act)
         [%.y u.ship.act]
       ~|  "{<p.key>} already exists in contacts!"  ?<  (~(has by contacts) key)
       =.  next-id  +(next-id)

@@ -28,7 +28,7 @@ export default function EditForm(props: { contact: ContactWithKey }) {
     setEditContactMode(false);
   }
 
-  function onError(error: string | undefined) {
+  function onError(error: string | null) {
     displayError(error || 'Error editing contact!');
   }
 

@@ -32,7 +32,7 @@ export default function AddContactForm() {
     return true;
   }
 
-  function onError(error: string | undefined) {
+  function onError(error: string | null) {
     displayError(error || 'Error creating contact!');
   }
 

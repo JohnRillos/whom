@@ -22,7 +22,7 @@ export default function AddFieldForm(props: { closeForm: () => void }) {
     props.closeForm();
   }
 
-  function onError(error: string | undefined) {
+  function onError(error: string | null) {
     displayError(error || 'Error creating custom field!');
   }
 
