@@ -25,12 +25,10 @@ export default function SettingsView(props: { closeModal: () => void }) {
     return (
       <div className='flex-col'>
         <p className='mb-2 text-center'>
-          <strong>Custom Contact Fields</strong>
+          <strong>Contact Fields</strong>
         </p>
         <div className='divide-y divide-gray-400/50'>
-          {fieldSettings.order.map(key => fieldSettings.defs[key])
-            .filter(def => def.custom)
-            .map(renderCustomField)}
+          {fieldSettings.order.map(key => fieldSettings.defs[key]).map(renderCustomField)}
         </div>
         { addFieldMode ? renderAddFieldForm() :
           <button

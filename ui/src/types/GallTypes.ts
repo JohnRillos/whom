@@ -24,7 +24,7 @@ export declare type FieldUpdate = {
 export type WhomAction = AddContactAction |
   EditContactAction |
   DeleteContactAction |
-  AddCustomFieldAction;
+  AddFieldAction;
 
 type AddContactAction = {
   'add-contact': {
@@ -46,13 +46,12 @@ type DeleteContactAction = {
   }
 };
 
-type AddCustomFieldAction = {
-  'add-custom-field': {
+type AddFieldAction = {
+  'add-field': {
     key: string,
     def: {
       name: string,
       type: FieldTypeTag,
-      custom: true
     }
   }
 };

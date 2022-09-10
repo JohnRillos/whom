@@ -40,13 +40,12 @@ export function deleteContact(api: Urbit, contactKey: string, onError: (err: str
   poke(api, { 'del-contact': { key: contactKey, } }, onError);
 }
 
-export function addCustomField(api: Urbit, fieldDef: FieldDef, onError: (err: string | null) => void) {
-  poke(api, { 'add-custom-field': {
+export function addField(api: Urbit, fieldDef: FieldDef, onError: (err: string | null) => void) {
+  poke(api, { 'add-field': {
     key: fieldDef.key,
     def: {
       name: fieldDef.name,
       type: fieldDef.type,
-      custom: true
     }
   }}, onError);
 }

@@ -78,11 +78,10 @@
   a+(turn fields enjs-field-def)
 ::
 ++  enjs-field-def
-  |=  [key=@tas name=@t type=@tas custom=?]
+  |=  [key=@tas name=@t type=@tas]
   %-  pairs
   :~  key+s+key
       name+s+name
       type+s+type
-      custom+b+custom
   ==
 --

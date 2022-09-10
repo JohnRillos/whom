@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { addCustomField } from '../../api/ContactPokes';
+import { addField } from '../../api/ContactPokes';
 import { AppContext } from '../../context/AppContext';
 import { FieldTypeTag } from '../../types/SettingTypes';
 import SubmitButton from '../buttons/SubmitButton';
@@ -13,11 +13,10 @@ export default function AddFieldForm(props: { closeForm: () => void }) {
   let [ type, setType ] = useState<FieldTypeTag>('text');
 
   function onSubmit() {
-    addCustomField(api, {
+    addField(api, {
       key: key!,
       name: name!,
       type: type!,
-      custom: true
     }, onError)
     props.closeForm();
   }

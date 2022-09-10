@@ -8,7 +8,7 @@
   :~  [%add-contact (ou ship+(opt (se %p)) contact+(un dj-contact) ~)]
       [%del-contact (ot key+dj-contact-key ~)]
       [%edit-contact (ot key+dj-contact-key info+(op sym (mu dj-info-value)) ~)]
-      [%add-custom-field (ot key+(se %tas) def+dj-field-def ~)]
+      [%add-field (ot key+(se %tas) def+dj-field-def ~)]
   ==
 ::
 ++  opt  :: handle missing keys / null values
@@ -51,7 +51,7 @@
     ((ot year+ni month+ni day+ni ~) json)
   (year [[& y.parsed] m.parsed [d.parsed 0 0 0 ~]])
 ::
-++  dj-field-def  (ot name+so type+dj-field-tag custom+bo ~)
+++  dj-field-def  (ot name+so type+dj-field-tag ~)
 ::
 ++  dj-field-tag
   |=  =json

@@ -102,8 +102,7 @@
       =.  contacts  (~(put by contacts) key.act contact)
       [[give-update:main ~] state]
       ::
-        %add-custom-field
-      ?>  custom.def.act
+        %add-field
       ~|  "Field {<key.act>} already exists!"
         ?<  (~(has by fields) key.act)
       =.  fields  (~(put by fields) key.act def.act)
