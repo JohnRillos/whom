@@ -107,6 +107,19 @@
         ?<  (~(has by fields) key.act)
       =.  fields  (~(put by fields) key.act def.act)
       [[give-fields:main ~] state]
+      ::
+        %del-field
+      =/  count=@ud
+        %-  ~(rep by contacts)
+        |=  [entry=[* =contact] acc=@ud]
+        ?:  (~(has by info.contact.entry) key.act)  +(acc)
+        acc
+      ?:  =(count 1)
+        ~|("Cannot delete field {<key.act>}: Still in use by 1 contact!" !!)
+      ?:  (gth count 1)
+        ~|("Cannot delete field {<key.act>}: Still in use by {<count>} contacts!" !!)
+      =.  fields  (~(del by fields) key.act)
+      [[give-fields:main ~] state]
     ==
   ::
   ++  edit-info-map

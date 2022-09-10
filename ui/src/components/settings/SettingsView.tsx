@@ -1,20 +1,37 @@
 import React, { useContext, useState } from 'react';
+import { deleteField } from '../../api/ContactPokes';
 import { AppContext } from '../../context/AppContext';
 import { FieldDef } from '../../types/SettingTypes';
 import CloseButton from '../buttons/CloseButton';
+import DeleteButton from '../buttons/DeleteButton';
 import AddFieldForm from './AddFieldForm';
 
 export default function SettingsView(props: { closeModal: () => void }) {
-  const { fieldSettings } = useContext(AppContext);
+  const { api, displayError, fieldSettings } = useContext(AppContext);
   let [ addFieldMode, setAddFieldMode ] = useState<boolean>(false);
+  let [ isDeleting, setDeleting ] = useState<boolean>(false);
 
   function renderFieldDef(def: FieldDef) {
     return (
       <div className='flex space-x-4 py-0.5' key={def.key}>
         <span className='flex-grow'>{def.name}</span>
         <span className='font-mono opacity-50'>%{def.key}</span>
+        <DeleteButton
+          onClick={() => onDeleteClick(def.key)}
+          disabled={isDeleting}
+        />
       </div>
     );
+  }
+
+  function onDeleteClick(key: string) {
+    setDeleting(true);
+    deleteField(api, key, onDeleteError, () => setDeleting(false))
+  }
+
+  function onDeleteError(error: string | null) {
+    displayError(error || 'Error creating field!');
+    setDeleting(false);
   }
 
   function renderAddFieldForm(): JSX.Element {

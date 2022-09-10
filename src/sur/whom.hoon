@@ -8,6 +8,7 @@
       [%del-contact key=(each @p @t)]
       [%edit-contact key=(each @p @t) info=(map @tas (unit info-field))]
       [%add-field key=@tas def=field-def]
+      [%del-field key=@tas]
   ==
 ::
 +$  update  contacts=contacts-0

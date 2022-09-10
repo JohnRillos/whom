@@ -24,7 +24,8 @@ export declare type FieldUpdate = {
 export type WhomAction = AddContactAction |
   EditContactAction |
   DeleteContactAction |
-  AddFieldAction;
+  AddFieldAction |
+  DelFieldAction;
 
 type AddContactAction = {
   'add-contact': {
@@ -53,5 +54,11 @@ type AddFieldAction = {
       name: string,
       type: FieldTypeTag,
     }
+  }
+};
+
+type DelFieldAction = {
+  'del-field': {
+    key: string
   }
 };

@@ -3,12 +3,17 @@ import { Contact, InfoValue } from "../types/ContactTypes";
 import { WhomAction } from "../types/GallTypes";
 import { FieldDef } from "../types/SettingTypes";
 
-function poke(api: Urbit, action: WhomAction, onError: (err: string | null) => void) {
+function poke(
+  api: Urbit,
+  action: WhomAction,
+  onError: (err: string | null) => void,
+  onSuccess?: () => void,
+) {
   api.poke({
     app: 'whom',
     mark: 'whom-action',
     json: action,
-    onSuccess: () => { console.log('Success!') },
+    onSuccess: onSuccess || (() => {}),
     onError: (err: string | undefined) => onError(parseErrorMessage(err))
   });
 }
@@ -48,4 +53,13 @@ export function addField(api: Urbit, fieldDef: FieldDef, onError: (err: string |
       type: fieldDef.type,
     }
   }}, onError);
+}
+
+export function deleteField(
+  api: Urbit,
+  fieldKey: string,
+  onError: (err: string | null) => void,
+  onSuccess: () => void
+) {
+  poke(api, { 'del-field': { key: fieldKey } }, onError, onSuccess);
 }
