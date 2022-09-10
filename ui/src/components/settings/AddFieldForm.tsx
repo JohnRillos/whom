@@ -22,7 +22,7 @@ export default function AddFieldForm(props: { closeForm: () => void }) {
   }
 
   function onError(error: string | null) {
-    displayError(error || 'Error creating custom field!');
+    displayError(error || 'Error creating field!');
   }
 
   function canSubmit(): boolean {

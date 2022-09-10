@@ -8,7 +8,7 @@ export default function SettingsView(props: { closeModal: () => void }) {
   const { fieldSettings } = useContext(AppContext);
   let [ addFieldMode, setAddFieldMode ] = useState<boolean>(false);
 
-  function renderCustomField(def: FieldDef) {
+  function renderFieldDef(def: FieldDef) {
     return (
       <div className='flex space-x-4 py-0.5' key={def.key}>
         <span className='flex-grow'>{def.name}</span>
@@ -21,14 +21,14 @@ export default function SettingsView(props: { closeModal: () => void }) {
     return <AddFieldForm closeForm={() => setAddFieldMode(false)}/>;
   }
 
-  function renderCustomFields(): JSX.Element {
+  function renderFieldDefs(): JSX.Element {
     return (
       <div className='flex-col'>
         <p className='mb-2 text-center'>
           <strong>Contact Fields</strong>
         </p>
         <div className='divide-y divide-gray-400/50'>
-          {fieldSettings.order.map(key => fieldSettings.defs[key]).map(renderCustomField)}
+          {fieldSettings.order.map(key => fieldSettings.defs[key]).map(renderFieldDef)}
         </div>
         { addFieldMode ? renderAddFieldForm() :
           <button
@@ -44,7 +44,7 @@ export default function SettingsView(props: { closeModal: () => void }) {
 
   return (
     <div className='flex text-left h-fit'>
-      {renderCustomFields()}
+      {renderFieldDefs()}
       <div className='flex-col items-center max-w-fit ml-2'>
         <CloseButton onClick={props.closeModal}/>
       </div>
