@@ -1,43 +1,49 @@
 /-  *whom
 |%
 ::
+++  default-field-list
+  ^-  (list [key=@tas field-def])
+  :~  :^  %first-name   'First Name'     %text  |
+      :^  %middle-name  'Middle Name'    %text  |
+      :^  %last-name    'Last Name'      %text  |
+      :^  %label        'Label'          %text  |
+      :^  %dob          'Date of Birth'  %date  |
+      :^  %job          'Occupation'     %text  |
+      :^  %email        'Email'          %text  |
+      :^  %phone        'Phone #'        %text  |
+      :^  %website      'Website'        %text  |
+      :^  %github       'Github'         %text  |
+      :^  %twitter      'Twitter'        %text  |
+      :^  %notes        'Notes'          %text  |
+  ==
+::
+++  default-fields
+  (~(gas by *(map @tas field-def)) default-field-list)
+::
 ++  field-util
-  |_  custom-map=(map @tas field-def)
-  ::
-  ++  field-map
-    ^-  (map @tas field-def)
-    (~(uni by canon-map) custom-map)
+  |_  field-map=(map @tas field-def)
   ::
   ++  field-list
-    ^-  (list [@tas field-def])
-    (weld canon-list custom-list)
-  ::
-  ++  canon-map
-    (~(gas by *(map @tas field-def)) canon-list)
-  ::
-  ++  canon-list
-    ^-  (list [key=@tas field-def])
-    :~  :^  %first-name   'First Name'     %text  |
-        :^  %middle-name  'Middle Name'    %text  |
-        :^  %last-name    'Last Name'      %text  |
-        :^  %nickname     'Nickname'       %text  |
-        :^  %label        'Label'          %text  |
-        :^  %note         'Note'           %text  |
-        :^  %dob          'Date of Birth'  %date  |
-        :^  %job          'Occupation'     %text  |
-        :^  %email        'Email'          %text  |
-        :^  %phone        'Phone #'        %text  |
-        :^  %website      'Website'        %text  |
-        :^  %github       'Github'         %text  |
-        :^  %twitter      'Twitter'        %text  |
-    ==
-  ::
-  ++  custom-list
-    (sort ~(tap by custom-map) sort-by-name)
-  ::
-  ++  sort-by-name
-    |=  [a=[@tas def=field-def] b=[@tas def=field-def]]
-    (aor name.def.a name.def.b)
+    |^
+    (sort ~(tap by field-map) sort-fields)
+    ::
+    ++  sort-fields
+      |=  [a=[key=@tas def=field-def] b=[key=@tas def=field-def]]
+      =/  a-default  (~(has by default-fields) key.a)
+      =/  b-default  (~(has by default-fields) key.b)
+      ?:  &(a-default b-default)  (sort-by-default-list a b)
+      ?:  a-default  %.y
+      ?:  b-default  %.n
+      (aor name.def.a name.def.b)
+    ::
+    ++  sort-by-default-list
+      |=  [a=[@tas field-def] b=[@tas field-def]]
+      =/  index-a=(unit @)  (find [a]~ default-field-list)
+      =/  index-b=(unit @)  (find [b]~ default-field-list)
+      ?~  index-a  !!
+      ?~  index-b  !!
+      (lth u.index-a u.index-b)
+    --
   ::
   ++  is-valid
     |=  [key=@tas val=info-field]
