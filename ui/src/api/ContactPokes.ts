@@ -22,8 +22,14 @@ function parseErrorMessage(err: string | undefined): string | null {
   return err?.match(/".*"/)?.[0] || err?.match(/'.*'/)?.[0] || null;
 }
 
-export function createContact(api: Urbit, ship: string | null, contact: Contact, onError: (err: string | null) => void) {
-  poke(api, { 'add-contact': { ship, contact } }, onError);
+export function createContact(
+  api: Urbit,
+  ship: string | null,
+  contact: Contact,
+  onError: (err: string | null) => void,
+  onSuccess: () => void
+) {
+  poke(api, { 'add-contact': { ship, contact } }, onError, onSuccess);
 }
 
 export function editContact(

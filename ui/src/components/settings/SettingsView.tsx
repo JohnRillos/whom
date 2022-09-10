@@ -17,6 +17,7 @@ export default function SettingsView(props: { closeModal: () => void }) {
         <span className='flex-grow'>{def.name}</span>
         <span className='font-mono opacity-50'>%{def.key}</span>
         <DeleteButton
+          title='Delete Field'
           onClick={() => onDeleteClick(def.key)}
           disabled={isDeleting}
         />

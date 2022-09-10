@@ -30,7 +30,7 @@ export default function Modal(props: {isOpen: boolean, closeModal: () => void, c
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel
-                  className="bg-standard outline outline-black dark:outline dark:outline-neutral-500 max-w-xl transform rounded-2xl p-4 shadow-xl transition-all"
+                  className="bg-standard outline outline-black dark:outline dark:outline-neutral-500 max-w-xl rounded-2xl p-4 shadow-xl"
                 >
                   {props.children}
                 </Dialog.Panel>

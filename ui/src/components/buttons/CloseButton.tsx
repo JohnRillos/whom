@@ -9,7 +9,7 @@ const icon = (
 const CloseButton = (props: {onClick: () => void}) => {
   return (
     <button onClick={props.onClick} title='Close'>
-      <div className='hover:text-blue-500 -mt-1'>
+      <div className='-mt-1 opacity-50 hover:opacity-100'>
         {icon}
       </div>
     </button>

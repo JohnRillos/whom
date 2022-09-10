@@ -18,8 +18,7 @@ export default function AddContactForm() {
     const contact = {
       info: sanitizeInfo(infoFields),
     };
-    createContact(api, ship || null, contact, onError)
-    closeAddContactModal();
+    createContact(api, ship || null, contact, onError, closeAddContactModal);
   }
 
   function canSubmit() {
