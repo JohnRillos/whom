@@ -5,19 +5,12 @@
 ++  action
   ^-  $-(json ^action)
   %-  of
-  :~  [%add-contact (ou ship+(opt (se %p)) contact+(un dj-contact) ~)]
+  :~  [%add-contact (ot ship+(mu (se %p)) contact+dj-contact ~)]
       [%del-contact (ot key+dj-contact-key ~)]
       [%edit-contact (ot key+dj-contact-key info+(op sym (mu dj-info-value)) ~)]
       [%add-field (ot key+(se %tas) def+dj-field-def ~)]
       [%del-field (ot key+(se %tas) ~)]
   ==
-::
-++  opt  :: handle missing keys / null values
-  |*  [=fist]
-  |=  [ujon=(unit json)]
-  ?~  ujon  ~
-  ?~  u.ujon  ~
-  `(fist u.ujon)
 ::
 ++  dj-contact
   %-  ou
