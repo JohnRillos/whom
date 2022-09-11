@@ -36,15 +36,32 @@ export function editContact(
     api: Urbit,
     key: string,
     info: Record<string, InfoValue | null>,
-    onError: (err: string | null) => void
-  ) {
+    onError: (err: string | null) => void,
+    onSuccess: () => void
+) {
   const json = {
     'edit-contact': {
       key,
       info
     }
   };
-  poke(api, json, onError);
+  poke(api, json, onError, onSuccess);
+}
+
+export function editContactShip(
+  api: Urbit,
+  key: string,
+  ship: string | null,
+  onError: (err: string | null) => void,
+  onSuccess: () => void
+) {
+  const json = {
+    'edit-contact-ship': {
+      key,
+      ship
+    }
+  };
+  poke(api, json, onError, onSuccess);
 }
 
 export function deleteContact(api: Urbit, contactKey: string, onError: (err: string | null) => void) {

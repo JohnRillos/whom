@@ -23,6 +23,7 @@ export declare type FieldUpdate = {
 
 export type WhomAction = AddContactAction |
   EditContactAction |
+  EditContactShipAction |
   DeleteContactAction |
   AddFieldAction |
   DelFieldAction;
@@ -38,6 +39,13 @@ type EditContactAction = {
   'edit-contact': {
     key: string,
     info: Record<string, InfoValue | null>
+  }
+};
+
+type EditContactShipAction = {
+  'edit-contact-ship': {
+    key: string,
+    ship: string | null
   }
 };
 

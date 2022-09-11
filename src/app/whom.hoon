@@ -80,17 +80,7 @@
     ^-  (quip card _state)
     ?-    -.act
       ::
-        %add-contact
-      ?>  (is-contact-valid:main contact.act)
-      =/  key=(each @p @t)
-        ?~  ship.act  [%.n (scot %ud next-id)]
-        ~|  'You cannot add yourself as a contact. Try creating a profile instead!'
-          ?<  =(our.bowl u.ship.act)
-        [%.y u.ship.act]
-      ~|  "{<p.key>} already exists in contacts!"  ?<  (~(has by contacts) key)
-      =.  next-id  +(next-id)
-      =.  contacts  (~(put by contacts) key contact.act)
-      [[give-update:main ~] state]
+        %add-contact  (add-contact ship.act contact.act)
       ::
         %del-contact
       =.  contacts  (~(del by contacts) key.act)
@@ -101,6 +91,11 @@
       =.  info.contact  (edit-info-map info.act info.contact)
       =.  contacts  (~(put by contacts) key.act contact)
       [[give-update:main ~] state]
+      ::
+        %edit-contact-ship
+      =/  contact   (~(got by contacts) key.act)
+      =.  contacts  (~(del by contacts) key.act)
+      (add-contact ship.act contact)
       ::
         %add-field
       ~|  "Field {<key.act>} already exists!"
@@ -121,6 +116,20 @@
       =.  fields  (~(del by fields) key.act)
       [[give-fields:main ~] state]
     ==
+  ::
+  ++  add-contact
+    |=  [ship=(unit @p) =contact]
+    ^-  (quip card _state)
+    ?>  (is-contact-valid:main contact)
+    =/  key=(each @p @t)
+      ?~  ship  [%.n (scot %ud next-id)]
+      ~|  'You cannot add yourself as a contact. Try creating a profile instead!'
+        ?<  =(our.bowl u.ship)
+      [%.y u.ship]
+    ~|  "{<p.key>} already exists in contacts!"  ?<  (~(has by contacts) key)
+    =.  next-id  +(next-id)
+    =.  contacts  (~(put by contacts) key contact)
+    [[give-update:main ~] state]
   ::
   ++  edit-info-map
     |=  [changes=(map @tas (unit info-field)) old=(map @tas info-field)]

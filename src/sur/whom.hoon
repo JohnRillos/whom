@@ -7,6 +7,7 @@
   $%  [%add-contact ship=(unit @p) =contact]
       [%del-contact key=(each @p @t)]
       [%edit-contact key=(each @p @t) info=(map @tas (unit info-field))]
+      [%edit-contact-ship key=(each @p @t) ship=(unit @p)]
       [%add-field key=@tas def=field-def]
       [%del-field key=@tas]
   ==

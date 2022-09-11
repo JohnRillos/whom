@@ -1,21 +1,15 @@
 import React, { useContext, useState } from 'react';
-import { editContact } from '../../api/ContactPokes';
+import { editContact, editContactShip } from '../../api/ContactPokes';
 import { AppContext } from '../../context/AppContext';
 import { InfoValue, InfoDate, ContactWithKey, InfoFields } from '../../types/ContactTypes';
 import { getDisplayName } from '../../util/ContactUtil';
-import TextField from '../fields/TextField';
 import DateInput from '../input/DateInput';
+import ShipInput from '../input/ShipInput';
 import TextInput from '../input/TextInput';
 
-function renderShipName(contact: ContactWithKey) {
-  if (!contact.ship) {
-    return null;
-  }
-  return <TextField label='Urbit' value={contact.ship}/>
-}
-
 export default function EditForm(props: { contact: ContactWithKey }) {
-  const { api, displayError, setEditContactMode, fieldSettings } = useContext(AppContext);
+  const { api, closeModal, selectContact, displayError, setEditContactMode, fieldSettings } = useContext(AppContext);
+  let [ship, setShip] = useState<string | null>(props.contact.ship);
   let [infoFields, setInfoFields] = useState<InfoFields>(props.contact.info);
 
   function submitChanges() {
@@ -23,9 +17,33 @@ export default function EditForm(props: { contact: ContactWithKey }) {
       api,
       props.contact.key,
       sanitizeInfo(infoFields),
-      onError
+      onError,
+      () => {
+        if (props.contact.ship != ship) {
+          submitShipChange();
+        } else {
+          setEditContactMode(false);
+        }
+      }
     );
-    setEditContactMode(false);
+  }
+
+  function submitShipChange() {
+    if (!ship) {
+      closeModal(); // can't predict new key, close modal instead of showing error
+    }
+    editContactShip(
+      api,
+      props.contact.key,
+      ship,
+      onError,
+      () => {
+        if (ship) {
+          selectContact(ship);
+        }
+        setEditContactMode(false);
+      }
+    )
   }
 
   function onError(error: string | null) {
@@ -63,6 +81,10 @@ export default function EditForm(props: { contact: ContactWithKey }) {
     }
   }
 
+  function renderShipName() {
+    return <ShipInput label='Urbit' value={ship} onChange={setShip}/>
+  }
+
   function renderInfoField(key: string, val: InfoValue | undefined) {
     const label = fieldSettings.defs[key]?.name || key;
     switch (fieldSettings.defs[key]?.type) {
@@ -92,7 +114,7 @@ export default function EditForm(props: { contact: ContactWithKey }) {
       <p className='mb-2'>
         <strong>{getDisplayName(props.contact)}</strong>
       </p>
-      {renderShipName(props.contact)}
+      {renderShipName()}
       {renderInfoFields()}
       <div className='mt-2 space-x-2'>
         <button

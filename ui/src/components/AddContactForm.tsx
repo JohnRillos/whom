@@ -60,7 +60,7 @@ export default function AddContactForm() {
   }
 
   function renderShipName() {
-    return <ShipInput label='Urbit' value={ship || undefined} onChange={setShip}/>
+    return <ShipInput label='Urbit' value={ship} onChange={setShip}/>
   }
 
   function renderInfoField(key: string, val: InfoValue | undefined) {
