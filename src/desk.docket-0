@@ -1,10 +1,10 @@
-:~  title+'Contacts'
-    info+'Profiles and people'
+:~  title+'Whom'
+    info+'Contacts and Profiles'
     color+0x33.8899
     base+'whom'
     image+'https://raw.githubusercontent.com/JohnRillos/whom/master/assets/tile.svg'
-    glob-http+['https://bootstrap.urbit.org/glob-0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o.glob' 0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o]
-    version+[0 0 1]
+    glob-ames+[~zod 0v0]
+    version+[0 1 0]
     website+'https://github.com/JohnRillos/whom'
     license+'MIT'
 ==
