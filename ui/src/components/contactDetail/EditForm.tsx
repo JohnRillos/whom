@@ -3,16 +3,19 @@ import { editContact, editContactShip } from '../../api/ContactPokes';
 import { AppContext } from '../../context/AppContext';
 import { InfoValue, InfoDate, ContactWithKey, InfoFields } from '../../types/ContactTypes';
 import { getDisplayName } from '../../util/ContactUtil';
+import SubmitButton from '../buttons/SubmitButton';
 import DateInput from '../input/DateInput';
 import ShipInput from '../input/ShipInput';
 import TextInput from '../input/TextInput';
 
 export default function EditForm(props: { contact: ContactWithKey }) {
   const { api, closeModal, selectContact, displayError, setEditContactMode, fieldSettings } = useContext(AppContext);
+  let [submitting, setSubmitting] = useState<boolean>(false);
   let [ship, setShip] = useState<string | null>(props.contact.ship);
   let [infoFields, setInfoFields] = useState<InfoFields>(props.contact.info);
 
   function submitChanges() {
+    setSubmitting(true);
     editContact(
       api,
       props.contact.key,
@@ -23,6 +26,7 @@ export default function EditForm(props: { contact: ContactWithKey }) {
           submitShipChange();
         } else {
           setEditContactMode(false);
+          setSubmitting(false);
         }
       }
     );
@@ -42,11 +46,13 @@ export default function EditForm(props: { contact: ContactWithKey }) {
           selectContact(ship);
         }
         setEditContactMode(false);
+        setSubmitting(false);
       }
     )
   }
 
   function onError(error: string | null) {
+    setSubmitting(false);
     displayError(error || 'Error editing contact!');
   }
 
@@ -117,12 +123,13 @@ export default function EditForm(props: { contact: ContactWithKey }) {
       {renderShipName()}
       {renderInfoFields()}
       <div className='mt-2 space-x-2'>
-        <button
-          type='submit'
-          className='px-1 py-0.5 rounded-md button-primary font-bold hover:bg-blue-500 hover:border-blue-500'
-          onClick={submitChanges}>
+        <SubmitButton
+          className='font-bold'
+          onClick={submitChanges}
+          disabled={submitting}
+        >
           Save
-        </button>
+        </SubmitButton>
         <button
           type='button'
           className='px-1 py-0.5 rounded-md button-secondary font-bold hover:bg-neutral-500/20'

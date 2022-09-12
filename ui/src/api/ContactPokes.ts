@@ -68,14 +68,19 @@ export function deleteContact(api: Urbit, contactKey: string, onError: (err: str
   poke(api, { 'del-contact': { key: contactKey, } }, onError);
 }
 
-export function addField(api: Urbit, fieldDef: FieldDef, onError: (err: string | null) => void) {
+export function addField(
+  api: Urbit,
+  fieldDef: FieldDef,
+  onError: (err: string | null) => void,
+  onSuccess: () => void
+) {
   poke(api, { 'add-field': {
     key: fieldDef.key,
     def: {
       name: fieldDef.name,
       type: fieldDef.type,
     }
-  }}, onError);
+  }}, onError, onSuccess);
 }
 
 export function deleteField(

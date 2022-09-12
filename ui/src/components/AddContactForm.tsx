@@ -11,6 +11,7 @@ import TextInput from './input/TextInput';
 
 export default function AddContactForm() {
   const { api, closeAddContactModal, displayError, fieldSettings } = useContext(AppContext);
+  let [submitting, setSubmitting] = useState<boolean>(false);
   let [ship, setShip] = useState<string | null>(null);
   let [infoFields, setInfoFields] = useState<InfoFields>({});
 
@@ -18,10 +19,17 @@ export default function AddContactForm() {
     const contact = {
       info: sanitizeInfo(infoFields),
     };
-    createContact(api, ship || null, contact, onError, closeAddContactModal);
+    setSubmitting(true);
+    createContact(api, ship || null, contact, onError, () => {
+      closeAddContactModal();
+      setTimeout(() => setSubmitting(false), 1000);
+    });
   }
 
   function canSubmit() {
+    if (submitting) {
+      return false;
+    }
     if (ship && !isValidPatp(ship)) {
       return false;
     }
@@ -32,6 +40,7 @@ export default function AddContactForm() {
   }
 
   function onError(error: string | null) {
+    setSubmitting(false);
     displayError(error || 'Error creating contact!');
   }
 

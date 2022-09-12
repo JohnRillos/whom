@@ -8,25 +8,30 @@ import TextInput from '../input/TextInput';
 
 export default function AddFieldForm(props: { closeForm: () => void }) {
   const { api, displayError } = useContext(AppContext);
+  let [ submitting, setSubmitting ] = useState<boolean>(false);
   let [ key, setKey ] = useState<string>('');
   let [ name, setName ] = useState<string>('');
   let [ type, setType ] = useState<FieldTypeTag>('text');
 
   function onSubmit() {
+    setSubmitting(true);
     addField(api, {
       key: key!,
       name: name!,
       type: type!,
-    }, onError)
-    props.closeForm();
+    }, onError, () => {
+      setSubmitting(false);
+      props.closeForm();
+    });
   }
 
   function onError(error: string | null) {
+    setSubmitting(false);
     displayError(error || 'Error creating field!');
   }
 
   function canSubmit(): boolean {
-    return !!key && !!name;
+    return !submitting && !!key && !!name;
   }
 
   return (
