@@ -6,15 +6,16 @@
   :~  :+  %first-name   'First Name'     %text
       :+  %middle-name  'Middle Name'    %text
       :+  %last-name    'Last Name'      %text
-      :+  %label        'Label'          %text
+      :+  %nickname     'Nickname'       %text
+      :+  %desc         'Description'    %text
       :+  %dob          'Date of Birth'  %date
       :+  %job          'Occupation'     %text
+      :+  %address      'Address'        %text
       :+  %email        'Email'          %text
       :+  %phone        'Phone #'        %text
       :+  %website      'Website'        %text
       :+  %github       'Github'         %text
       :+  %twitter      'Twitter'        %text
-      :+  %notes        'Notes'          %text
   ==
 ::
 ++  default-fields

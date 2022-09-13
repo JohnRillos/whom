@@ -33,9 +33,6 @@ export default function AddContactForm() {
     if (ship && !isValidPatp(ship)) {
       return false;
     }
-    if (!ship && !infoFields['first-name'] && !infoFields['last-name'] && !infoFields.label) {
-      return false;
-    }
     return true;
   }
 
@@ -54,7 +51,7 @@ export default function AddContactForm() {
     return (value: string) => {
       setInfoFields({
         ...infoFields,
-        [key]: value as InfoValue
+        [key]: value
       })
     }
   }
@@ -63,7 +60,7 @@ export default function AddContactForm() {
     return (value: InfoDate | undefined) => {
       setInfoFields({
         ...infoFields,
-        [key]: value as InfoValue | undefined
+        [key]: value
       })
     }
   }

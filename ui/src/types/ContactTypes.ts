@@ -12,7 +12,7 @@ export interface ContactWithKey extends Contact {
 export type InfoFields = {
   'first-name'?: string,
   'last-name'?: string,
-  'label'?: string,
+  'nickname'?: string,
   [key: string]: InfoValue | undefined
 };
 
