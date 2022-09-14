@@ -2,13 +2,6 @@
 =,  enjs:format
 |%
 ::
-++  update
-  |=  upd=^update
-  ^-  json
-  %-  pairs:enjs:format
-  :~  contacts+(enjs-contacts contacts.upd)
-  ==
-::
 ++  contacts-0
   |=  con=^contacts-0
   (enjs-contacts con)
@@ -83,5 +76,19 @@
   :~  key+s+key
       name+s+name
       type+s+type
+  ==
+::
+++  enjs-self-0
+  |=  self=self-0
+  ^-  json
+  %-  pairs:enjs:format
+  :~  info+(enjs-info info.self)
+  ==
+::
+++  enjs-profile-0
+  |=  profile=profile-0
+  ^-  json
+  %-  pairs:enjs:format
+  :~  info+(enjs-info info.profile)
   ==
 --

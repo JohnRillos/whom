@@ -10,6 +10,7 @@
 ::
 +$  state-0
   $:  %0
+      =self
       contacts=(map (each @p @t) contact)
       fields=(map @tas field-def)
       next-id=@ud
@@ -84,13 +85,14 @@
       ::
         %del-contact
       =.  contacts  (~(del by contacts) key.act)
-      [[give-update:main ~] state]
+      [[give-contacts:main ~] state]
       ::
         %edit-contact
       =/  contact  (~(got by contacts) key.act)
       =.  info.contact  (edit-info-map info.act info.contact)
+      ?>  (is-info-valid:main info.contact)
       =.  contacts  (~(put by contacts) key.act contact)
-      [[give-update:main ~] state]
+      [[give-contacts:main ~] state]
       ::
         %edit-contact-ship
       =/  contact   (~(got by contacts) key.act)
@@ -115,12 +117,17 @@
         ~|("Cannot delete field {<key.act>}: Still in use by {<count>} contacts!" !!)
       =.  fields  (~(del by fields) key.act)
       [[give-fields:main ~] state]
+      ::
+        %edit-self
+      =.  info.self  (edit-info-map info.act info.self)
+      ?>  (is-info-valid:main info.self)
+      [[give-self:main ~] state]
     ==
   ::
   ++  add-contact
     |=  [ship=(unit @p) =contact]
     ^-  (quip card _state)
-    ?>  (is-contact-valid:main contact)
+    ?>  (is-info-valid:main info.contact)
     =/  key=(each @p @t)
       ?~  ship  [%.n (scot %ud next-id)]
       ~|  'You cannot add yourself as a contact.'
@@ -129,7 +136,7 @@
     ~|  "{<p.key>} already exists in contacts!"  ?<  (~(has by contacts) key)
     =.  next-id  +(next-id)
     =.  contacts  (~(put by contacts) key contact)
-    [[give-update:main ~] state]
+    [[give-contacts:main ~] state]
   ::
   ++  edit-info-map
     |=  [changes=(map @tas (unit info-field)) old=(map @tas info-field)]
@@ -147,12 +154,21 @@
 ::
 ++  on-watch
   |=  =path
+  |^
   ^-  (quip card _this)
-  ?>  (team:title our.bowl src.bowl)
   ?+  path  (on-watch:default path)
-    [%updates ~]  [[give-update:main ~] this]
-    [%settings %fields ~]  [[give-fields:main ~] this]
+    [%contacts ~]  (me [[give-contacts:main ~] this])
+    [%fields ~]    (me [[give-fields:main ~] this])
+    [%self ~]      (me [[give-self:main ~] this])
+    [%profile %public ~]  [[(give-profile:main %public) ~] this]
+    :: [%profile %pal ~]  [(give-profile:main %mutual) ~]
   ==
+  ++  me
+    |=  quip=(quip card _this)
+    ~|  'Unauthorized!'
+    ?>  (team:title our.bowl src.bowl)
+    quip
+  --
 ::
 ++  on-leave  on-leave:default
 ++  on-peek
@@ -160,7 +176,8 @@
   ^-  (unit (unit cage))
   ?+  path  (on-peek:default path)
     [%x %contacts ~]  ``whom-contacts-0+!>(contacts)
-    [%x %settings %fields ~]  ``whom-fields-0+!>(field-list:field-util:main)
+    [%x %fields ~]    ``whom-fields-0+!>(field-list:field-util:main)
+    [%x %self ~]      ``whom-self-0+!>(self)
   ==
 ::
 ++  on-agent  on-agent:default
@@ -168,20 +185,31 @@
 --
 |_  =bowl:gall
 ::
-++  give-update
+++  give-contacts
   ^-  card
-  =/  =update  contacts
-  [%give %fact [/updates]~ %whom-update !>(update)]
+  =/  =contacts-0  contacts
+  [%give %fact [/contacts]~ %whom-contacts-0 !>(contacts-0)]
 ::
 ++  give-fields
   ^-  card
   =/  =fields-0  field-list:field-util
-  [%give %fact [/settings/fields]~ %whom-fields-0 !>(fields-0)]
+  [%give %fact [/fields]~ %whom-fields-0 !>(fields-0)]
 ::
-++  is-contact-valid
-  |=  =contact
-  =/  info=(list [@tas info-field])  ~(tap by info.contact)
-  (levy info is-field-valid)
+++  give-self
+  ^-  card
+  [%give %fact [/self]~ %whom-self-0 !>(self)]
+::
+++  give-profile
+  |=  access=@tas
+  ^-  card
+  ?>  =(%public access)
+  =/  =profile-0  `profile-0`self
+  [%give %fact [/profile/public]~ %whom-profile-0 !>(profile-0)]
+::
+++  is-info-valid
+  |=  info=(map @tas info-field)
+  =/  info-list=(list [@tas info-field])  ~(tap by info)
+  (levy info-list is-field-valid)
 ::
 ++  is-field-valid
   |=  field=[key=@tas val=info-field]

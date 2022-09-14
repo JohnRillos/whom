@@ -1,6 +1,17 @@
 |%
 +$  contact
   $:  info=(map @tas info-field)
+      :: (unit profile)
+  ==
+::
++$  self
+  $:  info=(map @tas info-field)
+      :: access levels
+  ==
+::
++$  profile
+  $:  info=(map @tas info-field)
+      :: field defs
   ==
 ::
 +$  action
@@ -10,9 +21,8 @@
       [%edit-contact-ship key=(each @p @t) ship=(unit @p)]
       [%add-field key=@tas def=field-def]
       [%del-field key=@tas]
+      [%edit-self info=(map @tas (unit info-field))]
   ==
-::
-+$  update  contacts=contacts-0
 ::
 +$  field-def  [name=@t type=field-type-tag]
 ::
@@ -26,4 +36,8 @@
 +$  contacts-0  (map (each @p @t) contact)
 ::
 +$  fields-0  (list [@tas field-def])
+::
++$  self-0  self
+::
++$  profile-0  profile
 --

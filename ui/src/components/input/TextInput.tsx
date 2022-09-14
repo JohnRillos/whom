@@ -19,7 +19,7 @@ export default function TextInput(
       <input className='px-1 flex-shrink w-full bg-transparent border-b-2 border-dotted border-neutral-500 bg-standard'
         type='text'
         onChange={handleEvent}
-        value={props.value}
+        value={props.value || ''}
         placeholder={props.placeholder}
       />
     );

@@ -91,3 +91,17 @@ export function deleteField(
 ) {
   poke(api, { 'del-field': { key: fieldKey } }, onError, onSuccess);
 }
+
+export function editSelf(
+  api: Urbit,
+  info: Record<string, InfoValue | null>,
+  onError: (err: string | null) => void,
+  onSuccess: () => void
+) {
+  const json = {
+    'edit-self': {
+      info
+    }
+  };
+  poke(api, json, onError, onSuccess);
+}

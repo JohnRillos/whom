@@ -1,24 +1,29 @@
 import { Contact, Contacts, InfoValue } from './ContactTypes';
+import { Self } from './ProfileTypes';
 import { FieldDef, FieldTypeTag } from './SettingTypes';
 
 export declare type GallApp = 'whom';
 
-export declare type GallUpdate = ContactUpdate | FieldUpdate;
+export declare type GallUpdate = ContactUpdate | FieldUpdate | SelfUpdate;
 
-export declare type SubscribePath = '/updates' | '/settings/fields';
+export declare type SubscribePath = '/contacts' | '/fields' | '/self';
 
 export declare type ContactUpdate = {
   app: 'whom',
-  path: '/updates',
-  data: {
-    contacts: Contacts
-  }
+  path: '/contacts',
+  data: Contacts
 };
 
 export declare type FieldUpdate = {
   app: 'whom',
-  path: '/settings/fields',
+  path: '/fields',
   data: FieldDef[]
+};
+
+export declare type SelfUpdate = {
+  app: 'whom',
+  path: '/self',
+  data: Self
 };
 
 export type WhomAction = AddContactAction |
@@ -26,7 +31,8 @@ export type WhomAction = AddContactAction |
   EditContactShipAction |
   DeleteContactAction |
   AddFieldAction |
-  DelFieldAction;
+  DelFieldAction |
+  EditSelfAction;
 
 type AddContactAction = {
   'add-contact': {
@@ -68,5 +74,11 @@ type AddFieldAction = {
 type DelFieldAction = {
   'del-field': {
     key: string
+  }
+};
+
+type EditSelfAction = {
+  'edit-self': {
+    info: Record<string, InfoValue | null>
   }
 };

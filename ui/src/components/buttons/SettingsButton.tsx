@@ -1,4 +1,5 @@
 import React from 'react';
+import NavButton from './NavButton';
 
 const icon = (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
@@ -7,17 +8,11 @@ const icon = (
   </svg>
 );
 
-const SettingsButton = (props: {onClick: () => void, disabled: boolean}) => {
-  const colorClass = props.disabled ? 'opacity-40' : 'hover:text-blue-500'
+const SettingsButton = (props: { onClick: () => void }) => {
   return (
-    <button
-      className={colorClass}
-      onClick={props.onClick}
-      title='Settings'
-      disabled={props.disabled}
-    >
-      {icon}
-    </button>
+    <NavButton onClick={props.onClick}>
+      <>{icon}<span className='hidden sm:inline ml-1'>Settings</span></>
+    </NavButton>
   );
 };
 

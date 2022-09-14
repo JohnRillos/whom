@@ -43,7 +43,7 @@ export default function SettingsView(props: { closeModal: () => void }) {
     return (
       <div className='flex-col'>
         <p className='mb-2 text-center'>
-          <strong>Contact Fields</strong>
+          <strong>Customize Fields</strong>
         </p>
         <div className='divide-y divide-gray-400/50'>
           {fieldSettings.order.map(key => fieldSettings.defs[key]).map(renderFieldDef)}

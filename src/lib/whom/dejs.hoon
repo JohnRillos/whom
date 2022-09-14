@@ -11,11 +11,12 @@
       [%edit-contact-ship (ot key+dj-contact-key ship+(mu (se %p)) ~)]
       [%add-field (ot key+(se %tas) def+dj-field-def ~)]
       [%del-field (ot key+(se %tas) ~)]
+      [%edit-self (ot info+(op sym (mu dj-info-value)) ~)]
   ==
 ::
 ++  dj-contact
-  %-  ou
-  :~  info+(un (op sym dj-info-value))
+  %-  ot
+  :~  info+(op sym dj-info-value)
   ==
 ::
 ++  dj-contact-key

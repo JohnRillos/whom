@@ -13,13 +13,20 @@ import { FieldDef, FieldSettings } from './types/SettingTypes';
 import SettingsButton from './components/buttons/SettingsButton';
 import SettingsView from './components/settings/SettingsView';
 import ErrorNotification from './components/ErrorNotification';
+import ProfileButton from './components/buttons/ProfileButton';
+import ProfileContainer from './components/profile/ProfileContainer';
+import { Self } from './types/ProfileTypes';
 
 async function scryContacts(urbit: Urbit): Promise<Contacts> {
   return urbit.scry<Contacts>({ app: 'whom', path: '/contacts' });
 }
 
 async function scryFieldDefs(urbit: Urbit): Promise<FieldDef[]> {
-  return urbit.scry<FieldDef[]>({ app: 'whom', path: '/settings/fields' });
+  return urbit.scry<FieldDef[]>({ app: 'whom', path: '/fields' });
+}
+
+async function scrySelf(urbit: Urbit): Promise<Self> {
+  return urbit.scry<Self>({ app: 'whom', path: '/self' });
 }
 
 export function App() {
@@ -30,7 +37,9 @@ export function App() {
   const [editContactMode, setEditContactMode] = useState<boolean>(false);
   const [fieldSettings, setFieldSettings] = useState<FieldSettings>(initialContext.fieldSettings);
   const [isSettingsModalOpen, setSettingsModalOpen] = useState<boolean>(false);
+  const [isProfileOpen, setProfileOpen] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [self, setSelf] = useState<Self>(initialContext.self);
 
   useEffect(() => {
     const api = initialContext.api
@@ -40,16 +49,26 @@ export function App() {
       })
       .then(() => scryContacts(api))
       .then(res => setContacts(res))
+      .then(() => scrySelf(api))
+      .then(res => setSelf(res))
       .then(() => Subscribe(api, handleUpdate));
   }, []);
 
   function handleUpdate(update: GallUpdate) {
     if (update.app === 'whom' && update.data) {
-      if (update.path == '/updates') {
-        setContacts(update.data.contacts);
-      }
-      if (update.path == '/settings/fields') {
-        setFieldSettings(buildFieldSettings(update.data))
+      switch(update.path) {
+        case '/contacts': {
+          setContacts(update.data);
+          break;
+        }
+        case '/fields': {
+          setFieldSettings(buildFieldSettings(update.data));
+          break;
+        }
+        case '/self': {
+          setSelf(update.data);
+          break;
+        }
       }
     }
   };
@@ -75,23 +94,24 @@ export function App() {
     editContactMode: editContactMode,
     setEditContactMode: setEditContactMode,
     fieldSettings: fieldSettings,
+    self: self
   };
 
   return (
     <main className="fixed w-full h-full bg-standard flex">
       <AppContext.Provider value={appContext} >
         <div className="h-full w-full mx-auto flex flex-col overflow-hidden">
-          <div className='absolute m-4'>
+          <nav className="flex-shrink w-full flex flex-row p-4">
             <SettingsButton
               onClick={() => setSettingsModalOpen(true)}
-              disabled={false}
             />
-          </div>
-          <h1 className="text-center text-3xl font-bold py-4">Contacts</h1>
+            <h1 className="m-auto text-center text-3xl font-bold">Contacts</h1>
+            <ProfileButton onClick={() => setProfileOpen(true)}/>
+          </nav>
           <ContactList/>
         </div>
         <button
-          className='absolute bottom-8 right-8 px-1 py-1 rounded-3xl border-2 text-lg button-secondary hover:button-primary shadow-md'
+          className='absolute bottom-8 right-4 px-1 py-1 rounded-3xl border-2 text-lg button-secondary hover:button-primary shadow-md'
           onClick={() => setAddContactModalOpen(true)}
           >
           Add Contact
@@ -105,6 +125,7 @@ export function App() {
         <Modal isOpen={isSettingsModalOpen} closeModal={() => setSettingsModalOpen(false)}>
           <SettingsView closeModal={() => setSettingsModalOpen(false)}/>
         </Modal>
+        <ProfileContainer isOpen={isProfileOpen} close={() => setProfileOpen(false)}/>
         <ErrorNotification/>
       </AppContext.Provider>
     </main>
