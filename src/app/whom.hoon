@@ -119,6 +119,7 @@
         %edit-contact-ship
       =/  contact   (~(got by contacts) key.act)
       =.  contacts  (~(del by contacts) key.act)
+      =.  profile.contact  ~
       =.  state  (add-contact ship.act contact)
       =/  cards=(list card)  ~[give-contacts:main]
       =/  old-ship=(unit @p)  ?:(-.key.act ``@p`p.key.act ~)
@@ -162,6 +163,7 @@
     |=  [ship=(unit @p) =contact]
     ^-  _state
     ?>  (is-info-valid:main info.contact)
+    ?>  =(~ profile.contact)
     =/  key=(each @p @t)
       ?~  ship  [%.n (scot %ud next-id)]
       ~|  'You cannot add yourself as a contact.'
@@ -244,7 +246,7 @@
 ::
 ++  give-profile
   ^-  card
-  =/  =profile  `profile`self
+  =/  =profile  [info.self field-list:field-util]
   [%give %fact [/profile/public]~ %whom-profile-0 !>(profile)]
 ::
 ++  is-info-valid
@@ -285,7 +287,7 @@
   ^-  (quip card _state)
   ~&  >  <profile>
   =/  key=(each @p @t)  [%.y src.bowl]
-  ~|  >>>  "No contact: {<src.bowl>}"
+  ~|  "No contact: {<src.bowl>}"
   =/  =contact  (~(got by contacts) key)
   =.  profile.contact  `profile
   =.  contacts  (~(put by contacts) key contact)

@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
 import { Contact, InfoValue, InfoDate, ContactWithKey } from '../../types/ContactTypes';
 import { getContactWithKey, getDisplayName } from '../../util/ContactUtil';
+import { buildFieldSettings, combineFieldOrders } from '../../util/FieldUtil';
 import EditForm from './EditForm';
 import DateField from '../fields/DateField';
 import TextField from '../fields/TextField';
@@ -18,6 +19,9 @@ export default function ContactDetail(): JSX.Element {
     return <p>Error</p>;
   }
 
+  const profileFieldSettings = buildFieldSettings(contact.profile?.fields || []);
+  const fieldOrder = combineFieldOrders(fieldSettings.order, profileFieldSettings.order);
+
   function renderShipName(contact: ContactWithKey) {
     if (!contact.ship) {
       return null;
@@ -25,9 +29,10 @@ export default function ContactDetail(): JSX.Element {
     return <TextField label='Urbit' value={contact.ship}/>
   }
 
-  function renderInfoField(key: string, val: InfoValue | undefined) {
-    const label = fieldSettings.defs[key]?.name || key;
-    switch (fieldSettings.defs[key]?.type) {
+  function renderInfoField(key: string, val: InfoValue | undefined, fromProfile: boolean) {
+    const defs = fromProfile ? profileFieldSettings.defs : fieldSettings.defs;
+    const label = defs[key]?.name || key;
+    switch (defs[key]?.type) {
       case 'text':
         return <TextField label={label} value={val as string | undefined}/>;
       case 'date':
@@ -40,20 +45,21 @@ export default function ContactDetail(): JSX.Element {
   function renderInfoFields(contact: Contact) {
     return (
       <ul>
-        {fieldSettings.order.map((key: string) => ({
+        {fieldOrder.map((key: string) => ({
           key: key,
-          value: contact.info[key]
+          value: contact.info[key] || contact.profile?.info[key],
+          fromProfile: !(key in contact.info) && !!contact.profile && (key in contact.profile.info)
         }))
-        .filter((arg: { key: string, value: InfoValue | undefined}) => arg.value !== undefined)
-        .map((arg: {key: string, value: InfoValue | undefined}) => (
+        .filter((arg: { key: string, value: InfoValue | undefined, fromProfile: boolean}) => arg.value !== undefined)
+        .map((arg: {key: string, value: InfoValue | undefined, fromProfile: boolean}) => (
           <li key={arg.key}>
-            {renderInfoField(arg.key, arg.value)}
+            {renderInfoField(arg.key, arg.value, arg.fromProfile)}
           </li>
         ))}
       </ul>
     );
   }
-  
+
   function renderContact(contact: ContactWithKey) {
     return (
       <div className='text-left h-fit'>
@@ -61,7 +67,6 @@ export default function ContactDetail(): JSX.Element {
           <strong>{getDisplayName(contact)}</strong>
         </p>
         {renderShipName(contact)}
-        {contact.profile ? JSON.stringify(contact.profile) : null}
         {renderInfoFields(contact)}
       </div>
     );

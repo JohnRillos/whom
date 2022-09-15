@@ -107,7 +107,7 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
             onClick={submitChanges}
             disabled={!canSubmit}
           >
-            Save
+            Publish
           </SubmitButton>
           {canSubmit ?
             <button

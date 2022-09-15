@@ -6,3 +6,13 @@ export function buildFieldSettings(defList: FieldDef[]): FieldSettings {
     order: defList.map(def => def.key)
   };
 }
+
+export function combineFieldOrders(yours: string[], theirs: string[]): string[] {
+  const newOrder = [...yours];
+  theirs.forEach(key => {
+    if (!yours.includes(key)) {
+      newOrder.push(key);
+    }
+  })
+  return newOrder;
+}

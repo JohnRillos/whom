@@ -97,5 +97,6 @@
   ^-  json
   %-  pairs:enjs:format
   :~  info+(enjs-info info.profile)
+      fields+(enjs-fields-0 fields.profile)
   ==
 --
