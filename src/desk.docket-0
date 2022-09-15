@@ -3,7 +3,7 @@
     color+0x33.8899
     base+'whom'
     image+'https://raw.githubusercontent.com/JohnRillos/whom/master/assets/tile.svg'
-    glob-ames+[~zod 0v0]
+    glob-ames+[~holnes 0v0]
     version+[0 1 0]
     website+'https://github.com/JohnRillos/whom'
     license+'MIT'

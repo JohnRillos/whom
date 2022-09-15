@@ -40,31 +40,31 @@
 ++  on-load
   |=  old-vase=vase
   ^-  (quip card _this)
-  |^
+  :: |^
   =|  cards=(list card)
-  ?:  %.y  (reset-state cards) :: (for testing only)
+  :: ?:  %.y  (reset-state cards) :: (for testing only)
   =+  !<(old=versioned-state old-vase)
   |-
   ?-  -.old
     %0  [cards this(state old)]
   ==
   ::
-  ++  reset-state :: (testing only)
-    |=  cards=(list card)
-    =.  cards  (weld cards leave-all)
-    =/  new-state  *state-0
-    =/  default-fields  default-fields:whom-fields
-    [cards this(state new-state(fields default-fields))]
-  ::
-  ++  leave-all :: (testing only)
-    ^-  (list card)
-    =/  wex=(map [=wire =ship =term] [* *])  wex.bowl
-    =/  subs=(list [=wire =ship =term])
-      ~(tap in ~(key by wex.bowl))
-    %+  turn  subs
-    |=  [=wire =ship =term]
-    [%pass wire %agent [ship term] %leave ~]
-  --
+  :: ++  reset-state :: (testing only)
+  ::   |=  cards=(list card)
+  ::   =.  cards  (weld cards leave-all)
+  ::   =/  new-state  *state-0
+  ::   =/  default-fields  default-fields:whom-fields
+  ::   [cards this(state new-state(fields default-fields))]
+  :: ::
+  :: ++  leave-all :: (testing only)
+  ::   ^-  (list card)
+  ::   =/  wex=(map [=wire =ship =term] [* *])  wex.bowl
+  ::   =/  subs=(list [=wire =ship =term])
+  ::     ~(tap in ~(key by wex.bowl))
+  ::   %+  turn  subs
+  ::   |=  [=wire =ship =term]
+  ::   [%pass wire %agent [ship term] %leave ~]
+  :: --
 ::
 ++  on-poke
   |=  [=mark =vase]
