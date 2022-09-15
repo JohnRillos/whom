@@ -1,17 +1,17 @@
 |%
 +$  contact
   $:  info=(map @tas info-field)
-      :: (unit profile)
+      profile=(unit profile)
   ==
 ::
 +$  self
   $:  info=(map @tas info-field)
-      :: access levels
+      :: todo: access levels
   ==
 ::
 +$  profile
   $:  info=(map @tas info-field)
-      :: field defs
+      :: todo: field defs
   ==
 ::
 +$  action

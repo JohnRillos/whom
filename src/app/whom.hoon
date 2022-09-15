@@ -49,11 +49,21 @@
     %0  [cards this(state old)]
   ==
   ::
-  ++  reset-state
+  ++  reset-state :: (testing only)
     |=  cards=(list card)
+    =.  cards  (weld cards leave-all)
     =/  new-state  *state-0
     =/  default-fields  default-fields:whom-fields
     [cards this(state new-state(fields default-fields))]
+  ::
+  ++  leave-all :: (testing only)
+    ^-  (list card)
+    =/  wex=(map [=wire =ship =term] [* *])  wex.bowl
+    =/  subs=(list [=wire =ship =term])
+      ~(tap in ~(key by wex.bowl))
+    %+  turn  subs
+    |=  [=wire =ship =term]
+    [%pass wire %agent [ship term] %leave ~]
   --
 ::
 ++  on-poke
@@ -67,6 +77,10 @@
       ~&  >>  state  [~ this]
         %print-bowl
       ~&  >>>  bowl  [~ this]
+        %print-subscriptions
+      ~&  >>  wex.bowl  [~ this]
+        %print-subscribers
+      ~&  >>  sup.bowl  [~ this]
     ==
     ::
       %whom-action
@@ -81,11 +95,19 @@
     ^-  (quip card _state)
     ?-    -.act
       ::
-        %add-contact  (add-contact ship.act contact.act)
+        %add-contact
+      =.  state  (add-contact ship.act contact.act)
+      :_  state
+      ?~  ship.act  ~[give-contacts:main]
+      ~[give-contacts:main (watch-profile:main u.ship.act)]
       ::
         %del-contact
       =.  contacts  (~(del by contacts) key.act)
-      [[give-contacts:main ~] state]
+      :_  state
+      ?-  -.key.act
+        %.y  ~[give-contacts:main (leave-profile:main p.key.act)]
+        %.n  ~[give-contacts:main]
+      ==
       ::
         %edit-contact
       =/  contact  (~(got by contacts) key.act)
@@ -97,7 +119,16 @@
         %edit-contact-ship
       =/  contact   (~(got by contacts) key.act)
       =.  contacts  (~(del by contacts) key.act)
-      (add-contact ship.act contact)
+      =.  state  (add-contact ship.act contact)
+      =/  cards=(list card)  ~[give-contacts:main]
+      =/  old-ship=(unit @p)  ?:(-.key.act ``@p`p.key.act ~)
+      =.  cards
+        ?~  old-ship  cards
+        (snoc cards (leave-profile:main u.old-ship))
+      =.  cards
+        ?~  ship.act  cards
+        (snoc cards (watch-profile:main u.ship.act))
+      [cards state]
       ::
         %add-field
       ~|  "Field {<key.act>} already exists!"
@@ -121,12 +152,15 @@
         %edit-self
       =.  info.self  (edit-info-map info.act info.self)
       ?>  (is-info-valid:main info.self)
-      [[give-self:main ~] state]
+      :_  state
+      :~  give-self:main
+          give-profile:main
+      ==
     ==
   ::
   ++  add-contact
     |=  [ship=(unit @p) =contact]
-    ^-  (quip card _state)
+    ^-  _state
     ?>  (is-info-valid:main info.contact)
     =/  key=(each @p @t)
       ?~  ship  [%.n (scot %ud next-id)]
@@ -136,7 +170,7 @@
     ~|  "{<p.key>} already exists in contacts!"  ?<  (~(has by contacts) key)
     =.  next-id  +(next-id)
     =.  contacts  (~(put by contacts) key contact)
-    [[give-contacts:main ~] state]
+    state
   ::
   ++  edit-info-map
     |=  [changes=(map @tas (unit info-field)) old=(map @tas info-field)]
@@ -155,13 +189,13 @@
 ++  on-watch
   |=  =path
   |^
+  ~&  "{<src.bowl>} subscribed to {<path>}"
   ^-  (quip card _this)
   ?+  path  (on-watch:default path)
-    [%contacts ~]  (me [[give-contacts:main ~] this])
-    [%fields ~]    (me [[give-fields:main ~] this])
-    [%self ~]      (me [[give-self:main ~] this])
-    [%profile %public ~]  [[(give-profile:main %public) ~] this]
-    :: [%profile %pal ~]  [(give-profile:main %mutual) ~]
+    [%contacts ~]  %-  me  [[give-contacts:main ~] this]
+    [%fields ~]    %-  me  [[give-fields:main ~] this]
+    [%self ~]      %-  me  [[give-self:main ~] this]
+    [%profile %public ~]   [[give-profile:main ~] this]
   ==
   ++  me
     |=  quip=(quip card _this)
@@ -180,7 +214,16 @@
     [%x %self ~]      ``whom-self-0+!>(self)
   ==
 ::
-++  on-agent  on-agent:default
+++  on-agent
+  |=  [=wire =sign:agent:gall]
+  ^-  (quip card _this)
+  ?+  -.sign  (on-agent:default wire sign)
+      %fact
+    =^  cards  state
+      (handle-fact:main cage.sign)
+    [cards this]
+  ==
+::
 ++  on-fail   on-fail:default
 --
 |_  =bowl:gall
@@ -200,11 +243,9 @@
   [%give %fact [/self]~ %whom-self-0 !>(self)]
 ::
 ++  give-profile
-  |=  access=@tas
   ^-  card
-  ?>  =(%public access)
-  =/  =profile-0  `profile-0`self
-  [%give %fact [/profile/public]~ %whom-profile-0 !>(profile-0)]
+  =/  =profile  `profile`self
+  [%give %fact [/profile/public]~ %whom-profile-0 !>(profile)]
 ::
 ++  is-info-valid
   |=  info=(map @tas info-field)
@@ -217,4 +258,36 @@
   ~&  >>>  "Invalid field: {<field>}"  %.n
 ::
 ++  field-util  ~(. field-util:whom-fields fields)
+::
+++  watch-profile
+  |=  ship=@p
+  ^-  card
+  ~&  "Subscribing to {<ship>}'s profile..."
+  [%pass /profile/(scot %p ship) %agent [ship %whom] %watch /profile/public]
+::
+++  leave-profile
+  |=  ship=@p
+  ^-  card
+  ~&  "Unsubscribing from {<ship>}'s profile..."
+  [%pass /profile/(scot %p ship) %agent [ship %whom] %leave ~]
+::
+++  handle-fact
+  |=  =cage
+  ^-  (quip card _state)
+  ?+  -.cage  ~|  "Unknown cage {<cage>}"  !!
+      %whom-profile-0  
+    =/  =profile  !<(profile q.cage)
+    (take-profile profile)
+  ==
+::
+++  take-profile
+  |=  =profile
+  ^-  (quip card _state)
+  ~&  >  <profile>
+  =/  key=(each @p @t)  [%.y src.bowl]
+  ~|  >>>  "No contact: {<src.bowl>}"
+  =/  =contact  (~(got by contacts) key)
+  =.  profile.contact  `profile
+  =.  contacts  (~(put by contacts) key contact)
+  [[give-contacts ~] state]
 --

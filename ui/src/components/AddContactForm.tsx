@@ -18,6 +18,7 @@ export default function AddContactForm() {
   function submitChanges() {
     const contact = {
       info: sanitizeInfo(infoFields),
+      profile: null
     };
     setSubmitting(true);
     createContact(api, ship || null, contact, onError, () => {

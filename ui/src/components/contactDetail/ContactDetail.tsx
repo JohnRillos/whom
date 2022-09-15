@@ -61,6 +61,7 @@ export default function ContactDetail(): JSX.Element {
           <strong>{getDisplayName(contact)}</strong>
         </p>
         {renderShipName(contact)}
+        {contact.profile ? JSON.stringify(contact.profile) : null}
         {renderInfoFields(contact)}
       </div>
     );

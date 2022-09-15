@@ -31,6 +31,7 @@
   ^-  json
   %-  pairs:enjs:format
   :~  info+(enjs-info info.contact)
+      profile+(enjs-unit-profile profile.contact)
   ==
 ::
 ++  enjs-unit-patp
@@ -85,8 +86,14 @@
   :~  info+(enjs-info info.self)
   ==
 ::
+++  enjs-unit-profile
+  |=  profile=(unit profile)
+  ^-  json
+  ?~  profile  ~
+  (enjs-profile-0 u.profile)
+::
 ++  enjs-profile-0
-  |=  profile=profile-0
+  |=  =profile
   ^-  json
   %-  pairs:enjs:format
   :~  info+(enjs-info info.profile)

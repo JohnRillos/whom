@@ -4,7 +4,7 @@ ui/node_modules
 ui/.DS_Store
 ui/dist
 ui/dist-ssr
-ui/*.local
+ui/.env.*
 ui/stats.html
 ui/.eslintcache
 ui/.vercel

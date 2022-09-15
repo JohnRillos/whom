@@ -17,6 +17,7 @@
 ++  dj-contact
   %-  ot
   :~  info+(op sym dj-info-value)
+      profile+(mu dj-profile)
   ==
 ::
 ++  dj-contact-key
@@ -27,6 +28,11 @@
   ?:  =('~' -.tape)
     [%.y ((se %p) json)]
   [%.n p.json]
+::
+++  dj-profile
+  %-  ot
+  :~  info+(op sym dj-info-value)
+  ==
 ::
 ++  dj-info-value
   |=  =json

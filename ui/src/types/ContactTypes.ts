@@ -1,7 +1,10 @@
+import { Profile } from "./ProfileTypes";
+
 export declare type Contacts = Record<string, Contact>
 
 export declare type Contact = {
   info: InfoFields,
+  profile: Profile | null
 }
 
 export interface ContactWithKey extends Contact {
