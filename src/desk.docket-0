@@ -1,5 +1,5 @@
-:~  title+'Whom'
-    info+'Contacts and Profiles'
+:~  title+'Contacts'
+    info+'Manage your profile and contacts'
     color+0x33.8899
     base+'whom'
     image+'https://raw.githubusercontent.com/JohnRillos/whom/master/assets/tile.svg'
