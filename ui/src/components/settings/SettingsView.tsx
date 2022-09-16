@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { deleteField } from '../../api/ContactPokes';
 import { AppContext } from '../../context/AppContext';
-import { FieldDef } from '../../types/SettingTypes';
+import { FieldDefWithKey } from '../../types/SettingTypes';
 import CloseButton from '../buttons/CloseButton';
 import DeleteButton from '../buttons/DeleteButton';
 import AddFieldForm from './AddFieldForm';
@@ -11,7 +11,7 @@ export default function SettingsView(props: { closeModal: () => void }) {
   let [ addFieldMode, setAddFieldMode ] = useState<boolean>(false);
   let [ isDeleting, setDeleting ] = useState<boolean>(false);
 
-  function renderFieldDef(def: FieldDef) {
+  function renderFieldDef(def: FieldDefWithKey) {
     return (
       <div className='flex space-x-4 py-0.5' key={def.key}>
         <span className='flex-grow'>{def.name}</span>
