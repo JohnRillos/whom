@@ -225,7 +225,7 @@
 ::
 ++  give-profile
   ^-  card
-  =/  =profile  [info.self field-list:field-util]
+  =/  =profile  [info.self fields]
   [%give %fact [/0/profile/public]~ %whom-profile-0 !>(profile)]
 ::
 ++  is-info-valid

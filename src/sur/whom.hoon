@@ -11,7 +11,7 @@
 ::
 +$  profile
   $:  info=(map @tas info-field)
-      fields=(list [@tas field-def])
+      fields=(map @tas field-def)
   ==
 ::
 +$  action

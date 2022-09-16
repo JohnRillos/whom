@@ -1,6 +1,6 @@
 import { Contact, Contacts, InfoValue } from './ContactTypes';
 import { Self } from './ProfileTypes';
-import { FieldDef, FieldTypeTag } from './SettingTypes';
+import { FieldDefWithKey, FieldTypeTag } from './SettingTypes';
 
 export declare type GallApp = 'whom';
 
@@ -27,7 +27,7 @@ export declare type ContactUpdate = {
 export declare type FieldUpdate = {
   app: 'whom',
   path: SubscribePath.Fields,
-  data: FieldDef[]
+  data: FieldDefWithKey[]
 };
 
 export declare type SelfUpdate = {

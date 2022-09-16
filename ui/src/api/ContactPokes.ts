@@ -1,7 +1,7 @@
 import Urbit from "@urbit/http-api";
 import { Contact, InfoValue } from "../types/ContactTypes";
 import { WhomAction } from "../types/GallTypes";
-import { FieldDef } from "../types/SettingTypes";
+import { FieldDefWithKey } from "../types/SettingTypes";
 
 function poke(
   api: Urbit,
@@ -70,7 +70,7 @@ export function deleteContact(api: Urbit, contactKey: string, onError: (err: str
 
 export function addField(
   api: Urbit,
-  fieldDef: FieldDef,
+  fieldDef: FieldDefWithKey,
   onError: (err: string | null) => void,
   onSuccess: () => void
 ) {

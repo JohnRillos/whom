@@ -1,10 +1,13 @@
 export declare type FieldSettings = {
-  defs: Record<string, FieldDef>,
+  defs: Record<string, FieldDefWithKey>,
   order: string[]
 }
 
-export declare type FieldDef = {
+export interface FieldDefWithKey extends FieldDef {
   key: string,
+}
+
+export declare type FieldDef = {
   name: string,
   type: FieldTypeTag,
 }

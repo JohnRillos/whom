@@ -1,6 +1,6 @@
-import { FieldDef, FieldSettings } from '../types/SettingTypes';
+import { FieldDefWithKey, FieldSettings } from '../types/SettingTypes';
 
-export function buildFieldSettings(defList: FieldDef[]): FieldSettings {
+export function buildFieldSettings(defList: FieldDefWithKey[]): FieldSettings {
   return {
     defs: Object.fromEntries(defList.map(def => [def.key, def])),
     order: defList.map(def => def.key)

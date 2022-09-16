@@ -97,6 +97,19 @@
   ^-  json
   %-  pairs:enjs:format
   :~  info+(enjs-info info.profile)
-      fields+(enjs-fields-0 fields.profile)
+      fields+(enjs-field-defs-map fields.profile)
+  ==
+::
+++  enjs-field-defs-map
+  |=  fields=(map @tas field-def)
+  ^-  json
+  %-  pairs:enjs:format
+  %+  turn  ~(tap by fields)
+  |=  [key=@tas val=field-def]
+  ^-  [@t json]
+  :-  key
+  %-  pairs
+  :~  name+s+name.val
+      type+s+type.val
   ==
 --

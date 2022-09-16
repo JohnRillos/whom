@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
 import { Contact, InfoValue, InfoDate, ContactWithKey } from '../../types/ContactTypes';
 import { getContactWithKey, getDisplayName } from '../../util/ContactUtil';
-import { buildFieldSettings, combineFieldOrders } from '../../util/FieldUtil';
+import { combineFieldOrders } from '../../util/FieldUtil';
 import EditForm from './EditForm';
 import DateField from '../fields/DateField';
 import TextField from '../fields/TextField';
@@ -19,8 +19,9 @@ export default function ContactDetail(): JSX.Element {
     return <p>Error</p>;
   }
 
-  const profileFieldSettings = buildFieldSettings(contact.profile?.fields || []);
-  const fieldOrder = combineFieldOrders(fieldSettings.order, profileFieldSettings.order);
+  const profileFieldDefs = contact.profile?.fields || {};
+  const profileFieldOrder = Object.keys(profileFieldDefs).sort();
+  const fieldOrder = combineFieldOrders(fieldSettings.order, profileFieldOrder);
 
   function renderShipName(contact: ContactWithKey) {
     if (!contact.ship) {
@@ -30,7 +31,7 @@ export default function ContactDetail(): JSX.Element {
   }
 
   function renderInfoField(key: string, val: InfoValue | undefined, fromProfile: boolean) {
-    const defs = fromProfile ? profileFieldSettings.defs : fieldSettings.defs;
+    const defs = fromProfile ? profileFieldDefs : fieldSettings.defs;
     const label = defs[key]?.name || key;
     switch (defs[key]?.type) {
       case 'text':

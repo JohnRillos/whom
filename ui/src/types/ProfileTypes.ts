@@ -7,5 +7,5 @@ export declare type Self = {
 
 export declare type Profile = {
   info: InfoFields,
-  fields: FieldDef[]
+  fields: Record<string, FieldDef>
 }
