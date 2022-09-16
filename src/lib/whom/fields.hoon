@@ -39,11 +39,14 @@
     ::
     ++  sort-by-default-list
       |=  [a=[@tas field-def] b=[@tas field-def]]
-      =/  index-a=(unit @)  (find [a]~ default-field-list)
-      =/  index-b=(unit @)  (find [b]~ default-field-list)
-      ?~  index-a  !!
-      ?~  index-b  !!
+      =/  index-a=(unit @)  (find [-.a]~ default-key-list)
+      =/  index-b=(unit @)  (find [-.b]~ default-key-list)
+      ?~  index-a  ~|  'Failed to sort fields'  !!
+      ?~  index-b  ~|  'Failed to sort fields'  !!
       (lth u.index-a u.index-b)
+    ::
+    ++  default-key-list
+      (turn default-field-list |=([key=@tas *] key))
     --
   ::
   ++  is-valid

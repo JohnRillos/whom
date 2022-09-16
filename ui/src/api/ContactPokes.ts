@@ -40,7 +40,7 @@ export function editContact(
     onSuccess: () => void
 ) {
   const json = {
-    'edit-contact': {
+    'mod-contact-info': {
       key,
       info
     }
@@ -56,7 +56,7 @@ export function editContactShip(
   onSuccess: () => void
 ) {
   const json = {
-    'edit-contact-ship': {
+    'mod-contact-ship': {
       key,
       ship
     }
@@ -99,7 +99,7 @@ export function editSelf(
   onSuccess: () => void
 ) {
   const json = {
-    'edit-self': {
+    'mod-self': {
       info
     }
   };

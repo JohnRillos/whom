@@ -7,11 +7,11 @@
   %-  of
   :~  [%add-contact (ot ship+(mu (se %p)) contact+dj-contact ~)]
       [%del-contact (ot key+dj-contact-key ~)]
-      [%edit-contact (ot key+dj-contact-key info+(op sym (mu dj-info-value)) ~)]
-      [%edit-contact-ship (ot key+dj-contact-key ship+(mu (se %p)) ~)]
+      [%mod-contact-info (ot key+dj-contact-key info+(op sym (mu dj-info-value)) ~)]
+      [%mod-contact-ship (ot key+dj-contact-key ship+(mu (se %p)) ~)]
       [%add-field (ot key+(se %tas) def+dj-field-def ~)]
       [%del-field (ot key+(se %tas) ~)]
-      [%edit-self (ot info+(op sym (mu dj-info-value)) ~)]
+      [%mod-self (ot info+(op sym (mu dj-info-value)) ~)]
   ==
 ::
 ++  dj-contact

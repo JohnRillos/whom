@@ -52,14 +52,14 @@ type AddContactAction = {
 };
 
 type EditContactAction = {
-  'edit-contact': {
+  'mod-contact-info': {
     key: string,
     info: Record<string, InfoValue | null>
   }
 };
 
 type EditContactShipAction = {
-  'edit-contact-ship': {
+  'mod-contact-ship': {
     key: string,
     ship: string | null
   }
@@ -88,7 +88,7 @@ type DelFieldAction = {
 };
 
 type EditSelfAction = {
-  'edit-self': {
+  'mod-self': {
     info: Record<string, InfoValue | null>
   }
 };

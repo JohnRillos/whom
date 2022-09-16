@@ -89,14 +89,14 @@
         %.n  ~[give-contacts:main]
       ==
       ::
-        %edit-contact
+        %mod-contact-info
       =/  contact  (~(got by contacts) key.act)
       =.  info.contact  (edit-info-map info.act info.contact)
       ?>  (is-info-valid:main info.contact)
       =.  contacts  (~(put by contacts) key.act contact)
       [[give-contacts:main ~] state]
       ::
-        %edit-contact-ship
+        %mod-contact-ship
       =/  contact   (~(got by contacts) key.act)
       =.  contacts  (~(del by contacts) key.act)
       =.  profile.contact  ~
@@ -112,8 +112,8 @@
       [cards state]
       ::
         %add-field
-      ~|  "Field {<key.act>} already exists!"
-        ?<  (~(has by fields) key.act)
+      ?:  (~(has by fields) key.act)
+        ~|  "Field {<key.act>} already exists!"  !!
       =.  fields  (~(put by fields) key.act def.act)
       [[give-fields:main ~] state]
       ::
@@ -130,7 +130,7 @@
       =.  fields  (~(del by fields) key.act)
       [[give-fields:main ~] state]
       ::
-        %edit-self
+        %mod-self
       =.  info.self  (edit-info-map info.act info.self)
       ?>  (is-info-valid:main info.self)
       :_  state
@@ -146,10 +146,9 @@
     ?>  =(~ profile.contact)
     =/  key=(each @p @t)
       ?~  ship  [%.n (scot %ud next-id)]
-      ~|  'You cannot add yourself as a contact.'
-        ?<  =(our.bowl u.ship)
+      ?:  =(our.bowl u.ship)  ~|('You cannot add yourself as a contact.' !!)
       [%.y u.ship]
-    ~|  "{<p.key>} already exists in contacts!"  ?<  (~(has by contacts) key)
+    ?:  (~(has by contacts) key)  ~|("{<p.key>} already exists in contacts!" !!)
     =.  next-id  +(next-id)
     =.  contacts  (~(put by contacts) key contact)
     state
@@ -266,8 +265,9 @@
   |=  =profile
   ^-  (quip card _state)
   =/  key=(each @p @t)  [%.y src.bowl]
-  ~|  "No contact: {<src.bowl>}"
-  =/  =contact  (~(got by contacts) key)
+  =/  =contact
+    ~|  "No contact: {<src.bowl>}"
+    (~(got by contacts) key)
   =.  profile.contact  `profile
   =.  contacts  (~(put by contacts) key contact)
   [[give-contacts ~] state]
