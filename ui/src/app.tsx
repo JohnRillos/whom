@@ -1,33 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import Urbit from '@urbit/http-api';
 import { Subscribe } from './api/Subscribe';
 import { ContactList } from './components/ContactList';
 import Modal from './components/Modal';
 import ContactDetail from './components/contactDetail/ContactDetail';
 import { AppContext, AppContextType, initialContext } from './context/AppContext';
 import { Contacts } from './types/ContactTypes';
-import { GallUpdate } from './types/GallTypes';
+import { GallUpdate, SubscribePath } from './types/GallTypes';
 import AddContactForm from './components/AddContactForm';
 import { buildFieldSettings } from './util/FieldUtil';
-import { FieldDef, FieldSettings } from './types/SettingTypes';
+import { FieldSettings } from './types/SettingTypes';
 import SettingsButton from './components/buttons/SettingsButton';
 import SettingsView from './components/settings/SettingsView';
 import ErrorNotification from './components/ErrorNotification';
 import ProfileButton from './components/buttons/ProfileButton';
 import ProfileContainer from './components/profile/ProfileContainer';
 import { Self } from './types/ProfileTypes';
-
-async function scryContacts(urbit: Urbit): Promise<Contacts> {
-  return urbit.scry<Contacts>({ app: 'whom', path: '/contacts' });
-}
-
-async function scryFieldDefs(urbit: Urbit): Promise<FieldDef[]> {
-  return urbit.scry<FieldDef[]>({ app: 'whom', path: '/fields' });
-}
-
-async function scrySelf(urbit: Urbit): Promise<Self> {
-  return urbit.scry<Self>({ app: 'whom', path: '/self' });
-}
+import { scryContacts, scryFieldDefs, scrySelf } from './api/Scry';
 
 export function App() {
   const [contacts, setContacts] = useState<Contacts>({});
@@ -44,9 +32,7 @@ export function App() {
   useEffect(() => {
     const api = initialContext.api
     scryFieldDefs(api)
-      .then(res => {
-        setFieldSettings(buildFieldSettings(res))
-      })
+      .then(res => setFieldSettings(buildFieldSettings(res)))
       .then(() => scryContacts(api))
       .then(res => setContacts(res))
       .then(() => scrySelf(api))
@@ -55,20 +41,21 @@ export function App() {
   }, []);
 
   function handleUpdate(update: GallUpdate) {
-    if (update.app === 'whom' && update.data) {
-      switch(update.path) {
-        case '/contacts': {
-          setContacts(update.data);
-          break;
-        }
-        case '/fields': {
-          setFieldSettings(buildFieldSettings(update.data));
-          break;
-        }
-        case '/self': {
-          setSelf(update.data);
-          break;
-        }
+    if (update.app != 'whom' || !update.data) {
+      return;
+    }
+    switch(update.path) {
+      case SubscribePath.Contacts: {
+        setContacts(update.data);
+        break;
+      }
+      case SubscribePath.Fields: {
+        setFieldSettings(buildFieldSettings(update.data));
+        break;
+      }
+      case SubscribePath.Self: {
+        setSelf(update.data);
+        break;
       }
     }
   };

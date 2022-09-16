@@ -1,13 +1,13 @@
-import { Contact, Contacts, ContactWithKey } from '../types/ContactTypes';
+import { Contact, Contacts, ContactWithKey, InfoFields } from '../types/ContactTypes';
 
-function getFullName(contact: Contact): string {
-  var first = contact.info['first-name'];
-  var last = contact.info['last-name'];
+function getFullName(info: InfoFields): string {
+  var first = info['first-name'];
+  var last = info['last-name'];
   return [first, last].filter(s => !!s).join(' ');
 }
 
 export function getDisplayName(contact: ContactWithKey): string {
-  var fullName = getFullName(contact);
+  var fullName = getFullName(contact.info) || getFullName(contact.profile?.info || {});
   if (contact.ship) {
     if (fullName) {
       return fullName + ' (' + contact.ship + ')';
@@ -17,7 +17,8 @@ export function getDisplayName(contact: ContactWithKey): string {
   if (fullName) {
     return fullName;
   }
-  return contact.info.nickname || '(New Contact)';
+  var nickname = contact.info.nickname || contact.profile?.info.nickname;
+  return nickname || '(New Contact)';
 }
 
 export function withKey(entry: [string, Contact]): ContactWithKey {

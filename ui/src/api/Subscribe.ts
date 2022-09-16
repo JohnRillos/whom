@@ -11,9 +11,9 @@ const Subscribe = (api: Urbit, handleUpdate: (update: GallUpdate) => any) => {
       err: (err) => console.error(err)
     });
   };
-  subscribe('whom', '/contacts');
-  subscribe('whom', '/fields');
-  subscribe('whom', '/self');
+  subscribe('whom', SubscribePath.Contacts);
+  subscribe('whom', SubscribePath.Fields);
+  subscribe('whom', SubscribePath.Self);
 };
 
 export { Subscribe };

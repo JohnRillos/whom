@@ -40,31 +40,12 @@
 ++  on-load
   |=  old-vase=vase
   ^-  (quip card _this)
-  :: |^
   =|  cards=(list card)
-  :: ?:  %.y  (reset-state cards) :: (for testing only)
   =+  !<(old=versioned-state old-vase)
   |-
   ?-  -.old
     %0  [cards this(state old)]
   ==
-  ::
-  :: ++  reset-state :: (testing only)
-  ::   |=  cards=(list card)
-  ::   =.  cards  (weld cards leave-all)
-  ::   =/  new-state  *state-0
-  ::   =/  default-fields  default-fields:whom-fields
-  ::   [cards this(state new-state(fields default-fields))]
-  :: ::
-  :: ++  leave-all :: (testing only)
-  ::   ^-  (list card)
-  ::   =/  wex=(map [=wire =ship =term] [* *])  wex.bowl
-  ::   =/  subs=(list [=wire =ship =term])
-  ::     ~(tap in ~(key by wex.bowl))
-  ::   %+  turn  subs
-  ::   |=  [=wire =ship =term]
-  ::   [%pass wire %agent [ship term] %leave ~]
-  :: --
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -84,7 +65,6 @@
     ==
     ::
       %whom-action
-    ~&  >  %whom-action
     =^  cards  state
       (handle-action !<(action vase))
     [cards this]
@@ -191,19 +171,19 @@
 ++  on-watch
   |=  =path
   |^
-  ~&  "{<src.bowl>} subscribed to {<path>}"
   ^-  (quip card _this)
+  :_  this
   ?+  path  (on-watch:default path)
-    [%contacts ~]  %-  me  [[give-contacts:main ~] this]
-    [%fields ~]    %-  me  [[give-fields:main ~] this]
-    [%self ~]      %-  me  [[give-self:main ~] this]
-    [%profile %public ~]   [[give-profile:main ~] this]
+    [%~.0 %contacts ~]  %-  me  ~[give-contacts:main]
+    [%~.0 %fields ~]    %-  me  ~[give-fields:main]
+    [%~.0 %self ~]      %-  me  ~[give-self:main]
+    [%~.0 %profile %public ~]   ~[give-profile:main]
   ==
   ++  me
-    |=  quip=(quip card _this)
+    |=  cards=(list card)
     ~|  'Unauthorized!'
     ?>  (team:title our.bowl src.bowl)
-    quip
+    cards
   --
 ::
 ++  on-leave  on-leave:default
@@ -211,9 +191,9 @@
   |=  =path
   ^-  (unit (unit cage))
   ?+  path  (on-peek:default path)
-    [%x %contacts ~]  ``whom-contacts-0+!>(contacts)
-    [%x %fields ~]    ``whom-fields-0+!>(field-list:field-util:main)
-    [%x %self ~]      ``whom-self-0+!>(self)
+    [%x %~.0 %contacts ~]  ``whom-contacts-0+!>(contacts)
+    [%x %~.0 %fields ~]    ``whom-fields-0+!>(field-list:field-util:main)
+    [%x %~.0 %self ~]      ``whom-self-0+!>(self)
   ==
 ::
 ++  on-agent
@@ -233,21 +213,21 @@
 ++  give-contacts
   ^-  card
   =/  =contacts-0  contacts
-  [%give %fact [/contacts]~ %whom-contacts-0 !>(contacts-0)]
+  [%give %fact [/0/contacts]~ %whom-contacts-0 !>(contacts-0)]
 ::
 ++  give-fields
   ^-  card
   =/  =fields-0  field-list:field-util
-  [%give %fact [/fields]~ %whom-fields-0 !>(fields-0)]
+  [%give %fact [/0/fields]~ %whom-fields-0 !>(fields-0)]
 ::
 ++  give-self
   ^-  card
-  [%give %fact [/self]~ %whom-self-0 !>(self)]
+  [%give %fact [/0/self]~ %whom-self-0 !>(self)]
 ::
 ++  give-profile
   ^-  card
   =/  =profile  [info.self field-list:field-util]
-  [%give %fact [/profile/public]~ %whom-profile-0 !>(profile)]
+  [%give %fact [/0/profile/public]~ %whom-profile-0 !>(profile)]
 ::
 ++  is-info-valid
   |=  info=(map @tas info-field)
@@ -265,13 +245,13 @@
   |=  ship=@p
   ^-  card
   ~&  "Subscribing to {<ship>}'s profile..."
-  [%pass /profile/(scot %p ship) %agent [ship %whom] %watch /profile/public]
+  [%pass /0/profile/(scot %p ship) %agent [ship %whom] %watch /0/profile/public]
 ::
 ++  leave-profile
   |=  ship=@p
   ^-  card
   ~&  "Unsubscribing from {<ship>}'s profile..."
-  [%pass /profile/(scot %p ship) %agent [ship %whom] %leave ~]
+  [%pass /0/profile/(scot %p ship) %agent [ship %whom] %leave ~]
 ::
 ++  handle-fact
   |=  =cage
@@ -285,7 +265,6 @@
 ++  take-profile
   |=  =profile
   ^-  (quip card _state)
-  ~&  >  <profile>
   =/  key=(each @p @t)  [%.y src.bowl]
   ~|  "No contact: {<src.bowl>}"
   =/  =contact  (~(got by contacts) key)

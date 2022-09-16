@@ -4,25 +4,35 @@ import { FieldDef, FieldTypeTag } from './SettingTypes';
 
 export declare type GallApp = 'whom';
 
+export enum ScryPath {
+  Contacts = '/0/contacts',
+  Fields = '/0/fields',
+  Self = '/0/self'
+}
+
 export declare type GallUpdate = ContactUpdate | FieldUpdate | SelfUpdate;
 
-export declare type SubscribePath = '/contacts' | '/fields' | '/self';
+export enum SubscribePath {
+  Contacts = '/0/contacts',
+  Fields = '/0/fields',
+  Self = '/0/self'
+}
 
 export declare type ContactUpdate = {
   app: 'whom',
-  path: '/contacts',
+  path: SubscribePath.Contacts,
   data: Contacts
 };
 
 export declare type FieldUpdate = {
   app: 'whom',
-  path: '/fields',
+  path: SubscribePath.Fields,
   data: FieldDef[]
 };
 
 export declare type SelfUpdate = {
   app: 'whom',
-  path: '/self',
+  path: SubscribePath.Self,
   data: Self
 };
 
