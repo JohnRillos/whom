@@ -99,6 +99,9 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
   function renderProfile() {
     return (
       <div className='text-left h-fit'>
+        <p className='text-center text-sm mb-1'>
+          This is your public profile. <br/>It will be shared with anyone who adds you as a contact. Privacy settings will be added in a future update.
+        </p>
         <h2 className='text-center mb-2 font-bold text-2xl'>~{window.ship}</h2>
         {renderInfoFields()}
         <div className='mt-2 space-x-2'>
