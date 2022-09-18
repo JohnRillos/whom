@@ -3,6 +3,7 @@ import { useContext } from 'react'
 import { ContactWithKey } from '../types/ContactTypes';
 import { getDisplayName } from '../util/ContactUtil';
 import { AppContext } from '../context/AppContext'
+import Sigil from './Sigil';
 
 export const ContactCard = (props:{contact:ContactWithKey}) => {
   let { selectContact, openModal } = useContext(AppContext);
@@ -15,7 +16,14 @@ export const ContactCard = (props:{contact:ContactWithKey}) => {
         openModal();
       }}
     >
-      <div className='px-2 py-2 text-left text-lg'>
+      <div className='px-2 py-2 text-left text-lg flex flex-row'>
+        <div className='w-7 mr-2'>
+          {
+            props.contact.ship
+            ? <Sigil ship={props.contact.ship}/>
+            : null
+          }
+        </div>
         <p>{getDisplayName(props.contact)}</p>
       </div>
     </button>
