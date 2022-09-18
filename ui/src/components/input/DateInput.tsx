@@ -1,5 +1,4 @@
-import React from 'react';
-import DatePicker from 'react-date-picker/dist/entry.nostyle';
+import React, { ChangeEvent } from 'react';
 import { InfoDate } from '../../types/ContactTypes';
 import './styles/Calendar.css';
 import './styles/DatePicker.css'
@@ -18,52 +17,52 @@ export default function DateInput(
 ): JSX.Element {
   function renderValue() {
     return (
-      <DatePicker
-        className='stroke-black dark:stroke-light bg-standard'
-        calendarClassName='bg-standard border-inset border-2 border-black dark:border-light shadow-lg'
-        formatMonth={formatCalendarMonth}
-        onChange={handleDateChange}
-        value={fromInfoDate(props.value)}
-        format='y/M/d'
-        yearPlaceholder='yyyy'
-        monthPlaceholder='mm'
-        dayPlaceholder='dd'
-        maxDate={new Date()}
-      />
+      <div className='border-b-2 border-dotted border-neutral-500'>
+        <input type='date'
+          id={props.label}
+          className={getValueStyle()}
+          onChange={handleDateChange}
+          pattern='\d{4}-\d{2}-\d{2}'
+          value={fromInfoDate(props.value)}
+          min={'0001-01-01'}
+        />
+      </div>
     );
   }
 
-  function formatCalendarMonth(locale: string, date: Date): string {
-    return date.toLocaleDateString(locale, { month: 'short' })
+  function getValueStyle(): string {
+    const opacity = !props.value ? 'opacity-50' : '';
+    return `bg-transparent text-black dark:invert ${opacity}`
   }
 
-  function fromInfoDate(infoDate: InfoDate | undefined): Date | undefined {
+  function fromInfoDate(infoDate: InfoDate | undefined): string | undefined {
     if (infoDate == undefined) {
-      return undefined;
+      return '';
     }
     const { year, month, day } = infoDate.date;
-    const date = new Date(year, month - 1, day);
-    if (year < 100) {
-      date.setFullYear(year);
-    }
-    return date;
+    const yearString = `${year}`.padStart(4, '0');
+    const monthString = `${month}`.padStart(2, '0');
+    const dayString = `${day}`.padStart(2, '0');
+    return `${yearString}-${monthString}-${dayString}`;
   }
 
-  function toInfoDate(date: Date | undefined): InfoDate | undefined {
-    if (date == undefined) {
+  function toInfoDate(date: string | undefined): InfoDate | undefined {
+    if (!date) {
       return undefined;
     }
+    const [year, month, day] = date.split('-');
     return {
       date: {
-        year: date.getFullYear(),
-        month: date.getMonth() + 1,
-        day: date.getDate()
+        year: Number(year),
+        month: Number(month),
+        day: Number(day)
       }
     }
   }
 
-  function handleDateChange(value: Date | undefined) {
-    props.onChange(toInfoDate(value));
+  function handleDateChange(event: ChangeEvent<HTMLInputElement>) {
+    const dateString = event.target.value;
+    props.onChange(toInfoDate(dateString));
   }
 
   return (

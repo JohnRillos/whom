@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import { InfoDate } from '../../types/ContactTypes';
 
@@ -11,9 +12,10 @@ function renderValue(value: InfoDate | undefined) {
     return '______________';
   }
   const { date } = value;
+  const dateMoment = moment(`${date.year}-${date.month}-${date.day}`, 'yyyy-MM-DD');
   return (
     <p>
-      {`${date.year}/${date.month}/${date.day}`}
+      {dateMoment.format('l')}
     </p>
   );
 }
