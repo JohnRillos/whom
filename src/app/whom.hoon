@@ -118,6 +118,8 @@
       [[give-fields:main ~] state]
       ::
         %del-field
+      ?:  (~(has by info.self) key.act)
+        ~|("Cannot delete field {<key.act>}: Still in use by your profile!" !!)
       =/  count=@ud
         %-  ~(rep by contacts)
         |=  [entry=[* =contact] acc=@ud]
