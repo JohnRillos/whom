@@ -127,14 +127,14 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
   }
 
   return (
-    <div className='h-full w-full flex flex-col overflow-hidden'>
+    <div className='h-full w-full flex flex-col'>
       <nav className='flex-shrink w-full flex flex-row p-4'>
         <div className='fixed'>
           <BackButton label='Contacts' onClick={props.closeContainer}/>
         </div>
         <h1 className='m-auto text-center text-3xl font-bold'>Profile</h1>
       </nav>
-      <div className='mx-auto justify-self-center max-w-md px-4'>
+      <div className='mx-auto justify-self-center max-w-md px-4 pb-4 overflow-y-auto'>
         {renderProfile()}
       </div>
     </div>

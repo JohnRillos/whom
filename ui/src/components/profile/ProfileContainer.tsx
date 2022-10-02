@@ -16,7 +16,7 @@ export default function ProfileContainer(props: { isOpen: boolean, close: () => 
           leaveFrom='opacity-100 top-0'
           leaveTo='opacity-0 -top-full'
         >
-          <div className='fixed inset-0 overflow-y-auto bg-standard'>
+          <div className='fixed inset-0 bg-standard'>
             <ProfileView closeContainer={props.close}/>
           </div>
         </Transition.Child>
