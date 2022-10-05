@@ -1,13 +1,14 @@
 import React from 'react';
 import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
-import { Contact, InfoValue, InfoDate, ContactWithKey } from '../../types/ContactTypes';
+import { InfoValue, InfoDate, ContactWithKey, InfoFields } from '../../types/ContactTypes';
 import { getContactWithKey, getDisplayName } from '../../util/ContactUtil';
 import { combineFieldOrders } from '../../util/FieldUtil';
 import EditForm from './EditForm';
 import DateField from '../fields/DateField';
 import TextField from '../fields/TextField';
 import Menu from './Menu';
+import { FieldDef } from '../../types/SettingTypes';
 
 export default function ContactDetail(): JSX.Element {
   const { contacts, selectedContactKey, editContactMode, fieldSettings } = useContext(AppContext);
@@ -30,10 +31,9 @@ export default function ContactDetail(): JSX.Element {
     return <TextField label='Urbit' value={contact.ship}/>
   }
 
-  function renderInfoField(key: string, val: InfoValue | undefined, fromProfile: boolean) {
-    const defs = fromProfile ? profileFieldDefs : fieldSettings.defs;
-    const label = defs[key]?.name || key;
-    switch (defs[key]?.type) {
+  function renderInfoField(key: string, val: InfoValue | undefined, fieldDef: FieldDef) {
+    const label = fieldDef.name || key;
+    switch (fieldDef.type) {
       case 'text':
         return <TextField label={label} value={val as string | undefined}/>;
       case 'date':
@@ -43,32 +43,46 @@ export default function ContactDetail(): JSX.Element {
     }
   }
 
-  function renderInfoFields(contact: Contact) {
+  function renderInfoFields(info: InfoFields, defs: Record<string, FieldDef>) {
     return (
       <ul>
         {fieldOrder.map((key: string) => ({
           key: key,
-          value: contact.info[key] || contact.profile?.info[key],
-          fromProfile: !(key in contact.info) && !!contact.profile && (key in contact.profile.info)
+          value: info[key],
         }))
-        .filter((arg: { key: string, value: InfoValue | undefined, fromProfile: boolean}) => arg.value !== undefined)
-        .map((arg: {key: string, value: InfoValue | undefined, fromProfile: boolean}) => (
+        .filter((arg: { key: string, value: InfoValue | undefined}) => arg.value !== undefined)
+        .map((arg: {key: string, value: InfoValue | undefined}) => (
           <li key={arg.key}>
-            {renderInfoField(arg.key, arg.value, arg.fromProfile)}
+            {renderInfoField(arg.key, arg.value, defs[arg.key])}
           </li>
         ))}
       </ul>
     );
   }
 
+  function renderProfile(contact: ContactWithKey) {
+    if (!contact.profile || Object.keys(contact.profile.info).length == 0) {
+      return null;
+    }
+    return (
+      <div className='mt-2 pt-2 text-center'>
+        <strong>Profile</strong>
+        {renderInfoFields(contact.profile.info, profileFieldDefs)}
+      </div>
+    );
+  }
+
   function renderContact(contact: ContactWithKey) {
     return (
       <div className='text-left h-fit'>
-        <p className='mb-2'>
+        <p className='mb-2 text-center'>
           <strong>{getDisplayName(contact)}</strong>
         </p>
         {renderShipName(contact)}
-        {renderInfoFields(contact)}
+        <div className='divide-y divide-gray-400/50'>
+          {renderInfoFields(contact.info, fieldSettings.defs )}
+          {renderProfile(contact)}
+        </div>
       </div>
     );
   }

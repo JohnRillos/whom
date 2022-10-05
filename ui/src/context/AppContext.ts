@@ -19,7 +19,7 @@ export type AppContextType = {
   editContactMode: boolean,
   setEditContactMode: (value: boolean) => void,
   fieldSettings: FieldSettings,
-  self: Self,
+  self: Self
 }
 
 function getUrbitApi(): Urbit {
