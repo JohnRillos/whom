@@ -61,7 +61,7 @@
   |=  [=mark =vase]
   ^-  (quip card _this)
   |^
-  ?>  (= our.bowl src.bowl)
+  ?.  =(our.bowl src.bowl)  ~|('Unauthorized!' !!)
   ?+    mark  (on-poke:default mark vase)
       %noun
     ?+    q.vase  (on-poke:default mark vase)
@@ -199,7 +199,7 @@
   ++  me
     |=  cards=(list card)
     ~|  'Unauthorized!'
-    ?>  (team:title our.bowl src.bowl)
+    ?>  =(our.bowl src.bowl)
     cards
   --
 ::
