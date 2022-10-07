@@ -22,6 +22,9 @@
       [%add-field key=@tas def=field-def]
       [%del-field key=@tas]
       [%mod-self info=(map @tas (unit info-field))]
+      [%pal-sync enabled=?]
+      :: %hey-pal
+      :: %bye-pal
   ==
 ::
 +$  field-def  [name=@t type=field-type-tag]

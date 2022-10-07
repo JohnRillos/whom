@@ -1,11 +1,12 @@
-/-  *whom
-/+  default-agent, dbug, verb, whom-fields
+/-  *whom, pals
+/+  default-agent, dbug, pals-lib=pals, verb, whom-fields
 |%
 ::
 +$  card  card:agent:gall
 ::
 +$  versioned-state
   $%  state-0
+      state-1
   ==
 ::
 +$  state-0
@@ -15,9 +16,18 @@
       fields=(map @tas field-def)
       next-id=@ud
   ==
+::
++$  state-1
+  $:  %1
+      =self
+      contacts=(map (each @p @t) contact)
+      fields=(map @tas field-def)
+      next-id=@ud
+      import-pals=?
+  ==
 --
 ::
-=|  state-0
+=|  state-1
 =*  state  -
 ::
 %-  agent:dbug
@@ -31,26 +41,27 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  =.  state  *state-0
-  =.  fields  default-fields:whom-fields
-  [~ this]
+  =|  =state-0
+  =.  fields.state-0  default-fields:whom-fields
+  =^  cards  state
+    (build-state:main state-0)
+  [cards this]
 ::
 ++  on-save  !>(state)
 ::
 ++  on-load
   |=  old-vase=vase
   ^-  (quip card _this)
-  =|  cards=(list card)
   =+  !<(old=versioned-state old-vase)
-  |-
-  ?-  -.old
-    %0  [cards this(state old)]
-  ==
+  =^  cards  state
+    (build-state:main old)
+  [cards this]
 ::
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
   |^
+  ?>  (= our.bowl src.bowl)
   ?+    mark  (on-poke:default mark vase)
       %noun
     ?+    q.vase  (on-poke:default mark vase)
@@ -139,6 +150,11 @@
       :~  give-self:main
           give-profile:main
       ==
+      ::
+        %pal-sync
+      =.  import-pals  enabled.act
+      =/  targets=(set @p)  (targets:pals-lib ~)
+      [~ state] :: todo: when enabling, import all pals (scry or just un-watch -> re-watch %pals)
     ==
   ::
   ++  add-contact
@@ -203,13 +219,33 @@
   ?+  -.sign  (on-agent:default wire sign)
       %fact
     =^  cards  state
-      (handle-fact:main cage.sign)
+      (handle-fact:main cage.sign wire)
     [cards this]
   ==
 ::
 ++  on-fail   on-fail:default
 --
 |_  =bowl:gall
+::
+++  build-state
+  |^
+  |=  old=versioned-state
+  ^-  (quip card state-1)
+  =|  cards=(list card)
+  |-
+  ?-  -.old
+    %1  [cards old]
+    %0  $(old (state-0-to-1 old), cards watch-pals)
+  ==
+  ::
+  ++  state-0-to-1
+    |=  old=state-0
+    ^-  state-1
+    %=  old
+      -        %1
+      next-id  [next-id.old import-pals=%.n]
+    ==
+  --
 ::
 ++  give-contacts
   ^-  card
@@ -254,14 +290,34 @@
   ~&  "Unsubscribing from {<ship>}'s profile..."
   [%pass /0/profile/(scot %p ship) %agent [ship %whom] %leave ~]
 ::
+++  watch-pals
+  ^-  (list card)
+  :~  [%pass /pals/targets %agent [our.bowl %pals] %watch /targets]
+      [%pass /pals/leeches %agent [our.bowl %pals] %watch /leeches]
+  ==
+::
 ++  handle-fact
-  |=  =cage
+  |=  [=cage =wire]
   ^-  (quip card _state)
-  ?+  -.cage  ~|  "Unknown cage {<cage>}"  !!
-      %whom-profile-0  
+  ?+  wire  ~|  "Unknown wire {<wire>}"  !!
+      [%~.0 %profile @p ~]
     =/  =profile  !<(profile q.cage)
     (take-profile profile)
+      [%pals @tas ~]
+    =/  =effect:pals  !<(effect:pals q.cage)
+    :_  state
+    ?+  -.effect  ~
+        %meet
+      =|  =contact
+      ?.  import-pals  ~
+      ~[(poke-self [%add-contact `ship.effect contact])]
+    ==
   ==
+::
+++  poke-self
+  |=  =action
+  ^-  card
+  [%pass [-.action ~] %agent [our.bowl %whom] %poke %whom-action !>(action)]
 ::
 ++  take-profile
   |=  =profile
