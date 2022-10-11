@@ -1,4 +1,4 @@
-/-  *whom, pals
+/-  *whom, pals-sur=pals
 /+  default-agent, dbug, pals-lib=pals, verb, whom-fields
 |%
 ::
@@ -38,6 +38,7 @@
 +*  this     .
     default  ~(. (default-agent this %|) bowl)
     main     ~(. +> bowl)
+    pals  ~(. pals-lib bowl)
 ::
 ++  on-init
   ^-  (quip card _this)
@@ -153,8 +154,13 @@
       ::
         %pal-sync
       =.  import-pals  enabled.act
-      =/  targets=(set @p)  (targets:pals-lib ~)
-      [~ state] :: todo: when enabling, import all pals (scry or just un-watch -> re-watch %pals)
+      ?.  enabled.act  [~ state]
+      =/  new-pals=(list ship)
+        %+  skip  ~(tap in (targets:pals ''))
+        |=  =ship  (~(has by contacts) [%.y ship])
+      :_  state
+      %+  turn  new-pals
+      |=  =ship  (poke-self [%add-contact `ship *contact])
     ==
   ::
   ++  add-contact
@@ -281,13 +287,11 @@
 ++  watch-profile
   |=  ship=@p
   ^-  card
-  ~&  "Subscribing to {<ship>}'s profile..."
   [%pass /0/profile/(scot %p ship) %agent [ship %whom] %watch /0/profile/public]
 ::
 ++  leave-profile
   |=  ship=@p
   ^-  card
-  ~&  "Unsubscribing from {<ship>}'s profile..."
   [%pass /0/profile/(scot %p ship) %agent [ship %whom] %leave ~]
 ::
 ++  watch-pals
@@ -304,13 +308,12 @@
     =/  =profile  !<(profile q.cage)
     (take-profile profile)
       [%pals @tas ~]
-    =/  =effect:pals  !<(effect:pals q.cage)
+    =/  =effect:pals-sur  !<(effect:pals-sur q.cage)
     :_  state
     ?+  -.effect  ~
         %meet
-      =|  =contact
       ?.  import-pals  ~
-      ~[(poke-self [%add-contact `ship.effect contact])]
+      ~[(poke-self [%add-contact `ship.effect *contact])]
     ==
   ==
 ::
