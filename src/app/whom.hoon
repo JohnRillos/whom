@@ -38,7 +38,7 @@
 +*  this     .
     default  ~(. (default-agent this %|) bowl)
     main     ~(. +> bowl)
-    pals  ~(. pals-lib bowl)
+    pals     ~(. pals-lib bowl)
 ::
 ++  on-init
   ^-  (quip card _this)

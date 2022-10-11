@@ -19,7 +19,7 @@
   ==
 ::
 ++  default-fields
-  (~(gas by *(map @tas field-def)) default-field-list)
+  ~+  (~(gas by *(map @tas field-def)) default-field-list)
 ::
 ++  field-util
   |_  field-map=(map @tas field-def)
@@ -30,8 +30,8 @@
     ::
     ++  sort-fields
       |=  [a=[key=@tas def=field-def] b=[key=@tas def=field-def]]
-      =/  a-default  (~(has by default-fields) key.a)
-      =/  b-default  (~(has by default-fields) key.b)
+      =/  a-default  ~+  (~(has by default-fields) key.a)
+      =/  b-default  ~+  (~(has by default-fields) key.b)
       ?:  &(a-default b-default)  (sort-by-default-list a b)
       ?:  a-default  %.y
       ?:  b-default  %.n
@@ -39,14 +39,14 @@
     ::
     ++  sort-by-default-list
       |=  [a=[@tas field-def] b=[@tas field-def]]
-      =/  index-a=(unit @)  (find [-.a]~ default-key-list)
-      =/  index-b=(unit @)  (find [-.b]~ default-key-list)
+      =/  index-a=(unit @)  ~+  (find [-.a]~ default-key-list)
+      =/  index-b=(unit @)  ~+  (find [-.b]~ default-key-list)
       ?~  index-a  ~|  'Failed to sort fields'  !!
       ?~  index-b  ~|  'Failed to sort fields'  !!
       (lth u.index-a u.index-b)
     ::
     ++  default-key-list
-      (turn default-field-list |=([key=@tas *] key))
+      ~+  (turn default-field-list |=([key=@tas *] key))
     --
   ::
   ++  is-valid
