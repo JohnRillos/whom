@@ -313,6 +313,7 @@
     ?+  -.effect  ~
         %meet
       ?.  import-pals  ~
+      ?:  (~(has by contacts) [%.y ship.effect])  ~
       ~[(poke-self [%add-contact `ship.effect *contact])]
     ==
   ==
