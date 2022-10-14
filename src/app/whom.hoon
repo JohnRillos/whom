@@ -154,11 +154,12 @@
       ::
         %pal-sync
       =.  import-pals  enabled.act
-      ?.  enabled.act  [~ state]
+      ?.  enabled.act  [~[give-import-pals:main] state]
       =/  new-pals=(list ship)
         %+  skip  ~(tap in (targets:pals ''))
         |=  =ship  (~(has by contacts) [%.y ship])
       :_  state
+      :-  give-import-pals:main
       %+  turn  new-pals
       |=  =ship  (poke-self [%add-contact `ship *contact])
     ==
@@ -197,10 +198,11 @@
   ^-  (quip card _this)
   :_  this
   ?+  path  (on-watch:default path)
-    [%~.0 %contacts ~]  %-  me  ~[give-contacts:main]
-    [%~.0 %fields ~]    %-  me  ~[give-fields:main]
-    [%~.0 %self ~]      %-  me  ~[give-self:main]
-    [%~.0 %profile %public ~]   ~[give-profile:main]
+    [%~.0 %contacts ~]      %-  me  ~[give-contacts:main]
+    [%~.0 %fields ~]        %-  me  ~[give-fields:main]
+    [%~.0 %self ~]          %-  me  ~[give-self:main]
+    [%~.0 %pals %import ~]  %-  me  ~[give-import-pals:main]
+    [%~.0 %profile %public ~]       ~[give-profile:main]
   ==
   ++  me
     |=  cards=(list card)
@@ -271,6 +273,10 @@
   ^-  card
   =/  =profile  [info.self fields]
   [%give %fact [/0/profile/public]~ %whom-profile-0 !>(profile)]
+::
+++  give-import-pals
+  ^-  card
+  [%give %fact [/0/pals/import]~ %loob !>(import-pals)]
 ::
 ++  is-info-valid
   |=  info=(map @tas info-field)

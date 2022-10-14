@@ -7,15 +7,17 @@ export declare type GallApp = 'whom';
 export enum ScryPath {
   Contacts = '/0/contacts',
   Fields = '/0/fields',
-  Self = '/0/self'
+  Self = '/0/self',
+  ImportPals = '/0/pals/import'
 }
 
-export declare type GallUpdate = ContactUpdate | FieldUpdate | SelfUpdate;
+export declare type GallUpdate = ContactUpdate | FieldUpdate | SelfUpdate | ImportPalsUpdate;
 
 export enum SubscribePath {
   Contacts = '/0/contacts',
   Fields = '/0/fields',
-  Self = '/0/self'
+  Self = '/0/self',
+  ImportPals = '/0/pals/import'
 }
 
 export declare type ContactUpdate = {
@@ -36,13 +38,20 @@ export declare type SelfUpdate = {
   data: Self
 };
 
+export declare type ImportPalsUpdate = {
+  app: 'whom',
+  path: SubscribePath.ImportPals,
+  data: boolean
+}
+
 export type WhomAction = AddContactAction |
   EditContactAction |
   EditContactShipAction |
   DeleteContactAction |
   AddFieldAction |
   DelFieldAction |
-  EditSelfAction;
+  EditSelfAction |
+  PalSyncAction;
 
 type AddContactAction = {
   'add-contact': {
@@ -92,3 +101,9 @@ type EditSelfAction = {
     info: Record<string, InfoValue | null>
   }
 };
+
+type PalSyncAction = {
+  'pal-sync': {
+    enabled: boolean
+  }
+}

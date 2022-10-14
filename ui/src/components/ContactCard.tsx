@@ -16,7 +16,7 @@ export const ContactCard = (props:{contact:ContactWithKey}) => {
         openModal();
       }}
     >
-      <div className='px-2 py-2 text-left text-lg flex flex-row'>
+      <div className='p-2 text-left text-lg flex flex-row'>
         <div className='w-7 mr-2'>
           {
             props.contact.ship

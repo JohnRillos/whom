@@ -7,7 +7,7 @@ const icon = (
   </svg>
 );
 
-const BackButton = (props: { onClick: () => void, label: string }) => {
+const BackButton = (props: { onClick: () => void, label?: string }) => {
   return (
     <NavButton onClick={props.onClick}>
       <>{icon}<span className='hidden sm:inline ml-1'>{props.label}</span></>

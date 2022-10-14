@@ -105,3 +105,17 @@ export function editSelf(
   };
   poke(api, json, onError, onSuccess);
 }
+
+export function syncPals(
+  api: Urbit,
+  enable: boolean,
+  onError: (err: string | null) => void,
+  onSuccess: () => void
+) {
+  const json = {
+    'pal-sync': {
+      enabled: enable
+    }
+  };
+  poke(api, json, onError, onSuccess);
+}

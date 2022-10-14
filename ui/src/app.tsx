@@ -4,17 +4,17 @@ import { ContactList } from './components/ContactList';
 import Modal from './components/Modal';
 import ContactDetail from './components/contactDetail/ContactDetail';
 import { AppContext, AppContextType, initialContext } from './context/AppContext';
-import { Contacts } from './types/ContactTypes';
-import { GallUpdate, SubscribePath } from './types/GallTypes';
 import AddContactForm from './components/AddContactForm';
 import { buildFieldSettings } from './util/FieldUtil';
-import { FieldSettings } from './types/SettingTypes';
 import SettingsButton from './components/buttons/SettingsButton';
 import SettingsView from './components/settings/SettingsView';
 import ErrorNotification from './components/ErrorNotification';
 import ProfileButton from './components/buttons/ProfileButton';
 import ProfileContainer from './components/profile/ProfileContainer';
+import { Contacts } from './types/ContactTypes';
+import { GallUpdate, SubscribePath } from './types/GallTypes';
 import { Self } from './types/ProfileTypes';
+import { FieldSettings } from './types/SettingTypes';
 import { scryContacts, scryFieldDefs, scrySelf } from './api/Scry';
 
 export function App() {
@@ -28,6 +28,7 @@ export function App() {
   const [isProfileOpen, setProfileOpen] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [self, setSelf] = useState<Self>(initialContext.self);
+  const [palsSyncEnabled, setPalsSyncEnabled] = useState<boolean>(false);
 
   useEffect(() => {
     const api = initialContext.api
@@ -41,9 +42,10 @@ export function App() {
   }, []);
 
   function handleUpdate(update: GallUpdate) {
-    if (update.app != 'whom' || !update.data) {
+    if (update.app != 'whom') {
       return;
     }
+    console.log(update);
     switch(update.path) {
       case SubscribePath.Contacts: {
         setContacts(update.data);
@@ -55,6 +57,10 @@ export function App() {
       }
       case SubscribePath.Self: {
         setSelf(update.data);
+        break;
+      }
+      case SubscribePath.ImportPals: {
+        setPalsSyncEnabled(update.data);
         break;
       }
     }
@@ -81,7 +87,8 @@ export function App() {
     editContactMode: editContactMode,
     setEditContactMode: setEditContactMode,
     fieldSettings: fieldSettings,
-    self: self
+    self: self,
+    palsSyncEnabled: palsSyncEnabled,
   };
 
   return (

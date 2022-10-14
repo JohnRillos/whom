@@ -19,7 +19,8 @@ export type AppContextType = {
   editContactMode: boolean,
   setEditContactMode: (value: boolean) => void,
   fieldSettings: FieldSettings,
-  self: Self
+  self: Self,
+  palsSyncEnabled: boolean
 }
 
 function getUrbitApi(): Urbit {
@@ -43,7 +44,8 @@ const initialContext: AppContextType = {
   editContactMode: false,
   setEditContactMode: () => {},
   fieldSettings: { defs: {}, order: [] },
-  self: { info: {} }
+  self: { info: {} },
+  palsSyncEnabled: false
 }
 
 const AppContext = createContext(initialContext);
