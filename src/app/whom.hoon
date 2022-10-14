@@ -198,17 +198,23 @@
   ^-  (quip card _this)
   :_  this
   ?+  path  (on-watch:default path)
-    [%~.0 %contacts ~]      %-  me  ~[give-contacts:main]
-    [%~.0 %fields ~]        %-  me  ~[give-fields:main]
-    [%~.0 %self ~]          %-  me  ~[give-self:main]
-    [%~.0 %pals %import ~]  %-  me  ~[give-import-pals:main]
-    [%~.0 %profile %public ~]       ~[give-profile:main]
+    [%~.0 %contacts ~]      (me (give %whom-contacts-0 contacts))
+    [%~.0 %fields ~]        (me (give %whom-fields-0 field-list:field-util:main))
+    [%~.0 %self ~]          (me (give %whom-self-0 self))
+    [%~.0 %pals %import ~]  (me (give %loob import-pals))
+    [%~.0 %profile %public ~]   (give %whom-profile-0 [info.self fields])
   ==
+  ::
   ++  me
     |=  cards=(list card)
     ~|  'Unauthorized!'
     ?>  =(our.bowl src.bowl)
     cards
+  ::
+  ++  give
+    |*  [mark=@tas data=*]
+    ^-  (list card)
+    ~[[%give %fact ~ mark !>(data)]]
   --
 ::
 ++  on-leave  on-leave:default
@@ -256,27 +262,19 @@
   --
 ::
 ++  give-contacts
-  ^-  card
-  =/  =contacts-0  contacts
-  [%give %fact [/0/contacts]~ %whom-contacts-0 !>(contacts-0)]
+  [%give %fact ~[/0/contacts] %whom-contacts-0 !>(contacts)]
 ::
 ++  give-fields
-  ^-  card
-  =/  =fields-0  field-list:field-util
-  [%give %fact [/0/fields]~ %whom-fields-0 !>(fields-0)]
+  [%give %fact ~[/0/fields] %whom-fields-0 !>(field-list:field-util)]
 ::
 ++  give-self
-  ^-  card
-  [%give %fact [/0/self]~ %whom-self-0 !>(self)]
+  [%give %fact ~[/0/self] %whom-self-0 !>(self)]
 ::
 ++  give-profile
-  ^-  card
-  =/  =profile  [info.self fields]
-  [%give %fact [/0/profile/public]~ %whom-profile-0 !>(profile)]
+  [%give %fact ~[/0/profile/public] %whom-profile-0 !>([info.self fields])]
 ::
 ++  give-import-pals
-  ^-  card
-  [%give %fact [/0/pals/import]~ %loob !>(import-pals)]
+  [%give %fact ~[/0/pals/import] %loob !>(import-pals)]
 ::
 ++  is-info-valid
   |=  info=(map @tas info-field)
