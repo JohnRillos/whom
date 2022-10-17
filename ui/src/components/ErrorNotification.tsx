@@ -17,9 +17,9 @@ export default function ErrorNotification(): JSX.Element | null {
           as={Fragment}
           enter='ease-out duration-300'
           enterFrom='opacity-0 -bottom-10'
-          enterTo='opacity-100 bottom-2'
+          enterTo='opacity-100 bottom-4'
         >
-          <div className='fixed bottom-2 left-2 margin-2 max-w-xs'>
+          <div className='fixed bottom-4 left-4 max-w-xs'>
             <div className='flex flex-row items-start space-x-2 bg-red-200 text-red-800 outline outline-red-800 rounded-md p-2 shadow-xl'>
               <div>Error: {errorMessage}</div>
               <CloseButton onClick={dismissError}/>

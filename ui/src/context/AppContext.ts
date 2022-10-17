@@ -6,6 +6,8 @@ import { FieldSettings } from '../types/SettingTypes';
 
 export type AppContextType = {
   api: Urbit,
+  announcement: string | null,
+  dismissAnnouncement: () => void,
   errorMessage: string | null,
   displayError: (message: string) => void,
   dismissError: () => void,
@@ -31,6 +33,8 @@ function getUrbitApi(): Urbit {
 
 const initialContext: AppContextType = {
   api: getUrbitApi(),
+  announcement: null,
+  dismissAnnouncement: () => {},
   errorMessage: null,
   displayError: () => {},
   dismissError: () => {},
