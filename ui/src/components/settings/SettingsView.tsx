@@ -6,9 +6,10 @@ import ChevronButton from '../buttons/ChevronButton';
 import CloseButton from '../buttons/CloseButton';
 import Toggle from '../input/Toggle';
 import CustomFieldsView from './CustomFieldsView';
+import PalsConfirmation from './PalsConfirmation';
 
 enum Mode {
-  OVERVIEW, FIELDS
+  OVERVIEW, FIELDS, PALS_CONFIRM
 }
 
 export default function SettingsView(props: { closeModal: () => void }): JSX.Element {
@@ -20,6 +21,7 @@ export default function SettingsView(props: { closeModal: () => void }): JSX.Ele
     switch(mode) {
       case Mode.OVERVIEW: return renderOverview();
       case Mode.FIELDS: return <CustomFieldsView/>;
+      case Mode.PALS_CONFIRM: return <PalsConfirmation onConfirm={() => setMode(Mode.OVERVIEW)}/>;
     }
   }
 
@@ -44,21 +46,25 @@ export default function SettingsView(props: { closeModal: () => void }): JSX.Ele
   }
 
   function handleSyncToggle() {
-    setSubmitting(true);
-    syncPals(
-      api,
-      !palsSyncEnabled,
-      error => {
-        setSubmitting(false);
-        displayError('Error enabling %pals sync! ' + error || '');
-      },
-      () => setSubmitting(false)
-    );
+    if (palsSyncEnabled) {
+      setSubmitting(true);
+      syncPals(
+        api,
+        false,
+        error => {
+          setSubmitting(false);
+          displayError('Error enabling %pals sync! ' + error || '');
+        },
+        () => setSubmitting(false)
+      );
+    } else {
+      setMode(Mode.PALS_CONFIRM);
+    }
   }
 
   return (
     <div className='flex h-fit'>
-      <div className={`fixed -mt-1 -ml-1 ${mode == Mode.OVERVIEW ? 'hidden' : ''}`}>
+      <div className={`clear-both -mt-1 -ml-1 ${mode == Mode.OVERVIEW ? 'hidden' : ''}`}>
         <BackButton onClick={() => setMode(Mode.OVERVIEW)}/>
       </div>
       {renderContent()}

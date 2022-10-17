@@ -19,3 +19,7 @@ export async function scrySelf(urbit: Urbit): Promise<Self> {
 export async function scryImportPals(urbit: Urbit): Promise<boolean> {
   return urbit.scry<boolean>({ app: 'whom', path: ScryPath.ImportPals });
 }
+
+export async function scryPals(urbit: Urbit): Promise<any> {
+  return urbit.scry<any>({ app: 'pals', path: ScryPath.Pals });
+}

@@ -15,7 +15,6 @@ import { Contacts } from './types/ContactTypes';
 import { GallUpdate, SubscribePath } from './types/GallTypes';
 import { Self } from './types/ProfileTypes';
 import { FieldSettings } from './types/SettingTypes';
-import { scryContacts, scryFieldDefs, scrySelf } from './api/Scry';
 
 export function App() {
   const [contacts, setContacts] = useState<Contacts>({});
@@ -30,16 +29,7 @@ export function App() {
   const [self, setSelf] = useState<Self>(initialContext.self);
   const [palsSyncEnabled, setPalsSyncEnabled] = useState<boolean>(false);
 
-  useEffect(() => {
-    const api = initialContext.api
-    scryFieldDefs(api)
-      .then(res => setFieldSettings(buildFieldSettings(res)))
-      .then(() => scryContacts(api))
-      .then(res => setContacts(res))
-      .then(() => scrySelf(api))
-      .then(res => setSelf(res))
-      .then(() => Subscribe(api, handleUpdate));
-  }, []);
+  useEffect(() => Subscribe(initialContext.api, handleUpdate), []);
 
   function handleUpdate(update: GallUpdate) {
     if (update.app != 'whom') {

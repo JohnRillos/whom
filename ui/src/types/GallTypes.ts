@@ -8,7 +8,8 @@ export enum ScryPath {
   Contacts = '/0/contacts',
   Fields = '/0/fields',
   Self = '/0/self',
-  ImportPals = '/0/pals/import'
+  ImportPals = '/0/pals/import',
+  Pals = '/json'
 }
 
 export declare type GallUpdate = ContactUpdate | FieldUpdate | SelfUpdate | ImportPalsUpdate;
