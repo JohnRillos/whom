@@ -161,7 +161,8 @@
       :_  state
       :-  give-import-pals:main
       %+  turn  new-pals
-      |=  =ship  (poke-self [%add-contact `ship *contact])
+      |=  =ship
+      [%pass /pals/import/[(scot %p ship)] %arvo %b %wait now.bowl]
     ==
   ::
   ++  add-contact
@@ -190,7 +191,15 @@
     (scot %uvj eny.bowl)
   --
 ::
-++  on-arvo   on-arvo:default
+++  on-arvo
+  |=  [=wire =sign-arvo]
+  ^-  (quip card _this)
+  ?.  ?=([%behn %wake *] sign-arvo)  (on-arvo:default wire sign-arvo)
+  ?+  wire  ~&  >>>  "%wake with unknown wire <wire>"  !!
+      [%pals %import @ta ~]
+    =/  =ship  (slav %p (rear `(list @ta)`wire))
+    [~[(poke-self [%add-contact `ship *contact])] this]
+  ==
 ::
 ++  on-watch
   |=  =path
