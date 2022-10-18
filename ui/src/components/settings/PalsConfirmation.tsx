@@ -24,7 +24,7 @@ export default function PalsConfirmation(props: { onConfirm: () => void }): JSX.
   return (
     <div className='flex flex-col space-y-2 w-fit max-w-sm'>
       <p>
-        All of your pals will be imported as contacts, including as any new pals you add later. You can disable this setting at any time.
+        All of your pals will be imported as contacts, including any new pals you add later. You can disable this setting at any time.
       </p>
       <p className={(importedPalCount > 0) ? '' : 'hidden'}>
         {importedPalCount} of your pals are already in your contacts.
