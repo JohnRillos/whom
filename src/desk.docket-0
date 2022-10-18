@@ -1,10 +1,10 @@
 :~  title+'Contacts'
-    info+'Manage your profile and contacts'
+    info+'Manage your profile and contacts. Now with %pals!'
     color+0x33.8899
     base+'whom'
     image+'https://raw.githubusercontent.com/JohnRillos/whom/master/assets/tile.svg'
     glob-ames+[~holnes 0v0]
-    version+[1 0 3]
+    version+[1 1 0]
     website+'https://github.com/JohnRillos/whom'
     license+'MIT'
 ==
