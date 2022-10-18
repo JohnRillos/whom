@@ -195,10 +195,10 @@
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
   ?.  ?=([%behn %wake *] sign-arvo)  (on-arvo:default wire sign-arvo)
-  ?+  wire  ~&  >>>  "%wake with unknown wire <wire>"  !!
+  ?+  wire  ~&  >>>  "%wake with unknown wire {<wire>}"  !!
       [%pals %import @ta ~]
     =/  =ship  (slav %p (rear `(list @ta)`wire))
-    [~[(poke-self [%add-contact `ship *contact])] this]
+    [~[(poke-self:main [%add-contact `ship *contact])] this]
   ==
 ::
 ++  on-watch
