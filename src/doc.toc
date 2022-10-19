@@ -1,6 +1,2 @@
 /overview/udon        Overview
 /changelog/udon       Changelog
-/dev                  Developer
-  /overview/udon      Overview
-/usr                  User
-  /overview/udon      Overview
