@@ -1,0 +1,68 @@
+;>
+
+## 1.1.3
+
+Date: ~2022.10.20
+- use %citadel / Herd for dependency management
+- use %docs for documentation
+
+
+## 1.1.2
+
+Date: ~2022.10.17
+- bugfix: prevent moon and comet contacts from crashing UI
+
+
+## 1.1.1
+
+Date: ~2022.10.17
+- fix pals import
+
+
+## 1.1.0
+
+Date: ~2022.10.17
+- add setting to import %pals as contacts
+
+
+## 1.0.3
+
+Date: ~2022.10.6
+- security patch: prevent other users from modifying your contacts
+
+
+## 1.0.2
+
+Date: ~2022.10.4
+- display fields from profiles in separate "Profile" section
+
+
+## 1.0.1
+
+Date: ~2022.10.2
+- bugfix: can scroll on profile view
+
+
+## 1.0.0
+
+Date: ~2022.9.22
+- Official release (Assembly 2022)
+- bugfix: prevent user from deleting field still in use by profile
+
+
+## 0.1.2
+
+Date: ~2022.9.18
+- Display sigils in contacts list
+
+
+## 0.1.1
+
+Date: ~2022.9.18
+- Use native HTML5 date picker
+
+
+## 0.1.0
+
+Date: ~2022.9.17
+- Beta release (Assembly '22 hackathon submission)
