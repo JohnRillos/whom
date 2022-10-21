@@ -8,6 +8,6 @@ ui/stats.html
 ui/.eslintcache
 ui/.vercel
 
-.build
+# .build - should be tracked on git on build branch only
 
 .vscode
