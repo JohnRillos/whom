@@ -1,10 +1,9 @@
-.urbit
-
 ui/node_modules
 ui/.DS_Store
 ui/dist
 ui/dist-ssr
-ui/.env.*
+ui/.env.local
+ui/.env.*.local
 ui/stats.html
 ui/.eslintcache
 ui/.vercel
