@@ -25,17 +25,17 @@ Documentation and release notes can also be viewed in the [%docs](https://github
 
 `build_desk`: Contains the name of the build desk. App will be distributed as this desk.
 
-`sync.sh`: Script for syncing project files into a dev desk in a pier.
+`_sync.sh`: Script for syncing project files into a dev desk in a pier.
 
-`build.sh`: Run this in your **dev** environment. Copies the build desk from a dev ship, and builds the React frontend. The `/.build` dir should not be commited except to a `build` branch.
+`_build.sh`: Run this in your **dev** environment. Copies the build desk from a dev ship, and builds the React frontend. The `/.build` dir should not be commited except to a `build` branch.
 
-`dist.sh`: Run this in your **distribution** environment on a `build` branch. Copies contents of `.build` to your distribution ship's pier.
+`_dist.sh`: Run this in your **distribution** environment on a `build` branch. Copies contents of `.build` to your distribution ship's pier.
 
 -----
 ## Running the app:
 
 Unix:
-* `./sync.sh PATH/TO/PIER` to sync `src/` and `deps/` to your dev desk.
+* `./_sync.sh PATH/TO/PIER` to sync `src/` and `deps/` to your dev desk.
 * In `ui/` run `npm run dev`
   * or `npm run dev:env foo` to use `ui/.env.foo.local` as config
 
