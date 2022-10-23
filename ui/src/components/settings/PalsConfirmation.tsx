@@ -10,9 +10,7 @@ export default function PalsConfirmation(props: { onConfirm: () => void }): JSX.
   const [ submitting, setSubmitting ] = useState<boolean>(false);
   const [ palsInfo, setPalsInfo ] = useState<PalsInfo>();
 
-  useEffect(() => {
-    scryPals(api).then(res => setPalsInfo(res))
-  }, []);
+  useEffect(() => { scryPals(api).then(setPalsInfo) });
 
   function onError(error: string | null) {
     setSubmitting(false);

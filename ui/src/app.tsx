@@ -16,6 +16,9 @@ import { GallUpdate, SubscribePath } from './types/GallTypes';
 import { Self } from './types/ProfileTypes';
 import { FieldSettings } from './types/SettingTypes';
 import Announcement from './components/Announcement';
+import { PalsInfo } from './types/PalsTypes';
+import { scryPals } from './api/Scry';
+import PalView from './components/pals/PalView';
 
 export function App() {
   const [contacts, setContacts] = useState<Contacts>({});
@@ -30,8 +33,14 @@ export function App() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [self, setSelf] = useState<Self>(initialContext.self);
   const [palsSyncEnabled, setPalsSyncEnabled] = useState<boolean>(false);
+  const [palsInfo, setPalsInfo] = useState<PalsInfo>(initialContext.palsInfo);
+  const [isPalModalOpen, setPalModalOpen] = useState<boolean>(false);
 
-  useEffect(() => Subscribe(initialContext.api, handleUpdate), []);
+  useEffect(() => {
+    scryPals(initialContext.api)
+      .then(setPalsInfo)
+      .then(() => Subscribe(initialContext.api, handleUpdate));
+  }, []);
 
   function handleUpdate(update: GallUpdate) {
     if (update.app != 'whom') {
@@ -82,6 +91,9 @@ export function App() {
     fieldSettings: fieldSettings,
     self: self,
     palsSyncEnabled: palsSyncEnabled,
+    palsInfo: palsInfo,
+    setPalsInfo: setPalsInfo,
+    setPalModalOpen: setPalModalOpen
   };
 
   return (
@@ -111,6 +123,9 @@ export function App() {
         </Modal>
         <Modal isOpen={isSettingsModalOpen} closeModal={() => setSettingsModalOpen(false)}>
           <SettingsView closeModal={() => setSettingsModalOpen(false)}/>
+        </Modal>
+        <Modal isOpen={isPalModalOpen} closeModal={() => setPalModalOpen(false)}>
+          <PalView closeModal={() => setPalModalOpen(false)}/>
         </Modal>
         <ProfileContainer isOpen={isProfileOpen} close={() => setProfileOpen(false)}/>
         <ErrorNotification/>
