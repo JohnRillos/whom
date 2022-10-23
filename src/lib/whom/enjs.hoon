@@ -9,7 +9,7 @@
 ++  enjs-contacts
   |=  contacts=(map (each @p @t) contact)
   ^-  json
-  %-  pairs:enjs:format
+  %-  pairs
   (turn ~(tap by contacts) enjs-contacts-entry)
 ::
 ++  enjs-contacts-entry
@@ -29,7 +29,7 @@
 ++  enjs-contact
   |=  =contact
   ^-  json
-  %-  pairs:enjs:format
+  %-  pairs
   :~  info+(enjs-info info.contact)
       profile+(enjs-unit-profile profile.contact)
   ==
@@ -43,7 +43,7 @@
 ++  enjs-info
   |=  info=(map @tas info-field)
   ^-  json
-  %-  pairs:enjs:format
+  %-  pairs
   (turn ~(tap by info) enjs-info-field)
 ::
 ++  enjs-info-field
@@ -82,7 +82,7 @@
 ++  enjs-self-0
   |=  self=self-0
   ^-  json
-  %-  pairs:enjs:format
+  %-  pairs
   :~  info+(enjs-info info.self)
   ==
 ::
@@ -95,7 +95,7 @@
 ++  enjs-profile-0
   |=  =profile
   ^-  json
-  %-  pairs:enjs:format
+  %-  pairs
   :~  info+(enjs-info info.profile)
       fields+(enjs-field-defs-map fields.profile)
   ==
@@ -103,7 +103,7 @@
 ++  enjs-field-defs-map
   |=  fields=(map @tas field-def)
   ^-  json
-  %-  pairs:enjs:format
+  %-  pairs
   %+  turn  ~(tap by fields)
   |=  [key=@tas val=field-def]
   ^-  [@t json]
@@ -111,5 +111,27 @@
   %-  pairs
   :~  name+s+name.val
       type+s+type.val
+  ==
+::
+++  enjs-pals-0
+  |=  val=pals-0
+  ^-  json
+  %-  pairs
+  :~  running+b+running.val
+      pals+(enjs-pals-map pals.val)
+  ==
+::
+++  enjs-pals-map
+  |=  pals=(map @p pal)
+  ^-  json
+  %-  pairs
+  %+  turn  ~(tap by pals)
+  |=  [ship=@p =pal]
+  ^-  [@t json]
+  :-  (crip <ship>)
+  %-  pairs
+  :~  target+b+target.pal
+      leeche+b+leeche.pal
+      mutual+b+mutual.pal
   ==
 --

@@ -1,5 +1,5 @@
 /-  *whom, pals-sur=pals
-/+  default-agent, dbug, pals-lib=pals, verb, whom-fields
+/+  default-agent, dbug, pals-lib=pals, verb, whom-fields, whom-pals
 |%
 ::
 +$  card  card:agent:gall
@@ -35,10 +35,11 @@
 ^-  agent:gall
 =<
 |_  =bowl:gall
-+*  this     .
-    default  ~(. (default-agent this %|) bowl)
-    main     ~(. +> bowl)
-    pals     ~(. pals-lib bowl)
++*  this         .
+    default    ~(. (default-agent this %|) bowl)
+    main       ~(. +> bowl)
+    pals-scry  ~(. pals-lib bowl)
+    pals-util  ~(. whom-pals bowl)
 ::
 ++  on-init
   ^-  (quip card _this)
@@ -156,7 +157,7 @@
       =.  import-pals  enabled.act
       ?.  enabled.act  [~[give-import-pals:main] state]
       =/  new-pals=(list ship)
-        %+  skip  ~(tap in (targets:pals ''))
+        %+  skip  ~(tap in (targets:pals-scry ''))
         |=  =ship  (~(has by contacts) [%.y ship])
       :_  state
       :-  give-import-pals:main
@@ -227,6 +228,7 @@
   --
 ::
 ++  on-leave  on-leave:default
+::
 ++  on-peek
   |=  =path
   ^-  (unit (unit cage))
@@ -234,6 +236,7 @@
     [%x %~.0 %contacts ~]  ``whom-contacts-0+!>(contacts)
     [%x %~.0 %fields ~]    ``whom-fields-0+!>(field-list:field-util:main)
     [%x %~.0 %self ~]      ``whom-self-0+!>(self)
+    [%x %~.0 %pals ~]      ``whom-pals-0+!>(get:pals-util)
   ==
 ::
 ++  on-agent

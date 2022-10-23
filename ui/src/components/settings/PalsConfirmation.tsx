@@ -3,14 +3,15 @@ import SubmitButton from '../buttons/SubmitButton';
 import { syncPals } from '../../api/ContactPokes';
 import { AppContext } from '../../context/AppContext';
 import { scryPals } from '../../api/Scry';
+import { PalsInfo } from '../../types/PalsTypes';
 
 export default function PalsConfirmation(props: { onConfirm: () => void }): JSX.Element {
   const { api, contacts, displayError } = useContext(AppContext);
   const [ submitting, setSubmitting ] = useState<boolean>(false);
-  const [ pals, setPals ] = useState<string[]>();
+  const [ palsInfo, setPalsInfo ] = useState<PalsInfo>();
 
   useEffect(() => {
-    scryPals(api).then(res => setPals(Object.keys(res.outgoing)))
+    scryPals(api).then(res => setPalsInfo(res))
   }, []);
 
   function onError(error: string | null) {
@@ -18,7 +19,10 @@ export default function PalsConfirmation(props: { onConfirm: () => void }): JSX.
     displayError('Error enabling %pals sync! ' + error || '');
   }
 
-  const importedPalCount = pals?.filter(pal => ('~' + pal) in contacts).length || 0;
+  const pals: string[] | null = palsInfo
+    ? Object.entries(palsInfo.pals).filter(([_, pal]) => pal.target).map(([ship, _]) => ship)
+    : null;
+  const importedPalCount = pals?.filter(pal => pal in contacts).length || 0;
   const unimportedPalCount = pals == undefined ? undefined : pals.length - importedPalCount;
 
   return (
