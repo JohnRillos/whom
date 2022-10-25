@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { editContact, editContactShip } from '../../api/ContactPokes';
+import { editContact, editContactShip } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
 import { InfoValue, InfoDate, ContactWithKey, InfoFields } from '../../types/ContactTypes';
 import { getDisplayName } from '../../util/ContactUtil';

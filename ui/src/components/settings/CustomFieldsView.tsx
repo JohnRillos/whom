@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { deleteField } from '../../api/ContactPokes';
+import { deleteField } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
 import { FieldDefWithKey } from '../../types/SettingTypes';
 import DeleteButton from '../buttons/DeleteButton';

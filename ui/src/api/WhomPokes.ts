@@ -119,3 +119,21 @@ export function syncPals(
   };
   poke(api, json, onError, onSuccess);
 }
+
+export function heyPal(
+  api: Urbit,
+  ship: string,
+  onError: (err: string | null) => void,
+  onSuccess: () => void
+) {
+  poke(api, { 'hey-pal': ship }, onError, onSuccess);
+}
+
+export function byePal(
+  api: Urbit,
+  ship: string,
+  onError: (err: string | null) => void,
+  onSuccess: () => void
+) {
+  poke(api, { 'bye-pal': ship }, onError, onSuccess);
+}

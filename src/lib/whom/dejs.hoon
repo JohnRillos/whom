@@ -13,6 +13,8 @@
       [%del-field (ot key+(se %tas) ~)]
       [%mod-self (ot info+(op sym (mu dj-info-value)) ~)]
       [%pal-sync (ot enabled+bo ~)]
+      [%hey-pal (se %p)]
+      [%bye-pal (se %p)]
   ==
 ::
 ++  dj-contact

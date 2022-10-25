@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { isValidPatp } from 'urbit-ob';
-import { createContact } from '../api/ContactPokes';
+import { createContact } from '../api/WhomPokes';
 import { AppContext } from '../context/AppContext';
 import { InfoValue, InfoDate, InfoFields } from '../types/ContactTypes';
 import CloseButton from './buttons/CloseButton';

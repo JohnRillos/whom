@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
-import { deleteContact } from '../../api/ContactPokes';
+import { deleteContact } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
 import CloseButton from '../buttons/CloseButton';
 import EditButton from '../buttons/EditButton';
@@ -20,13 +20,13 @@ export default function Menu() {
     editContactMode,
     setEditContactMode,
     palsInfo,
-    setPalsInfo,
+    // setPalsInfo,
     setPalModalOpen,
   } = useContext(AppContext);
 
-  useEffect(() => {
-    scryPals(api).then(setPalsInfo);
-  }, [ selectedContactKey ]);
+  // useEffect(() => {
+  //   scryPals(api).then(setPalsInfo);
+  // }, [ selectedContactKey ]);
 
   function onDeleteError(error: string | null) {
     displayError(error || 'Error deleting contact!');

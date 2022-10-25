@@ -1,4 +1,5 @@
 import { Contact, Contacts, InfoValue } from './ContactTypes';
+import { PalsInfo } from './PalsTypes';
 import { Self } from './ProfileTypes';
 import { FieldDefWithKey, FieldTypeTag } from './SettingTypes';
 
@@ -12,13 +13,19 @@ export enum ScryPath {
   Pals = '/0/pals'
 }
 
-export declare type GallUpdate = ContactUpdate | FieldUpdate | SelfUpdate | ImportPalsUpdate;
+export declare type GallUpdate
+  = ContactUpdate
+  | FieldUpdate
+  | SelfUpdate
+  | ImportPalsUpdate
+  | PalsUpdate;
 
 export enum SubscribePath {
   Contacts = '/0/contacts',
   Fields = '/0/fields',
   Self = '/0/self',
-  ImportPals = '/0/pals/import'
+  ImportPals = '/0/pals/import',
+  Pals = '/0/pals'
 }
 
 export declare type ContactUpdate = {
@@ -45,6 +52,12 @@ export declare type ImportPalsUpdate = {
   data: boolean
 }
 
+export declare type PalsUpdate = {
+  app: 'whom',
+  path: SubscribePath.Pals,
+  data: PalsInfo
+}
+
 export type WhomAction = AddContactAction |
   EditContactAction |
   EditContactShipAction |
@@ -52,7 +65,9 @@ export type WhomAction = AddContactAction |
   AddFieldAction |
   DelFieldAction |
   EditSelfAction |
-  PalSyncAction;
+  PalSyncAction |
+  HeyPalAction |
+  ByePalAction;
 
 type AddContactAction = {
   'add-contact': {
@@ -107,4 +122,12 @@ type PalSyncAction = {
   'pal-sync': {
     enabled: boolean
   }
+}
+
+type HeyPalAction = {
+  'hey-pal': string
+}
+
+type ByePalAction = {
+  'bye-pal': string
 }

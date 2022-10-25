@@ -37,9 +37,7 @@ export function App() {
   const [isPalModalOpen, setPalModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    scryPals(initialContext.api)
-      .then(setPalsInfo)
-      .then(() => Subscribe(initialContext.api, handleUpdate));
+   Subscribe(initialContext.api, handleUpdate);
   }, []);
 
   function handleUpdate(update: GallUpdate) {
@@ -62,6 +60,11 @@ export function App() {
       case SubscribePath.ImportPals: {
         setPalsSyncEnabled(update.data);
         break;
+      }
+      case SubscribePath.Pals: {
+        console.log('pals update!');
+        setPalsInfo(update.data);
+        break
       }
     }
   };

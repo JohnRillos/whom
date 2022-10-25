@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import SubmitButton from '../buttons/SubmitButton';
-import { syncPals } from '../../api/ContactPokes';
+import { syncPals } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
 import { scryPals } from '../../api/Scry';
 import { PalsInfo } from '../../types/PalsTypes';

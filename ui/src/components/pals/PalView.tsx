@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
+import { byePal, heyPal } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
-import { Pal } from '../../types/PalsTypes';
 import { getContactWithKey, getDisplayName } from '../../util/ContactUtil';
 import CloseButton from '../buttons/CloseButton';
 import DangerButton from '../buttons/DangerButton';
@@ -11,22 +11,46 @@ enum Status {
 }
 
 export default function PalView(props: { closeModal: () => void }): JSX.Element | null {
-  const { api, contacts, palsInfo, selectedContactKey } = useContext(AppContext);
+  const {
+    api,
+    contacts,
+    displayError,
+    palsInfo,
+    selectedContactKey
+  } = useContext(AppContext);
   let [ submitting, setSubmitting ] = useState<boolean>(false);
   if (!selectedContactKey) {
     return null;
   }
+  const ship = selectedContactKey;
+
   const contact = getContactWithKey(contacts, selectedContactKey);
   if (!contact) {
     return null;
   }
 
   function addToPals() {
-    // todo
+    setSubmitting(true);
+    heyPal(api, ship,
+      () => {
+        setSubmitting(false);
+        displayError('Failed to add pal');
+      },
+      () => setSubmitting(false)
+    );
   }
 
   function removeFromPals() {
-    // todo
+    setSubmitting(true);
+    byePal(
+      api,
+      ship,
+      () => {
+        setSubmitting(false);
+        displayError('Failed to remove pal');
+      },
+      () => setSubmitting(false)
+    );
   }
 
   const name = getDisplayName(contact);
@@ -60,7 +84,7 @@ export default function PalView(props: { closeModal: () => void }): JSX.Element 
       default:
         return null;
     }
-    return <p>Status: <span className={`${color} text-white px-2 py-0.5 rounded-full`}>{text}</span></p>
+    return <p className='mb-1'>Status: <span className={`${color} text-white px-2 py-0.5 rounded-full`}>{text}</span></p>
   }
 
   function getDescription(): string {
@@ -68,9 +92,9 @@ export default function PalView(props: { closeModal: () => void }): JSX.Element 
       case Status.MUTUAL:
         return 'You are mutual pals.';
       case Status.TARGET:
-        return 'You\'ve sent them a pal request. If they accept, you\'ll be mutual pals.';
+        return 'You\'ve sent this person a pal request. If they accept, you\'ll be mutual pals.';
       case Status.LEECHE:
-        return 'They sent you a pal request. If you accept, you\'ll be mutual pals.';
+        return 'This person sent you a pal request. If you accept, you\'ll be mutual pals.';
       default:
         return `Add ${name} as a pal?`;
     }

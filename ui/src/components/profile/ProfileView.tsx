@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useContext } from 'react';
-import { editSelf } from '../../api/ContactPokes';
+import { editSelf } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
 import { InfoValue, InfoDate, InfoFields } from '../../types/ContactTypes';
 import BackButton from '../buttons/BackButton';

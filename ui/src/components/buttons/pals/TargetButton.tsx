@@ -9,7 +9,7 @@ const icon = (
         C14.0016 77.6412 10.6869 72.6804 8.42542 67.2208
         C6.16396 61.7611 5 55.9095 5 50"
       stroke="currentColor"
-      stroke-width="10">
+      strokeWidth="10">
     </path>
     <path
       d="M30.5546 65.9099

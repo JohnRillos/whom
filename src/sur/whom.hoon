@@ -23,6 +23,8 @@
       [%del-field key=@tas]
       [%mod-self info=(map @tas (unit info-field))]
       [%pal-sync enabled=?]
+      [%hey-pal =ship]
+      [%bye-pal =ship]
   ==
 ::
 +$  field-def  [name=@t type=field-type-tag]
