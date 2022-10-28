@@ -37,7 +37,7 @@
   ==
 ::
 +$  pals-info
-  $:  running=_|
+  $:  running=?
       pals=(map @p pal)
   ==
 ::
