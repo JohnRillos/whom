@@ -2,6 +2,7 @@
 |%
 ::
 ++  default-field-list
+  ^~
   ^-  (list [key=@tas field-def])
   :~  :+  %first-name   'First Name'     %text
       :+  %middle-name  'Middle Name'    %text
@@ -19,7 +20,7 @@
   ==
 ::
 ++  default-fields
-  ~+  (~(gas by *(map @tas field-def)) default-field-list)
+  ^~  (~(gas by *(map @tas field-def)) default-field-list)
 ::
 ++  field-util
   |_  field-map=(map @tas field-def)
@@ -46,7 +47,7 @@
       (lth u.index-a u.index-b)
     ::
     ++  default-key-list
-      ~+  (turn default-field-list |=([key=@tas *] key))
+      ^~  (turn default-field-list |=([key=@tas *] key))
     --
   ::
   ++  is-valid
