@@ -2,15 +2,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import SubmitButton from '../buttons/SubmitButton';
 import { syncPals } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
-import { scryPals } from '../../api/Scry';
-import { PalsInfo } from '../../types/PalsTypes';
 
 export default function PalsConfirmation(props: { onConfirm: () => void }): JSX.Element {
-  const { api, contacts, displayError } = useContext(AppContext);
+  const { api, contacts, displayError, palsInfo } = useContext(AppContext);
   const [ submitting, setSubmitting ] = useState<boolean>(false);
-  const [ palsInfo, setPalsInfo ] = useState<PalsInfo>();
-
-  useEffect(() => { scryPals(api).then(setPalsInfo) });
 
   function onError(error: string | null) {
     setSubmitting(false);
