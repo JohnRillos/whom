@@ -2,6 +2,7 @@ import React from 'react';
 import { useContext } from 'react';
 import { deleteContact } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
+import { PalStatus } from '../../types/PalsTypes';
 import CloseButton from '../buttons/CloseButton';
 import EditButton from '../buttons/EditButton';
 import DeleteButton from '../buttons/DeleteButton';
@@ -34,19 +35,16 @@ export default function Menu() {
       return null;
     }
     const pal = palsInfo.pals[selectedContactKey];
-    if (!pal) {
-      return <AddPalButton onClick={() => setPalModalOpen(true)} disabled={editContactMode}/>;
+    switch (pal?.status) {
+      case PalStatus.MUTUAL:
+        return <MutualButton onClick={() => setPalModalOpen(true)} disabled={editContactMode}/>;
+      case PalStatus.TARGET:
+        return <TargetButton onClick={() => setPalModalOpen(true)} disabled={editContactMode}/>;
+      case PalStatus.LEECHE:
+        return <LeecheButton onClick={() => setPalModalOpen(true)} disabled={editContactMode}/>;
+      default:
+        return <AddPalButton onClick={() => setPalModalOpen(true)} disabled={editContactMode}/>;
     }
-    if (pal.mutual) {
-      return <MutualButton onClick={() => setPalModalOpen(true)} disabled={editContactMode}/>;
-    }
-    if (pal.target) {
-      return <TargetButton onClick={() => setPalModalOpen(true)} disabled={editContactMode}/>;
-    }
-    if (pal.leeche) {
-      return <LeecheButton onClick={() => setPalModalOpen(true)} disabled={editContactMode}/>;
-    }
-    return null;
   }
 
   return (

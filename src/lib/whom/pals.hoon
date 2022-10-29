@@ -15,9 +15,8 @@
   =/  target  (~(has in targets) ship)
   =/  leeche  (~(has in leeches) ship)
   ^-  [@p pal]
-  :*  ship
-      target=target
-      leeche=leeche
-      mutual=&(target leeche)
-  ==
+  :-  ship
+  ?:  &(target leeche)  %mutual
+  ?:  target            %target
+  ?>  leeche            %leeche
 --

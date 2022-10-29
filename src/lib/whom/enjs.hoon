@@ -130,8 +130,6 @@
   ^-  [@t json]
   :-  (crip <ship>)
   %-  pairs
-  :~  target+b+target.pal
-      leeche+b+leeche.pal
-      mutual+b+mutual.pal
+  :~  status+s+status.pal
   ==
 --

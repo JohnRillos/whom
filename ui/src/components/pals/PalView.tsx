@@ -1,14 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { byePal, heyPal } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
+import { PalStatus } from '../../types/PalsTypes';
 import { getContactWithKey, getDisplayName } from '../../util/ContactUtil';
 import CloseButton from '../buttons/CloseButton';
 import DangerButton from '../buttons/DangerButton';
 import SubmitButton from '../buttons/SubmitButton';
-
-enum Status {
-  TARGET, LEECHE, MUTUAL
-}
 
 export default function PalView(props: { closeModal: () => void }): JSX.Element | null {
   const {
@@ -55,29 +52,20 @@ export default function PalView(props: { closeModal: () => void }): JSX.Element 
 
   const name = getDisplayName(contact);
   const pal = palsInfo.pals[selectedContactKey]
-  const status = getStatus();
-
-  function getStatus(): Status | null {
-    if (!pal) return null;
-    if (pal.mutual) return Status.MUTUAL;
-    if (pal.target) return Status.TARGET;
-    if (pal.leeche) return Status.LEECHE;
-    return null;
-  }
 
   function renderStatus(): JSX.Element | null {
     let text: string;
     let color: string;
-    switch (status) {
-      case Status.MUTUAL:
+    switch (pal?.status) {
+      case PalStatus.MUTUAL:
         text = 'mutual';
         color = 'bg-green-500';
         break;
-      case Status.TARGET:
+      case PalStatus.TARGET:
         text = 'outgoing';
         color = 'bg-blue-500';
         break;
-      case Status.LEECHE:
+      case PalStatus.LEECHE:
         text = 'incoming';
         color = 'bg-amber-400';
         break;
@@ -88,56 +76,45 @@ export default function PalView(props: { closeModal: () => void }): JSX.Element 
   }
 
   function getDescription(): string {
-    switch (status) {
-      case Status.MUTUAL:
+    switch (pal?.status) {
+      case PalStatus.MUTUAL:
         return 'You are mutual pals.';
-      case Status.TARGET:
+      case PalStatus.TARGET:
         return 'You\'ve sent this person a pal request. If they accept, you\'ll be mutual pals.';
-      case Status.LEECHE:
+      case PalStatus.LEECHE:
         return 'This person sent you a pal request. If you accept, you\'ll be mutual pals.';
       default:
         return `Add ${name} as a pal?`;
     }
   }
 
-  function addToPalsButton(): JSX.Element | null {
-    if (pal) {
-      return null;
+  function palRequestButton(): JSX.Element {
+    switch (pal?.status) {
+      case PalStatus.LEECHE:
+        return (
+          <SubmitButton onClick={addToPals} disabled={submitting}>
+            Accept pal request
+          </SubmitButton>
+        );
+      case PalStatus.MUTUAL:
+        return (
+          <DangerButton onClick={removeFromPals} disabled={submitting}>
+            Remove as pal
+          </DangerButton>
+        );
+      case PalStatus.TARGET:
+        return (
+          <DangerButton onClick={removeFromPals} disabled={submitting}>
+            Cancel pal request
+          </DangerButton>
+        );
+      default:
+        return (
+          <SubmitButton onClick={addToPals} disabled={submitting}>
+            Send pal request
+          </SubmitButton>
+        );
     }
-    return (
-      <SubmitButton onClick={addToPals} disabled={submitting}>
-        Send pal request
-      </SubmitButton>
-    );
-  }
-
-  function acceptButton(): JSX.Element | null {
-    if (status != Status.LEECHE) {
-      return null;
-    }
-    return (
-      <SubmitButton onClick={addToPals} disabled={submitting}>
-        Accept pal request
-      </SubmitButton>
-    );
-  }
-
-  function removeButton(): JSX.Element | null {
-    if (status == Status.MUTUAL) {
-      return (
-        <DangerButton onClick={removeFromPals} disabled={submitting}>
-          Remove as pal
-        </DangerButton>
-      );
-    }
-    if (status == Status.TARGET) {
-      return (
-        <DangerButton onClick={removeFromPals} disabled={submitting}>
-          Cancel pal request
-        </DangerButton>
-      );
-    }
-    return null;
   }
 
   function renderContent(): JSX.Element {
@@ -149,9 +126,7 @@ export default function PalView(props: { closeModal: () => void }): JSX.Element 
         {renderStatus()}
         <p>{getDescription()}</p>
         <div className='mt-2 space-x-2'>
-          {addToPalsButton()}
-          {acceptButton()}
-          {removeButton()}
+          {palRequestButton()}
         </div>
       </div>
     );

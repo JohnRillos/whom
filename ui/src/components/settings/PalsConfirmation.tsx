@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import SubmitButton from '../buttons/SubmitButton';
 import { syncPals } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
+import { PalStatus } from '../../types/PalsTypes';
 
 export default function PalsConfirmation(props: { onConfirm: () => void }): JSX.Element {
   const { api, contacts, displayError, palsInfo } = useContext(AppContext);
@@ -12,11 +13,11 @@ export default function PalsConfirmation(props: { onConfirm: () => void }): JSX.
     displayError('Error enabling %pals sync! ' + error || '');
   }
 
-  const pals: string[] | null = palsInfo
-    ? Object.entries(palsInfo.pals).filter(([_, pal]) => pal.target).map(([ship, _]) => ship)
-    : null;
-  const importedPalCount = pals?.filter(pal => pal in contacts).length || 0;
-  const unimportedPalCount = pals == undefined ? undefined : pals.length - importedPalCount;
+  const pals: string[] = Object.entries(palsInfo.pals)
+    .filter(([_, pal]) => pal.status == PalStatus.TARGET)
+    .map(([ship, _]) => ship);
+  const importedPalCount = pals.filter(pal => pal in contacts).length;
+  const unimportedPalCount = pals.length - importedPalCount;
 
   const palsInstallLink = (
     <a className='font-mono text-blue-500' href='web+urbitgraph://~paldev/pals'>
@@ -42,7 +43,7 @@ export default function PalsConfirmation(props: { onConfirm: () => void }): JSX.
       <p className={(importedPalCount > 0) ? '' : 'hidden'}>
         {importedPalCount} of your pals are already in your contacts.
       </p>
-      <p className={unimportedPalCount !== undefined ? '' : 'hidden'}>
+      <p>
         This process will create {unimportedPalCount} new contacts immediately.
       </p>
       <div className='space-x-2'>

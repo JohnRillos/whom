@@ -42,9 +42,7 @@
   ==
 ::
 +$  pal
-  $:  target=?
-      leeche=?
-      mutual=?
+  $:  status=?(%leeche %target %mutual)
   ==
 ::
 +$  contacts-0  (map (each @p @t) contact)

@@ -3,8 +3,12 @@ export declare type PalsInfo = {
   pals: Record<string, Pal>;
 };
 
+export enum PalStatus {
+  MUTUAL = 'mutual',
+  TARGET = 'target',
+  LEECHE = 'leeche',
+}
+
 export declare type Pal = {
-  target: boolean,
-  leeche: boolean,
-  mutual: boolean
+  status: PalStatus,
 };
