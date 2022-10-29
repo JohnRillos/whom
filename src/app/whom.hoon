@@ -1,4 +1,4 @@
-/-  *whom, pals-sur=pals
+/-  *whom, pals-sur=pals, hark=hark-store
 /+  default-agent, dbug, pals-lib=pals, verb, whom-fields, whom-pals
 |%
 ::
@@ -271,9 +271,13 @@
   =|  cards=(list card)
   |-
   ?-  -.old
-    %1  [cards old]
+    %1  [(weld cards notifications) old]
     %0  $(old (state-0-to-1 old), cards watch-pals)
   ==
+  ::
+  ++  notifications
+    %-  notify
+    '1.2.0: You can now manage your %pals in Contacts.'
   ::
   ++  state-0-to-1
     |=  old=state-0
@@ -369,4 +373,14 @@
   =.  profile.contact  `profile
   =.  contacts  (~(put by contacts) key contact)
   [[give-contacts ~] state]
+::
+++  notify
+  |=  message=@t
+  ^-  (list card)
+  ?.  .^(? %gu /(scot %p our.bowl)/hark-store/(scot %da now.bowl))  ~
+  =/  content=(list content:hark)  ~[text+message]
+  =/  =bin:hark     [/[dap.bowl] q.byk.bowl /notification]
+  =/  =action:hark  [%add-note bin content ~ now.bowl / /whom]
+  =/  =cage         [%hark-action !>(action)]
+  [%pass /hark %agent [our.bowl %hark-store] %poke cage]~
 --
