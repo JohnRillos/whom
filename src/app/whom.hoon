@@ -328,10 +328,7 @@
 ++  leave-profile
   |=  ship=@p
   ^-  card
-  =/  out
-    [%pass /0/profile/(scot %p ship) %agent [ship %whom] %leave ~]
-  ~&  "card: {<out>}"
-  out
+  [%pass /0/profile/(scot %p ship) %agent [ship %whom] %leave ~]
 ::
 ++  watch-pals
   ^-  (list card)
