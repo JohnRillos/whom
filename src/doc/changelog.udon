@@ -1,5 +1,13 @@
 ;>
 
+## 1.2.0
+
+Date: ~2022.10.29
+- display %pals status on contacts
+- user can add or remove pals via the UI
+- use %hark-store for notifications
+
+
 ## 1.1.3
 
 Date: ~2022.10.20

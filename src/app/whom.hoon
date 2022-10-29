@@ -1,5 +1,5 @@
-/-  *whom, pals-sur=pals
-/+  default-agent, dbug, pals-lib=pals, verb, whom-fields
+/-  *whom, pals-sur=pals, hark=hark-store
+/+  default-agent, dbug, pals-lib=pals, verb, whom-fields, whom-pals
 |%
 ::
 +$  card  card:agent:gall
@@ -35,10 +35,10 @@
 ^-  agent:gall
 =<
 |_  =bowl:gall
-+*  this     .
-    default  ~(. (default-agent this %|) bowl)
-    main     ~(. +> bowl)
-    pals     ~(. pals-lib bowl)
++*  this         .
+    default    ~(. (default-agent this %|) bowl)
+    main       ~(. +> bowl)
+    pals-scry  ~(. pals-lib bowl)
 ::
 ++  on-init
   ^-  (quip card _this)
@@ -97,6 +97,7 @@
       =.  contacts  (~(del by contacts) key.act)
       :_  state
       ?-  -.key.act
+        :: %.y  ~[give-contacts:main]
         %.y  ~[give-contacts:main (leave-profile:main p.key.act)]
         %.n  ~[give-contacts:main]
       ==
@@ -156,13 +157,23 @@
       =.  import-pals  enabled.act
       ?.  enabled.act  [~[give-import-pals:main] state]
       =/  new-pals=(list ship)
-        %+  skip  ~(tap in (targets:pals ''))
+        %+  skip  ~(tap in (targets:pals-scry ''))
         |=  =ship  (~(has by contacts) [%.y ship])
       :_  state
       :-  give-import-pals:main
       %+  turn  new-pals
       |=  =ship
       [%pass /pals/import/[(scot %p ship)] %arvo %b %wait now.bowl]
+      ::
+        %hey-pal
+      :_  state
+      =/  =cage  [%pals-command !>([%meet ship.act ~])]
+      ~[[%pass /hey-pal %agent [our.bowl %pals] %poke cage]]
+      ::
+        %bye-pal
+      :_  state
+      =/  =cage  [%pals-command !>([%part ship.act ~])]
+      ~[[%pass /bye-pal %agent [our.bowl %pals] %poke cage]]
     ==
   ::
   ++  add-contact
@@ -210,6 +221,7 @@
     [%~.0 %contacts ~]      (me (give %whom-contacts-0 contacts))
     [%~.0 %fields ~]        (me (give %whom-fields-0 field-list:field-util:main))
     [%~.0 %self ~]          (me (give %whom-self-0 self))
+    [%~.0 %pals ~]          (me (give %whom-pals-0 get:pals-util:main))
     [%~.0 %pals %import ~]  (me (give %loob import-pals))
     [%~.0 %profile %public ~]   (give %whom-profile-0 [info.self fields])
   ==
@@ -227,6 +239,7 @@
   --
 ::
 ++  on-leave  on-leave:default
+::
 ++  on-peek
   |=  =path
   ^-  (unit (unit cage))
@@ -234,6 +247,7 @@
     [%x %~.0 %contacts ~]  ``whom-contacts-0+!>(contacts)
     [%x %~.0 %fields ~]    ``whom-fields-0+!>(field-list:field-util:main)
     [%x %~.0 %self ~]      ``whom-self-0+!>(self)
+    [%x %~.0 %pals ~]      ``whom-pals-0+!>(get:pals-util:main)
   ==
 ::
 ++  on-agent
@@ -257,9 +271,13 @@
   =|  cards=(list card)
   |-
   ?-  -.old
-    %1  [cards old]
+    %1  [(weld cards notifications) old]
     %0  $(old (state-0-to-1 old), cards watch-pals)
   ==
+  ::
+  ++  notifications
+    %-  notify
+    '1.2.0: You can now manage your %pals in Contacts.'
   ::
   ++  state-0-to-1
     |=  old=state-0
@@ -285,6 +303,9 @@
 ++  give-import-pals
   [%give %fact ~[/0/pals/import] %loob !>(import-pals)]
 ::
+++  give-pals
+  [%give %fact ~[/0/pals] %whom-pals-0 !>(get:pals-util)]
+::
 ++  is-info-valid
   |=  info=(map @tas info-field)
   =/  info-list=(list [@tas info-field])  ~(tap by info)
@@ -297,6 +318,8 @@
 ::
 ++  field-util  ~(. field-util:whom-fields fields)
 ::
+++  pals-util   ~(. whom-pals bowl)
+::
 ++  watch-profile
   |=  ship=@p
   ^-  card
@@ -305,7 +328,10 @@
 ++  leave-profile
   |=  ship=@p
   ^-  card
-  [%pass /0/profile/(scot %p ship) %agent [ship %whom] %leave ~]
+  =/  out
+    [%pass /0/profile/(scot %p ship) %agent [ship %whom] %leave ~]
+  ~&  "card: {<out>}"
+  out
 ::
 ++  watch-pals
   ^-  (list card)
@@ -323,6 +349,7 @@
       [%pals @tas ~]
     =/  =effect:pals-sur  !<(effect:pals-sur q.cage)
     :_  state
+    :-  give-pals
     ?+  -.effect  ~
         %meet
       ?.  import-pals  ~
@@ -346,4 +373,14 @@
   =.  profile.contact  `profile
   =.  contacts  (~(put by contacts) key contact)
   [[give-contacts ~] state]
+::
+++  notify
+  |=  message=@t
+  ^-  (list card)
+  ?.  .^(? %gu /(scot %p our.bowl)/hark-store/(scot %da now.bowl))  ~
+  =/  content=(list content:hark)  ~[text+message]
+  =/  =bin:hark     [/[dap.bowl] q.byk.bowl /notification]
+  =/  =action:hark  [%add-note bin content ~ now.bowl / /whom]
+  =/  =cage         [%hark-action !>(action)]
+  [%pass /hark %agent [our.bowl %hark-store] %poke cage]~
 --

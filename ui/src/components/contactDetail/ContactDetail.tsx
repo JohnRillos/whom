@@ -53,7 +53,7 @@ export default function ContactDetail(): JSX.Element {
         .filter((arg: { key: string, value: InfoValue | undefined}) => arg.value !== undefined)
         .map((arg: {key: string, value: InfoValue | undefined}) => (
           <li key={arg.key}>
-            {renderInfoField(arg.key, arg.value, defs[arg.key])}
+            {renderInfoField(arg.key, arg.value, defs[arg.key]!!)}
           </li>
         ))}
       </ul>

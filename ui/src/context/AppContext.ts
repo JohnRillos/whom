@@ -1,13 +1,12 @@
 import Urbit from '@urbit/http-api';
 import { createContext } from 'react';
 import { Contacts } from '../types/ContactTypes';
+import { PalsInfo } from '../types/PalsTypes';
 import { Self } from '../types/ProfileTypes';
 import { FieldSettings } from '../types/SettingTypes';
 
 export type AppContextType = {
   api: Urbit,
-  announcement: string | null,
-  dismissAnnouncement: () => void,
   errorMessage: string | null,
   displayError: (message: string) => void,
   dismissError: () => void,
@@ -22,7 +21,10 @@ export type AppContextType = {
   setEditContactMode: (value: boolean) => void,
   fieldSettings: FieldSettings,
   self: Self,
-  palsSyncEnabled: boolean
+  palsSyncEnabled: boolean,
+  palsInfo: PalsInfo,
+  setPalsInfo: (pals: PalsInfo) => void,
+  setPalModalOpen: (open: boolean) => void
 }
 
 function getUrbitApi(): Urbit {
@@ -33,8 +35,6 @@ function getUrbitApi(): Urbit {
 
 const initialContext: AppContextType = {
   api: getUrbitApi(),
-  announcement: null,
-  dismissAnnouncement: () => {},
   errorMessage: null,
   displayError: () => {},
   dismissError: () => {},
@@ -49,7 +49,10 @@ const initialContext: AppContextType = {
   setEditContactMode: () => {},
   fieldSettings: { defs: {}, order: [] },
   self: { info: {} },
-  palsSyncEnabled: false
+  palsSyncEnabled: false,
+  palsInfo: { running: false, pals: {} },
+  setPalsInfo: () => {},
+  setPalModalOpen: () => {}
 }
 
 const AppContext = createContext(initialContext);

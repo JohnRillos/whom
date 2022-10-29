@@ -23,8 +23,8 @@
       [%del-field key=@tas]
       [%mod-self info=(map @tas (unit info-field))]
       [%pal-sync enabled=?]
-      :: %hey-pal
-      :: %bye-pal
+      [%hey-pal =ship]
+      [%bye-pal =ship]
   ==
 ::
 +$  field-def  [name=@t type=field-type-tag]
@@ -36,6 +36,15 @@
       [%date @da]
   ==
 ::
++$  pals-info
+  $:  running=?
+      pals=(map @p pal)
+  ==
+::
++$  pal
+  $:  status=?(%leeche %target %mutual)
+  ==
+::
 +$  contacts-0  (map (each @p @t) contact)
 ::
 +$  fields-0  (list [@tas field-def])
@@ -43,4 +52,6 @@
 +$  self-0  self
 ::
 +$  profile-0  profile
+::
++$  pals-0  pals-info
 --

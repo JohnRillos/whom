@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { syncPals } from '../../api/ContactPokes';
+import { syncPals } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
 import BackButton from '../buttons/BackButton';
 import ChevronButton from '../buttons/ChevronButton';
