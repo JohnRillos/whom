@@ -44,7 +44,7 @@ export default function CustomFieldsView() {
         Customize Fields
       </h1>
       <div className='divide-y divide-gray-400/50'>
-        {fieldSettings.order.map(key => fieldSettings.defs[key]).map(renderFieldDef)}
+        {fieldSettings.order.map(key => fieldSettings.defs[key]!).map(renderFieldDef)}
       </div>
       { addFieldMode ? renderAddFieldForm() :
         <button
