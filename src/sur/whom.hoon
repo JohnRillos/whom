@@ -5,9 +5,10 @@
   ==
 ::
 +$  self
-  $:  info=(map @tas info-field)
-      :: todo: access levels
+  $:  info=(map @tas [value=info-field access=access-level])
   ==
+::
++$  access-level  ?(%public %mutual)
 ::
 +$  profile
   $:  info=(map @tas info-field)
@@ -21,7 +22,7 @@
       [%mod-contact-ship key=(each @p @t) ship=(unit @p)]
       [%add-field key=@tas def=field-def]
       [%del-field key=@tas]
-      [%mod-self info=(map @tas (unit info-field))]
+      [%mod-self info=(map @tas (unit [val=info-field level=access-level]))]
       [%pal-sync enabled=?]
       [%hey-pal =ship]
       [%bye-pal =ship]
@@ -41,15 +42,15 @@
       pals=(map @p pal)
   ==
 ::
-+$  pal
-  $:  status=?(%leeche %target %mutual)
-  ==
++$  pal  status=?(%leeche %target %mutual)
 ::
 +$  contacts-0  (map (each @p @t) contact)
 ::
 +$  fields-0  (list [@tas field-def])
 ::
-+$  self-0  self
++$  self-0  info=(map @tas info-field)
+::
++$  self-1  self
 ::
 +$  profile-0  profile
 ::

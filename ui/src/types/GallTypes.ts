@@ -1,6 +1,6 @@
 import { Contact, Contacts, InfoValue } from './ContactTypes';
 import { PalsInfo } from './PalsTypes';
-import { Self } from './ProfileTypes';
+import { Self, SelfField } from './ProfileTypes';
 import { FieldDefWithKey, FieldTypeTag } from './SettingTypes';
 
 export declare type GallApp = 'whom';
@@ -114,7 +114,7 @@ type DelFieldAction = {
 
 type EditSelfAction = {
   'mod-self': {
-    info: Record<string, InfoValue | null>
+    info: Record<string, SelfField | null>
   }
 };
 

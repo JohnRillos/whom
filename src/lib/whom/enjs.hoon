@@ -44,12 +44,13 @@
   |=  info=(map @tas info-field)
   ^-  json
   %-  pairs
-  (turn ~(tap by info) enjs-info-field)
+  %+  turn  ~(tap by info)
+  |=  [key=@tas =info-field]
+  [key (enjs-info-field info-field)]
 ::
 ++  enjs-info-field
-  |=  [key=@tas val=info-field]
-  ^-  [@t json]
-  :-  key
+  |=  val=info-field
+  ^-  json
   ?-  val
     [%text *]         [%s +.val]
     [%date *]  (enjs-date +.val)
@@ -84,6 +85,25 @@
   ^-  json
   %-  pairs
   :~  info+(enjs-info info.self)
+  ==
+::
+++  enjs-self-1
+  |=  self=self-1
+  ^-  json
+  %-  pairs
+  :~  info+(enjs-self-info info.self)
+  ==
+::
+++  enjs-self-info
+  |=  info=(map @tas [info-field access-level])
+  ^-  json
+  %-  pairs
+  %+  turn  ~(tap by info)
+  |=  [key=@tas =info-field =access-level]
+  :-  key
+  %-  pairs
+  :~  value+(enjs-info-field info-field)
+      access+s+access-level
   ==
 ::
 ++  enjs-unit-profile
