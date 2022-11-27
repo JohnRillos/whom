@@ -79,7 +79,7 @@
       %2  [cards old]
       %1  %=  $
             old     (state-1-to-2 old)
-            cards   (weld cards cards-1-to-2)
+            cards   (weld cards (cards-1-to-2 old))
           ==
       %0  $(old (state-0-to-1 old), cards watch-pals:main)
     ==
@@ -106,16 +106,18 @@
       ==
     ::
     ++  cards-1-to-2
+      |=  =state-1
       ^-  (list card)
-      %+  weld  watch-mutual-profiles
+      %+  weld  (watch-mutual-profiles state-1)
       %-  notify:main
       '1.3.0: hello world' :: todo: real message
     ::
     ++  watch-mutual-profiles
+      |=  =state-1
       ^-  (list card)
       %+  turn
         %+  skim  ~(tap in (mutuals:pals-scry ''))
-        |=  =ship  (~(has by contacts) [%.y ship])
+        |=  =ship  (~(has by contacts.state-1) [%.y ship])
       |=  =ship  (watch-profile:main ship %.y)
     --
   --
@@ -310,7 +312,7 @@
     [%~.0 %pals ~]          (me (give %whom-pals-0 get:pals-util:main))
     [%~.0 %pals %import ~]  (me (give %loob import-pals))
     [%~.0 %profile %public ~]   (give %whom-profile-0 public-profile:main)
-    [%~.0 %profile %mutual ~]   (we (give %whom-profile-0 mutual-profile:main))
+    [%~.0 %profile %mutual ~]   (we (give %whom-profile-1 mutual-profile:main))
   ==
   ::
   ++  me
