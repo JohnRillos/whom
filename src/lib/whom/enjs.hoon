@@ -2,21 +2,25 @@
 =,  enjs:format
 |%
 ::
-++  contacts-0
-  |=  con=^contacts-0
-  (enjs-contacts con)
-::
-++  enjs-contacts
-  |=  contacts=(map (each @p @t) contact)
+++  enjs-contacts-0
+  |=  contacts=(map (each @p @t) contact-0)
   ^-  json
   %-  pairs
-  (turn ~(tap by contacts) enjs-contacts-entry)
-::
-++  enjs-contacts-entry
-  |=  [key=(each @p @t) =contact]
+  %+  turn   ~(tap by contacts)
+  |=  [key=(each @p @t) =contact-0]
   ^-  [@tas json]
   :-  (enjs-key key)
-  (enjs-contact contact)
+  (enjs-contact-0 contact-0)
+::
+++  enjs-contacts-1
+  |=  contacts=(map (each @p @t) contact-1)
+  ^-  json
+  %-  pairs
+  %+  turn   ~(tap by contacts)
+  |=  [key=(each @p @t) =contact-1]
+  ^-  [@tas json]
+  :-  (enjs-key key)
+  (enjs-contact-1 contact-1)
 ::
 ++  enjs-key
   |=  key=(each @p @t)
@@ -26,12 +30,20 @@
     %.n  p.key
   ==
 ::
-++  enjs-contact
-  |=  =contact
+++  enjs-contact-0
+  |=  contact=contact-0
   ^-  json
   %-  pairs
   :~  info+(enjs-info info.contact)
-      profile+(enjs-unit-profile profile.contact)
+      profile+(enjs-unit-profile-0 profile.contact)
+  ==
+::
+++  enjs-contact-1
+  |=  contact=contact-1
+  ^-  json
+  %-  pairs
+  :~  info+(enjs-info info.contact)
+      profile+(enjs-unit-profile-1 profile.contact)
   ==
 ::
 ++  enjs-unit-patp
@@ -91,10 +103,10 @@
   |=  self=self-1
   ^-  json
   %-  pairs
-  :~  info+(enjs-self-info info.self)
+  :~  info+(enjs-info-with-access info.self)
   ==
 ::
-++  enjs-self-info
+++  enjs-info-with-access
   |=  info=(map @tas [info-field access-level])
   ^-  json
   %-  pairs
@@ -106,17 +118,31 @@
       access+s+access-level
   ==
 ::
-++  enjs-unit-profile
-  |=  profile=(unit profile)
+++  enjs-unit-profile-0
+  |=  profile=(unit profile-0)
   ^-  json
   ?~  profile  ~
   (enjs-profile-0 u.profile)
 ::
+++  enjs-unit-profile-1
+  |=  profile=(unit profile-1)
+  ^-  json
+  ?~  profile  ~
+  (enjs-profile-1 u.profile)
+::
 ++  enjs-profile-0
-  |=  =profile
+  |=  profile=profile-0
   ^-  json
   %-  pairs
   :~  info+(enjs-info info.profile)
+      fields+(enjs-field-defs-map fields.profile)
+  ==
+::
+++  enjs-profile-1
+  |=  profile=profile-1
+  ^-  json
+  %-  pairs
+  :~  info+(enjs-info-with-access info.profile)
       fields+(enjs-field-defs-map fields.profile)
   ==
 ::

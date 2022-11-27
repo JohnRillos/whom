@@ -13,7 +13,7 @@
 +$  state-0
   $:  %0
       self=self-0
-      contacts=(map (each @p @t) contact)
+      contacts=(map (each @p @t) contact-0)
       fields=(map @tas field-def)
       next-id=@ud
   ==
@@ -21,7 +21,7 @@
 +$  state-1
   $:  %1
       self=self-0
-      contacts=(map (each @p @t) contact)
+      contacts=(map (each @p @t) contact-0)
       fields=(map @tas field-def)
       next-id=@ud
       import-pals=?
@@ -33,7 +33,7 @@
       contacts=(map (each @p @t) contact)
       fields=(map @tas field-def)
       next-id=@ud
-      import-pals=?
+      import-pals=_|
   ==
 --
 ::
@@ -97,9 +97,12 @@
       ^-  state-2
       =/  public-info=(map @tas [info-field access-level])
         (~(run by info.self.old) |=(=info-field [info-field %public]))
+      =/  nu-contacts=contacts-1  (~(run by contacts.old) contact-0-to-1)
+      =/  nu-self=self-1  self.old(info public-info)
       %=  old
-        -     %2
-        self  self(info public-info)
+        -         %2
+        contacts  nu-contacts
+        self      nu-self
       ==
     ::
     ++  cards-1-to-2
@@ -149,19 +152,20 @@
         %add-contact
       =.  state  (add-contact ship.act contact.act)
       :_  state
-      ?~  ship.act  ~[give-contacts:main]
+      ?~  ship.act  give-contacts:main
       =/  mutual=?  (~(has in (mutuals:pals-scry '')) u.ship.act)
-      ~[give-contacts:main (watch-profile:main u.ship.act mutual)]
+      %+  snoc  give-contacts:main
+      (watch-profile:main u.ship.act mutual)
       ::
         %del-contact
       =.  contacts  (~(del by contacts) key.act)
       :_  state
       ?-  -.key.act
-        %.y   :~  give-contacts:main
-                  (leave-public-profile:main p.key.act)
+        %.y   %+  weld  give-contacts:main
+              :~  (leave-public-profile:main p.key.act)
                   (leave-mutual-profile:main p.key.act)
               ==
-        %.n   ~[give-contacts:main]
+        %.n   give-contacts:main
       ==
       ::
         %mod-contact-info
@@ -169,7 +173,7 @@
       =.  info.contact  (edit-info-map info.act info.contact)
       ?>  (is-info-valid:main info.contact)
       =.  contacts  (~(put by contacts) key.act contact)
-      [[give-contacts:main ~] state]
+      [give-contacts:main state]
       ::
         %mod-contact-ship
       =/  contact   (~(got by contacts) key.act)
@@ -177,7 +181,7 @@
       =.  profile.contact  ~
       =.  state  (add-contact ship.act contact)
       =/  cards=(list card)
-        %+  weld  ~[give-contacts:main]
+        %+  weld  give-contacts:main
         =/  old-ship=(unit @p)  ?:(-.key.act ``@p`p.key.act ~)
         %+  weld
           ?~  old-ship  ~
@@ -299,7 +303,8 @@
   ^-  (quip card _this)
   :_  this
   ?+  path  (on-watch:default path)
-    [%~.0 %contacts ~]      (me (give %whom-contacts-0 contacts))
+    [%~.0 %contacts ~]      (me (give %whom-contacts-0 (contacts-1-to-0 contacts)))
+    [%~.1 %contacts ~]      (me (give %whom-contacts-1 contacts))
     [%~.0 %fields ~]        (me (give %whom-fields-0 field-list:field-util:main))
     [%~.0 %self ~]          (me (give %whom-self-1 self))
     [%~.0 %pals ~]          (me (give %whom-pals-0 get:pals-util:main))
@@ -332,7 +337,7 @@
   |=  =path
   ^-  (unit (unit cage))
   ?+  path  (on-peek:default path)
-    [%x %~.0 %contacts ~]  ``whom-contacts-0+!>(contacts)
+    [%x %~.0 %contacts ~]  ``whom-contacts-1+!>(contacts)
     [%x %~.0 %fields ~]    ``whom-fields-0+!>(field-list:field-util:main)
     [%x %~.0 %self ~]      ``whom-self-1+!>(self)
     [%x %~.0 %pals ~]      ``whom-pals-0+!>(get:pals-util:main)
@@ -363,7 +368,7 @@
     ^-  (quip card _state)
     ?+  wire  ~|  "Unknown wire {<wire>}"  !!
         [%~.0 %profile @p ~]
-      (take-profile !<(profile q.cage))
+      (take-profile (profile-0-to-1 !<(profile-0 q.cage)))
         [%~.0 %profile @p %mutual ~]
       (take-profile !<(profile q.cage))
         [%pals @tas ~]
@@ -401,7 +406,7 @@
       (~(got by contacts) key)
     =.  profile.contact  `profile
     =.  contacts  (~(put by contacts) key contact)
-    [[give-contacts:main ~] state]
+    [give-contacts:main state]
   ::
   ++  handle-kick
     |=  =wire
@@ -431,6 +436,7 @@
     |=  [=wire =tang]
     ^-  (quip card _state)
     ~&  >>>  "nack: {<wire>}"
+    %-  (slog tang)
     ?+  wire  [~ state]
       ::
         [%~.0 %profile @p ~]
@@ -452,7 +458,11 @@
 |_  =bowl:gall
 ::
 ++  give-contacts
-  [%give %fact ~[/0/contacts] %whom-contacts-0 !>(contacts)]
+  ^-  (list card)
+  :~
+    [%give %fact ~[/0/contacts] %whom-contacts-0 !>((contacts-1-to-0 contacts))]
+    [%give %fact ~[/1/contacts] %whom-contacts-1 !>(contacts)]
+  ==
 ::
 ++  give-fields
   [%give %fact ~[/0/fields] %whom-fields-0 !>(field-list:field-util)]
@@ -464,7 +474,7 @@
   [%give %fact ~[/0/profile/public] %whom-profile-0 !>(public-profile)]
 ::
 ++  give-mutual-profile
-  [%give %fact ~[/0/profile/mutual] %whom-profile-0 !>(mutual-profile)]
+  [%give %fact ~[/0/profile/mutual] %whom-profile-1 !>(mutual-profile)]
 ::
 ++  give-import-pals
   [%give %fact ~[/0/pals/import] %loob !>(import-pals)]
@@ -473,7 +483,8 @@
   [%give %fact ~[/0/pals] %whom-pals-0 !>(get:pals-util)]
 ::
 ++  public-profile
-  ^-  profile
+  ~|  "failed to build public profile"
+  ^-  profile-0
   =/  pub-info=(map @tas info-field)
     =/  filtered=_info.self
       %-  (filter-map info.self)
@@ -486,13 +497,12 @@
 ::
 ++  mutual-profile
   ^-  profile
-  :_  fields
-  %-  ~(run by info.self)
-  |=  [=info-field *]
-  info-field
+  [info.self fields]
 ::
 ++  filter-map
   |*  raw=(map)
+  ?:  =(~ raw)
+    |*  $-([* *] ?)  raw
   =*  k  ~+  _?>(?=(^ raw) p.n.raw)
   =*  v  ~+  _?>(?=(^ raw) q.n.raw)
   |=  filter=$-([k v] ?)

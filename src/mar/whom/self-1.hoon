@@ -7,7 +7,11 @@
   |%
   ++  noun         self
   ++  json         (enjs-self-1:whom-enjs self)
-  ++  whom-self-0  `self-0`[info=info.self]
+  ++  whom-self-0
+    ^-  self-0
+    %-  ~(run by info.self)
+    |=  [=info-field =access-level]
+    info-field
   --
 ::
 ++  grab
