@@ -11,7 +11,8 @@ export default function SelectInput(
     value: string | undefined,
     options: { value: string, display: string }[],
     onChange: (arg: string) => void,
-    disabled?: boolean
+    disabled?: boolean,
+    className?: string
   }
 ): JSX.Element {
   function renderValue() {
@@ -32,7 +33,7 @@ export default function SelectInput(
   }
 
   return (
-    <div className='flex'>
+    <div className={'flex ' + (props.className || '')}>
       {props.label ? renderLabel(props.label, props.value) : null}
       {renderValue()}
     </div>

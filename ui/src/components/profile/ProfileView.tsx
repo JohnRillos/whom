@@ -10,11 +10,14 @@ import DateInput from '../input/DateInput';
 import TextInput from '../input/TextInput';
 import isEqual from 'lodash.isequal';
 import SelectInput from '../input/SelectInput';
+import Modal from '../Modal';
+import InfoButton from '../buttons/InfoButton';
 
 export default function ProfileView(props: { closeContainer: () => void }): JSX.Element {
-  const { api, displayError, fieldSettings, self } = useContext(AppContext);
+  const { api, displayError, fieldSettings, palsInfo, self } = useContext(AppContext);
   let [submitting, setSubmitting] = useState<boolean>(false);
   let [infoFields, setInfoFields] = useState<Record<string, ProfileField | null>>(self.info);
+  let [showPrivacyHelp, setShowPrivacyHelp] = useState<boolean>(false);
 
   function submitChanges() {
     setSubmitting(true);
@@ -103,6 +106,18 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
     }
   }
 
+  function renderHeaders() {
+    return (
+      <div className='flex flex-row justify-between opacity-50 border-b border-b-2 border-black dark:border-white'>
+        <div>Profile Info</div>
+        <div className='flex items-center space-x-1'>
+          <span>Privacy</span>
+          <InfoButton onClick={() => setShowPrivacyHelp(true)} title='Privacy Help'/>
+        </div>
+      </div>
+    );
+  }
+
   function renderInfoValue(key: string, val: InfoValue | undefined) {
     const label = fieldSettings.defs[key]?.name || key;
     switch (fieldSettings.defs[key]?.type) {
@@ -128,7 +143,8 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
 
   function renderAccessLevel(key: string, access: AccessLevel | undefined) {
     return (
-      <SelectInput label={''}
+      <SelectInput className={!!access ? '' : 'invisible'}
+        label={''}
         value={access}
         options={[
           {value: 'public', display: 'Public'},
@@ -161,11 +177,8 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
   function renderProfile() {
     return (
       <div className='text-left h-fit'>
-        <p className='text-center text-sm mb-1'>
-          Anyone can see the public fields on your profile. <br/>
-          Only your mutual pals can see fields marked "Pals".
-        </p>
         <h2 className='text-center mb-2 font-bold text-2xl'>~{window.ship}</h2>
+        {renderHeaders()}
         {renderProfileFields()}
         <div className='mt-2 space-x-2'>
           <SubmitButton
@@ -189,6 +202,34 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
     );
   }
 
+  function renderPrivacyHelp() {
+    let palsBlurb;
+    if (palsInfo.running) {
+      palsBlurb = null;
+    } else {
+      const palsInstallLink = (
+        <a className='font-mono text-blue-500' href='web+urbitgraph://~paldev/pals'>
+          ~paldev/pals 
+        </a>
+      );
+      palsBlurb = (
+        <div className='mt-2'>
+          You don't have the %pals app installed!
+          <br/>
+          Install {palsInstallLink} to let your pals see more info about you.
+        </div>
+      );
+    }
+    return (
+      <div className='text-sm'>
+        <b>Public:</b> can be seen by anybody
+        <br/>
+        <b>Pals:</b> can be seen by your pals (mutuals)
+        {palsBlurb}
+      </div>
+    );
+  }
+
   return (
     <div className='h-full w-full flex flex-col'>
       <nav className='flex-shrink w-full flex flex-row p-4'>
@@ -199,6 +240,9 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
       </nav>
       <div className='mx-auto justify-self-center max-w-md px-4 pb-4 overflow-y-auto'>
         {renderProfile()}
+        <Modal isOpen={showPrivacyHelp} closeModal={() => setShowPrivacyHelp(false)}>
+          {renderPrivacyHelp()}
+        </Modal>
       </div>
     </div>
   );
