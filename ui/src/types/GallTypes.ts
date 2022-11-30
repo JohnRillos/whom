@@ -1,12 +1,12 @@
 import { Contact, Contacts, InfoValue } from './ContactTypes';
 import { PalsInfo } from './PalsTypes';
-import { Self, SelfField } from './ProfileTypes';
+import { Self, ProfileField } from './ProfileTypes';
 import { FieldDefWithKey, FieldTypeTag } from './SettingTypes';
 
 export declare type GallApp = 'whom';
 
 export enum ScryPath {
-  Contacts = '/0/contacts',
+  Contacts = '/1/contacts',
   Fields = '/0/fields',
   Self = '/0/self',
   ImportPals = '/0/pals/import',
@@ -21,7 +21,7 @@ export declare type GallUpdate
   | PalsUpdate;
 
 export enum SubscribePath {
-  Contacts = '/0/contacts',
+  Contacts = '/1/contacts',
   Fields = '/0/fields',
   Self = '/0/self',
   ImportPals = '/0/pals/import',
@@ -114,7 +114,7 @@ type DelFieldAction = {
 
 type EditSelfAction = {
   'mod-self': {
-    info: Record<string, SelfField | null>
+    info: Record<string, ProfileField | null>
   }
 };
 

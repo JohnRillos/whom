@@ -1,18 +1,18 @@
-import { InfoFields, InfoValue } from './ContactTypes';
+import { InfoValue } from './ContactTypes';
 import { FieldDef } from './SettingTypes';
 
 export declare type Self = {
-  info: SelfFields
+  info: ProfileFields
 }
 
 export declare type Profile = {
-  info: InfoFields,
+  info: ProfileFields,
   fields: Record<string, FieldDef>
 }
 
-export declare type SelfFields = Record<string, SelfField>
+export declare type ProfileFields = Record<string, ProfileField>
 
-export declare type SelfField = {
+export declare type ProfileField = {
   value: InfoValue,
   access: AccessLevel
 }

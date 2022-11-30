@@ -9,6 +9,8 @@ import DateField from '../fields/DateField';
 import TextField from '../fields/TextField';
 import Menu from './Menu';
 import { FieldDef } from '../../types/SettingTypes';
+import { AccessLevel, ProfileField, ProfileFields } from '../../types/ProfileTypes';
+import LockIcon from '../icons/LockIcon';
 
 export default function ContactDetail(): JSX.Element {
   const { contacts, selectedContactKey, editContactMode, fieldSettings } = useContext(AppContext);
@@ -43,6 +45,18 @@ export default function ContactDetail(): JSX.Element {
     }
   }
 
+  function renderAccessLevel(accessLevel: AccessLevel | undefined) {
+    return (
+      <div className='-ml-1 mr-1'>
+        {
+          accessLevel == 'mutual'
+          ? <LockIcon title='Private'/>
+          : <div className='w-5'/>
+        }
+      </div>
+    );
+  }
+
   function renderInfoFields(info: InfoFields, defs: Record<string, FieldDef>) {
     return (
       <ul>
@@ -60,6 +74,25 @@ export default function ContactDetail(): JSX.Element {
     );
   }
 
+  function renderProfileFields(info: ProfileFields, defs: Record<string, FieldDef>) {
+    const allPublic = !Object.values(info).find(field => field.access == 'mutual');
+    return (
+      <ul>
+        {fieldOrder.map((key: string) => ({
+          key: key,
+          value: info[key],
+        }))
+        .filter((arg: { key: string, value: ProfileField | undefined}) => arg.value !== undefined)
+        .map((arg: {key: string, value: ProfileField | undefined}) => (
+          <li key={arg.key} className='flex'>
+            {allPublic ? null : renderAccessLevel(arg.value?.access)}
+            {renderInfoField(arg.key, arg.value?.value, defs[arg.key]!!)}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   function renderProfile(contact: ContactWithKey) {
     if (!contact.profile || Object.keys(contact.profile.info).length == 0) {
       return null;
@@ -67,7 +100,7 @@ export default function ContactDetail(): JSX.Element {
     return (
       <div className='mt-2 pt-2 text-center'>
         <strong>Profile</strong>
-        {renderInfoFields(contact.profile.info, profileFieldDefs)}
+        {renderProfileFields(contact.profile.info, profileFieldDefs)}
       </div>
     );
   }

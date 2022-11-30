@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { editSelf } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
 import { InfoValue, InfoDate } from '../../types/ContactTypes';
-import { AccessLevel, SelfField } from '../../types/ProfileTypes';
+import { AccessLevel, ProfileField } from '../../types/ProfileTypes';
 import BackButton from '../buttons/BackButton';
 import SubmitButton from '../buttons/SubmitButton';
 import DateInput from '../input/DateInput';
@@ -14,7 +14,7 @@ import SelectInput from '../input/SelectInput';
 export default function ProfileView(props: { closeContainer: () => void }): JSX.Element {
   const { api, displayError, fieldSettings, self } = useContext(AppContext);
   let [submitting, setSubmitting] = useState<boolean>(false);
-  let [infoFields, setInfoFields] = useState<Record<string, SelfField | null>>(self.info);
+  let [infoFields, setInfoFields] = useState<Record<string, ProfileField | null>>(self.info);
 
   function submitChanges() {
     setSubmitting(true);
@@ -33,7 +33,7 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
     displayError(error || 'Error editing profile!');
   }
 
-  function sanitizeInfo(info: Record<string, SelfField | null>): Record<string, SelfField | null> {
+  function sanitizeInfo(info: Record<string, ProfileField | null>): Record<string, ProfileField | null> {
     return Object.fromEntries(
       Object.entries(info)
       .filter(([key, val]) => {
@@ -115,7 +115,7 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
     }
   }
 
-  function renderSelfField(key: string, field: SelfField | null | undefined) {
+  function renderProfileField(key: string, field: ProfileField | null | undefined) {
     return (
       <div className='flex flex-row space-x-2'>
         <div className='mr-auto'>
@@ -139,12 +139,12 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
     );
   }
 
-  function renderSelfFields() {
+  function renderProfileFields() {
     return (
       <ul>
         {fieldSettings.order.map((key: string) => {
           return <li key={key}>
-            {renderSelfField(key, hasEdits ? infoFields[key] : self.info[key])}
+            {renderProfileField(key, hasEdits ? infoFields[key] : self.info[key])}
           </li>
         })}
       </ul>
@@ -166,7 +166,7 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
           Only your mutual pals can see fields marked "Pals".
         </p>
         <h2 className='text-center mb-2 font-bold text-2xl'>~{window.ship}</h2>
-        {renderSelfFields()}
+        {renderProfileFields()}
         <div className='mt-2 space-x-2'>
           <SubmitButton
             className='font-bold'
