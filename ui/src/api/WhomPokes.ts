@@ -1,6 +1,7 @@
 import Urbit from "@urbit/http-api";
 import { Contact, InfoValue } from "../types/ContactTypes";
 import { WhomAction } from "../types/GallTypes";
+import { ProfileField } from "../types/ProfileTypes";
 import { FieldDefWithKey } from "../types/SettingTypes";
 
 function poke(
@@ -94,7 +95,7 @@ export function deleteField(
 
 export function editSelf(
   api: Urbit,
-  info: Record<string, InfoValue | null>,
+  info: Record<string, ProfileField | null>,
   onError: (err: string | null) => void,
   onSuccess: () => void
 ) {

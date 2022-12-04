@@ -10,14 +10,17 @@ export default function SelectInput(
     label: string,
     value: string | undefined,
     options: { value: string, display: string }[],
-    onChange: (arg: string) => void
+    onChange: (arg: string) => void,
+    disabled?: boolean,
+    className?: string
   }
 ): JSX.Element {
   function renderValue() {
     return (
-      <select className='flex-shrink w-min-fit w-full bg-transparent border-b-2 border-dotted border-neutral-500 bg-standard'
+      <select className='bg-transparent border-b-2 border-dotted border-neutral-500 bg-standard'
         onChange={handleEvent}
-        value={props.value}>
+        value={props.value}
+        disabled={props.disabled}>
           {props.options.map(opt => 
             <option key={opt.value} value={opt.value}>{opt.display}</option>
           )}
@@ -30,8 +33,8 @@ export default function SelectInput(
   }
 
   return (
-    <div className='flex'>
-      {renderLabel(props.label, props.value)}
+    <div className={'flex ' + (props.className || '')}>
+      {props.label ? renderLabel(props.label, props.value) : null}
       {renderValue()}
     </div>
   );
