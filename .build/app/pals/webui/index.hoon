@@ -4,7 +4,12 @@
 /+  rudder, sigil-svg=sigil
 ::
 ^-  (page:rudder records command)
-|_  [=bowl:gall * records]
+::
+=>  |%
+    +$  role  ?(%all %mutual %target %leeche)
+    --
+::
+|_  [=bowl:gall order:rudder records]
 ++  argue
   |=  [headers=header-list:http body=(unit octs)]
   ^-  $@(brief:rudder command)
@@ -13,37 +18,55 @@
   ?~  what=(~(get by args) 'what')
     ~
   ?~  who=(slaw %p (~(gut by args) 'who' ''))
-    ~
-  |^  ?+  u.what  ~
+    'invalid ship name'
+  ?:  =(u.who our.bowl)
+    'befriend your inner self'
+  |^  ?+  u.what  'say what now'
           ?(%meet %part)
         ?:  ?=(%part u.what)
           [%part u.who ~]
-        [%meet u.who get-lists]
+        =/  tags  get-lists
+        ?~  tags  tag-error
+        [%meet u.who u.tags]
       ::
           ?(%enlist %unlist)
-        =/  tags=(set @ta)  get-lists
-        ?:  =(~ tags)  ~
+        =/  tags  get-lists
+        ?~  tags  tag-error
+        ?:  =(~ u.tags)  'no-op'
         ?:  ?=(%enlist u.what)
-          [%meet u.who tags]
-        [%part u.who tags]
+          [%meet u.who u.tags]
+        [%part u.who u.tags]
       ==
   ::
+  ++  tag-error
+    'tags must be in @ta (lowercase & url-safe) format and comma-separated'
+  ::
   ++  get-lists
-    ^-  (set @ta)
-    =-  (fall - ~)
+    ^-  (unit (set @ta))
     %+  rush  (~(gut by args) 'lists' '')
     %+  cook
       |=(s=(list @ta) (~(del in (~(gas in *(set @ta)) s)) ''))
     (more (ifix [. .]:(star ace) com) urs:ab)
   --
 ::
-++  final  (alert:rudder (cat 3 '/' dap.bowl) build)
+++  final  (alert:rudder url.request build)
 ::
 ++  build
   |=  $:  arg=(list [k=@t v=@t])
           msg=(unit [o=? =@t])
       ==
   ^-  reply:rudder
+  ::
+  =/  rel=role
+    =/  a  (~(gas by *(map @t @t)) arg)
+    =/  r  (~(gut by a) 'rel' %all)
+    ?:(?=(role r) r %all)
+  =/  tag=(set @ta)
+    %-  sy
+    %+  murn  arg
+    |=  [k=@t v=@t]
+    ?:(=('tag' k) (some v) ~)
+  ::
   |^  [%page page]
   ::
   ++  icon-color  "black"
@@ -64,6 +87,45 @@
       color: inherit;
       padding: 0;
       margin-top: 0;
+    }
+
+    .class-filter a {
+      background-color: #ccc;
+      border-radius: 3px;
+      padding: 0.1em;
+    }
+
+    .class-filter.all .all,
+    .class-filter.mutual .mutual,
+    .class-filter.target .target,
+    .class-filter.leeche .leeche {
+      border: 1px solid red;
+    }
+
+    .label-filter a {
+        background-color: #ddd;
+        border-radius: 3px;
+        padding: 0.1em;
+    }
+
+    .label-filter a.yes {
+      border: 1px solid blue;
+    }
+
+    .class-filter .all::before,
+    .class-filter .mutual::before,
+    .class-filter .target::before,
+    .class-filter .leeche::before,
+    .label-filter a::before {
+      content: '☐ '
+    }
+
+    .class-filter.all .all::before,
+    .class-filter.mutual .mutual::before,
+    .class-filter.target .target::before,
+    .class-filter.leeche .leeche::before,
+    .label-filter a.yes::before {
+      content: '☒ '
     }
 
     table#pals tr td:nth-child(2) {
@@ -118,22 +180,30 @@
         find ships to talk to, pull content from, etc.
 
         Some applications that are better with pals:
+        ;a/"/apps/grid/perma?ext=web+urbitgraph://~holnes/whom/"
+          ; ~holnes/whom
+        ==
+        ; , contact book.
+        ;br;
         ;a/"/apps/grid/perma?ext=web+urbitgraph://~littel-dister-hastuc-dibtux/zone/"
           ; ~hastuc^dibtux/zone
         ==
+        ; , timezone sharing.
         ;br;
         ;a/"/apps/grid/perma?ext=web+urbitgraph://~dister-fabnev-hinmur/escape/"
           ; ~fabnev^hinmur/escape
         ==
+        ; , enhanced groups interface.
         ;br;
         ;a/"/apps/grid/perma?ext=web+urbitgraph://~paldev/face/"
           ; ~paldev/face
         ==
+        ; , book of faces.
         ;br;
         ;a/"/apps/grid/perma?ext=web+urbitgraph://~paldev/rumors/"
           ; ~paldev/rumors
         ==
-
+        ; , gossip mill.
 
         Tags are there mostly for your own book-keeping. Applications could
         make use of them for grouping content, but should not change their
@@ -146,6 +216,10 @@
             ?:  o.u.msg  ::TODO  lightly refactor
               ;p.green:"{(trip t.u.msg)}"
             ;p.red:"{(trip t.u.msg)}"
+
+        ;+  class-selectors
+        ;+  label-selectors
+
         ;table#pals
           ;form(method "post")
             ;tr(style "font-weight: bold")
@@ -167,11 +241,61 @@
               ==
             ==
           ==
-          ;*  mutuals
-          ;*  targets
-          ;*  leeches
+          ;*  ?:(|(=(%all rel) =(%mutual rel)) (peers %mutual mutuals) ~)
+          ;*  ?:(|(=(%all rel) =(%target rel)) (peers %target targets) ~)
+          ;*  ?:(|(=(%all rel) =(%leeche rel)) (peers %leeche leeches) ~)
         ==
       ==
+    ==
+  ::
+  ++  slur
+    |=  [rel=role tag=(set @ta)]
+    ^-  tape
+    =-  ['/' 'p' 'a' 'l' 's' -]
+    |^  ^-  tape
+        ?-  [rel tag]
+          [%all ~]  ""
+          [* ~]     ['?' 'r' 'e' 'l' '=' (trip rel)]
+          [%all *]  ['?' 't' 'a' 'g' '=' tags]
+          [* *]     (weld $(tag ~) '&' 't' 'a' 'g' '=' tags)
+        ==
+    ++  tags  =>  [tag=tag ..zuse]  ~+
+              (zing (join "&tag=" (turn ~(tap in tag) trip)))
+    --
+  ::
+  ++  class-selectors
+    ^-  manx
+    =/  m  (lent mutuals)
+    =/  t  (lent targets)
+    =/  l  (lent leeches)
+    ;div(class "class-filter {(trip rel)}")
+      ; filter:
+      ;a.all/"{(slur %all tag)}":"all ({(scow %ud :(add m t l))})"
+      ;a.mutual/"{(slur %mutual tag)}":"pals ({(scow %ud m)})"
+      ;a.target/"{(slur %target tag)}":"targets ({(scow %ud t)})"
+      ;a.leeche/"{(slur %leeche tag)}":"leeches ({(scow %ud l)})"
+    ==
+  ::
+  ++  label-selectors
+    ^-  manx
+    ;div.label-filter  ; labels:
+      ;*
+      %+  turn
+        =-  (sort - aor)
+        %~  tap   by
+        %+  roll  ~(val by outgoing)
+        |=  [l=(set @ta) a=(map @ta @ud)]
+        =/  l=(list @ta)  ~(tap in l)
+        |-
+        ?~  l  a
+        $(l t.l, a (~(put by a) i.l +((~(gut by a) i.l 0))))
+      |=  [l=@ta n=@ud]
+      =/  hav  (~(has in tag) l)
+      =.  tag  (?:(hav ~(del in tag) ~(put in tag)) l)
+      =/  l  (trip l)
+      ?.  hav
+        ;a/"{(slur rel tag)}":"{l} ({(scow %ud n)})"
+      ;a.yes/"{(slur rel tag)}":"{l} ({(scow %ud n)})"
     ==
   ::
   ++  list-label
@@ -240,29 +364,30 @@
           ==
     ==
   ::
-  ++  mutuals
-    ^-  (list manx)
-    %+  peers  %mutual
+  ++  mutuals  ~+
     %+  skim  (sort ~(tap by outgoing) dor)
-    |=  [=ship *]
-    (~(has in incoming) ship)
+    |=  [=ship les=(set @ta)]
+    ?&  (~(has in incoming) ship)
+    ?|  =(~ tag)
+        (~(any in les) ~(has in tag))
+    ==  ==
   ::
-  ++  targets
-    ^-  (list manx)
-    %+  peers  %target
+  ++  targets  ~+
     %+  sort
-      %+  skip  ~(tap by outgoing)
-      |=  [=ship *]
-      (~(has in incoming) ship)
+      %+  skim  ~(tap by outgoing)
+      |=  [=ship les=(set @ta)]
+      ?&  !(~(has in incoming) ship)
+      ?|  =(~ tag)
+          (~(any in les) ~(has in tag))
+      ==  ==
     |=  [[sa=ship ma=*] [sb=ship mb=*]]
     =+  a=(~(get by receipts) sa)
     =+  b=(~(get by receipts) sb)
     ?:  =(a b)  (dor ma mb)
     ?~(a ?=(~ b) ?~(b & |(u.a !u.b)))
   ::
-  ++  leeches
-    ^-  (list manx)
-    %+  peers  %leeche
+  ++  leeches  ~+
+    ?.  =(~ tag)  ~
     %+  murn  (sort ~(tap in incoming) dor)
     |=  =ship
     ?:  (~(has by outgoing) ship)  ~

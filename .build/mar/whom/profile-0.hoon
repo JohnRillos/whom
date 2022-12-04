@@ -5,7 +5,7 @@
 ++  grad  %noun
 ++  grow
   |%
-  ++  noun  self
+  ++  noun  profile
   ++  json  (enjs-profile-0:whom-enjs profile)
   --
 ::

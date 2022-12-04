@@ -6,7 +6,7 @@
 ++  grow
   |%
   ++  noun  con
-  ++  json  (contacts-0:whom-enjs con)
+  ++  json  (enjs-contacts-0:whom-enjs con)
   --
 ::
 ++  grab

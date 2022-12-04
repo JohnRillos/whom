@@ -11,7 +11,7 @@
       [%mod-contact-ship (ot key+dj-contact-key ship+(mu (se %p)) ~)]
       [%add-field (ot key+(se %tas) def+dj-field-def ~)]
       [%del-field (ot key+(se %tas) ~)]
-      [%mod-self (ot info+(op sym (mu dj-info-value)) ~)]
+      [%mod-self (ot info+(op sym (mu dj-self-field)) ~)]
       [%pal-sync (ot enabled+bo ~)]
       [%hey-pal (se %p)]
       [%bye-pal (se %p)]
@@ -58,4 +58,12 @@
   =/  =term  ((se %tas) json)
   ?:  ?=(field-type-tag term)  term
   ~|  "Invalid field type: {<term>}"  !!
+::
+++  dj-self-field  (ot value+dj-info-value access+dj-access-level ~)
+::
+++  dj-access-level
+  |=  =json
+  =/  =term  ((se %tas) json)
+  ?>  ?=  access-level  term
+  term
 --
