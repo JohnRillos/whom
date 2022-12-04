@@ -51,7 +51,7 @@
 ::
 +$  contact-1  contact
 ::
-++  contact-0-to-1
+++  contact-0-to-1 :: todo: move helper methods into library
   |=  =contact-0
   :-  info.contact-0
   ?~  profile.contact-0  ~

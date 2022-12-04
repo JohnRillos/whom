@@ -212,6 +212,7 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
           ~paldev/pals 
         </a>
       );
+      // todo: better link to install
       palsBlurb = (
         <div className='mt-2'>
           You don't have the %pals app installed!

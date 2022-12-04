@@ -62,15 +62,13 @@
 ::
 ++  on-load
   |=  old-vase=vase
-  |^
   ^-  (quip card _this)
-  =+  !<(old=versioned-state old-vase)
-  =^  cards  state
-    (build-state old)
-  [cards this]
+  |^  =+  !<(old=versioned-state old-vase)
+      =^  cards  state
+        (build-state old)
+      [cards this]
   ::
   ++  build-state
-    |^
     |=  old=versioned-state
     ^-  (quip card state-2)
     =|  cards=(list card)
@@ -83,68 +81,56 @@
           ==
       %0  $(old (state-0-to-1 old), cards watch-pals:main)
     ==
-    ::
-    ++  state-0-to-1
-      |=  old=state-0
-      ^-  state-1
-      %=  old
-        -        %1
-        next-id  [next-id.old import-pals=%.n]
-      ==
-    ::
-    ++  state-1-to-2
-      |=  old=state-1
-      ^-  state-2
-      =/  public-info=(map @tas [info-field access-level])
-        (~(run by info.self.old) |=(=info-field [info-field %public]))
-      =/  nu-contacts=contacts-1  (~(run by contacts.old) contact-0-to-1)
-      =/  nu-self=self-1  self.old(info public-info)
-      %=  old
-        -         %2
-        contacts  nu-contacts
-        self      nu-self
-      ==
-    ::
-    ++  cards-1-to-2
-      |=  =state-1
-      ^-  (list card)
-      %+  weld  (watch-mutual-profiles state-1)
-      %-  notify:main
-      '1.3.0: hello world' :: todo: real message
-    ::
-    ++  watch-mutual-profiles
-      |=  =state-1
-      ^-  (list card)
-      %+  turn
-        %+  skim  ~(tap in (mutuals:pals-scry ''))
-        |=  =ship  (~(has by contacts.state-1) [%.y ship])
-      |=  =ship  (watch-profile:main ship %.y)
-    --
+  ::
+  ++  state-0-to-1
+    |=  old=state-0
+    ^-  state-1
+    %=  old
+      -        %1
+      next-id  [next-id.old import-pals=%.n]
+    ==
+  ::
+  ++  state-1-to-2
+    |=  old=state-1
+    ^-  state-2
+    =/  public-info=(map @tas [info-field access-level])
+      (~(run by info.self.old) (late %public))
+    =/  nu-contacts=contacts-1  (~(run by contacts.old) contact-0-to-1)
+    =/  nu-self=self-1  self.old(info public-info)
+    %=  old
+      -         %2
+      contacts  nu-contacts
+      self      nu-self
+    ==
+  ::
+  ++  cards-1-to-2
+    |=  =state-1
+    ^-  (list card)
+    %+  weld  (watch-mutual-profiles state-1)
+    %-  notify:main
+    '1.3.0: New privacy settings: profile fields can now be restricted to pals'
+  ::
+  ++  watch-mutual-profiles
+    |=  =state-1
+    ^-  (list card)
+    %+  turn
+      %+  skim  ~(tap in (mutuals:pals-scry ''))
+      %+  cork  (lead %.y)
+      %+  cork  (each @p @t)
+      ~(has by contacts.state-1)
+    (curr watch-profile:main %.y)
   --
 ::
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
-  |^
-  ?.  =(our.bowl src.bowl)  ~|('Unauthorized!' !!)
-  ?+    mark  (on-poke:default mark vase)
-      %noun
-    ?+    q.vase  (on-poke:default mark vase)
-        %print-state
-      ~&  >>  state  [~ this]
-        %print-bowl
-      ~&  >>>  bowl  [~ this]
-        %print-subscriptions
-      ~&  >>  wex.bowl  [~ this]
-        %print-subscribers
-      ~&  >>  sup.bowl  [~ this]
-    ==
-    ::
-      %whom-action
-    =^  cards  state
-      (handle-action !<(action vase))
-    [cards this]
-  ==
+  |^  ?.  =(our.bowl src.bowl)  ~|('Unauthorized!' !!)
+      ?+  mark  (on-poke:default mark vase)
+          %whom-action
+        =^  cards  state
+          (handle-action !<(action vase))
+        [cards this]
+      ==
   ::
   ++  handle-action
     |=  act=action
@@ -219,9 +205,7 @@
         %mod-self
       =.  info.self  (edit-self-map info.act info.self)
       =.  info.self  ((edit-map ,[info-field access-level]) info.act info.self)
-      =/  info-fields=(map @tas info-field)
-        %-  ~(run by info.self)
-        |=([=info-field *] info-field)
+      =/  info-fields=(map @tas info-field)  (~(run by info.self) head)
       ?>  (is-info-valid:main info-fields)
       :_  state
       :~  give-self:main
@@ -234,7 +218,7 @@
       ?.  enabled.act  [~[give-import-pals:main] state]
       =/  new-pals=(list ship)
         %+  skip  ~(tap in (targets:pals-scry ''))
-        |=  =ship  (~(has by contacts) [%.y ship])
+        |=(=ship (~(has by contacts) [%.y ship]))
       :_  state
       :-  give-import-pals:main
       %+  turn  new-pals
@@ -244,17 +228,17 @@
         %hey-pal
       :_  state
       =/  =cage  [%pals-command !>([%meet ship.act ~])]
-      ~[[%pass /hey-pal %agent [our.bowl %pals] %poke cage]]
+      [%pass /hey-pal %agent [our.bowl %pals] %poke cage]~
       ::
         %bye-pal
       :_  state
       =/  =cage  [%pals-command !>([%part ship.act ~])]
-      ~[[%pass /bye-pal %agent [our.bowl %pals] %poke cage]]
+      [%pass /bye-pal %agent [our.bowl %pals] %poke cage]~
     ==
   ::
   ++  add-contact
     |=  [ship=(unit @p) =contact]
-    ^-  _state
+    ^+  state
     ?>  (is-info-valid:main info.contact)
     ?>  =(~ profile.contact)
     =/  key=(each @p @t)
@@ -291,29 +275,29 @@
     ::
       [%pals %import @ta ~]
     =/  =ship  (slav %p (rear `(list @ta)`wire))
-    [~[(poke-self:main [%add-contact `ship *contact])] this]
+    [[(poke-self:main [%add-contact `ship *contact])]~ this]
     ::
       [%rewatch @ta %profile ~]
     =/  =ship  (slav %p +<.wire)
     =/  mutual=?  (~(has in (mutuals:pals-scry '')) ship)
-    [~[(watch-profile:main ship mutual)] this]
+    :: to-do: do not rewatch if already subbed to path
+    [[(watch-profile:main ship mutual)]~ this]
   ==
 ::
 ++  on-watch
   |=  =path
-  |^
   ^-  (quip card _this)
-  :_  this
-  ?+  path  (on-watch:default path)
-    [%~.0 %contacts ~]      (me (give %whom-contacts-0 (contacts-1-to-0 contacts)))
-    [%~.1 %contacts ~]      (me (give %whom-contacts-1 contacts))
-    [%~.0 %fields ~]        (me (give %whom-fields-0 field-list:field-util:main))
-    [%~.0 %self ~]          (me (give %whom-self-1 self))
-    [%~.0 %pals ~]          (me (give %whom-pals-0 get:pals-util:main))
-    [%~.0 %pals %import ~]  (me (give %loob import-pals))
-    [%~.0 %profile %public ~]   (give %whom-profile-0 public-profile:main)
-    [%~.0 %profile %mutual ~]   (we (give %whom-profile-1 mutual-profile:main))
-  ==
+  |^  :_  this
+      ?+  path  (on-watch:default path)
+        [%~.0 %contacts ~]         (me (give %whom-contacts-0 (contacts-1-to-0 contacts)))
+        [%~.1 %contacts ~]         (me (give %whom-contacts-1 contacts))
+        [%~.0 %fields ~]           (me (give %whom-fields-0 field-list:field-util:main))
+        [%~.0 %self ~]             (me (give %whom-self-1 self))
+        [%~.0 %pals ~]             (me (give %whom-pals-0 get:pals-util:main))
+        [%~.0 %pals %import ~]     (me (give %loob import-pals))
+        [%~.0 %profile %public ~]      (give %whom-profile-0 public-profile:main)
+        [%~.0 %profile %mutual ~]  (we (give %whom-profile-1 mutual-profile:main))
+      ==
   ::
   ++  me
     |=  cards=(list card)
@@ -346,27 +330,26 @@
   ==
 ::
 ++  on-agent
-  |^
-  |=  [=wire =sign:agent:gall]
+  |=  [=^wire =sign:agent:gall]
   ^-  (quip card _this)
-  ?+  -.sign  (on-agent:default wire sign)
-      %fact
-    =^  cards  state
-      (handle-fact cage.sign wire)
-    [cards this]
-      %kick
-    =^  cards  state
-      (handle-kick wire)
-    [cards this]
-      %watch-ack
-    =^  cards  state
-      ?~  p.sign  (handle-ack wire)
-      (handle-nack wire u.p.sign)
-    [cards this]
-  ==
+  |^  ?+  -.sign  (on-agent:default wire sign)
+        ::
+        %fact       =^  cards  state
+                      (handle-fact cage.sign wire)
+                    [cards this]
+        ::
+        %kick       =^  cards  state
+                      (handle-kick wire)
+                    [cards this]
+        ::
+        %watch-ack  =^  cards  state
+                      ?~  p.sign  (handle-ack wire)
+                      (handle-nack wire u.p.sign)
+                    [cards this]
+      ==
   ::
   ++  handle-fact
-    |=  [=cage =wire]
+    |=  [=cage =^wire]
     ^-  (quip card _state)
     ?+  wire  ~|  "Unknown wire {<wire>}"  !!
         [%~.0 %profile @p ~]
@@ -380,22 +363,22 @@
       ?-  -.effect
         ::
           %meet :: you added pal
-        ?.  (~(has by contacts) [%.y ship.effect])
+        ?.  (~(has by contacts) %.y ship.effect)
           ?.  import-pals  ~
-          ~[(poke-self:main [%add-contact `ship.effect *contact])]
+          [(poke-self:main [%add-contact `ship.effect *contact])]~
         ?.  (~(has in (mutuals:pals-scry '')) ship.effect)  ~
-        ~[(watch-profile:main ship.effect %.y)]
+        [(watch-profile:main ship.effect %.y)]~
         ::
           %near :: pal added you
         ?.  (~(has by contacts) [%.y ship.effect])          ~
         ?.  (~(has in (mutuals:pals-scry '')) ship.effect)  ~
-        ~[(watch-profile:main ship.effect %.y)]
+        [(watch-profile:main ship.effect %.y)]~
         ::
           %part :: you removed pal
-        ~[[%give %kick ~[/0/profile/mutual] `ship.effect]]
+        [%give %kick ~[/0/profile/mutual] `ship.effect]~
         ::
           %away :: pal removed you
-        ~[[%give %kick ~[/0/profile/mutual] `ship.effect]]
+        [%give %kick ~[/0/profile/mutual] `ship.effect]~
       ==
     ==
   ::
@@ -411,7 +394,7 @@
     [give-contacts:main state]
   ::
   ++  handle-kick
-    |=  =wire
+    |=  =^wire
     ^-  (quip card _state)
     ?+  wire  [~ state]
       ::
@@ -426,7 +409,7 @@
     ==
   ::
   ++  handle-ack
-    |=  =wire
+    |=  =^wire
     ^-  (quip card _state)
     ?+  wire  [~ state]
         [%~.0 %profile @p %mutual ~]
@@ -435,24 +418,27 @@
     ==
   ::
   ++  handle-nack
-    |=  [=wire =tang]
+    |=  [=^wire =tang]
     ^-  (quip card _state)
-    ~&  >>>  "nack: {<wire>}"
-    %-  (slog tang)
-    ?+  wire  [~ state]
+    ?+  wire  ((slog tang) [~ state])
       ::
         [%~.0 %profile @p ~]
       :_  state
-      ~[(watch-profile:main src.bowl %.n)]
+      (schedule-rewatch-profile src.bowl)
       ::
         [%~.0 %profile @p %mutual ~]
       :_  state
       %+  weld  ~[(watch-profile:main src.bowl %.n)]
       ^-  (list card)
       ?.  (~(has in (mutuals:pals-scry '')) src.bowl)  ~
-      =*  timer-wire  /rewatch/[(scot %p src.bowl)]/profile
-      ~[[%pass timer-wire %arvo %b %wait (add ~h1 now.bowl)]]
+      (schedule-rewatch-profile src.bowl)
     ==
+  ::
+  ++  schedule-rewatch-profile
+    |=  =ship
+    ^-  (list card)
+    =/  =^wire  /rewatch/[(scot %p ship)]/profile
+    [%pass wire %arvo %b %wait (add ~h1 now.bowl)]~
   --
 ::
 ++  on-fail   on-fail:default
@@ -492,7 +478,7 @@
       %-  (filter-map info.self)
       |=  [* field=[* =access-level]]
       =(%public access-level.field)
-    (~(run by filtered) |=([=info-field *] info-field))
+    (~(run by filtered) head)
   :-  pub-info
   %-  (filter-map fields)
   |=([key=@tas *] (~(has by pub-info) key))
