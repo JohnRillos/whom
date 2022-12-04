@@ -1,5 +1,5 @@
 /-  *whom
-/+  whom-enjs
+/+  whom-enjs, *whom-morf
 ::
 |_  profile=profile-1
 ++  grad  %noun

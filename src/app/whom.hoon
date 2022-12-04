@@ -1,5 +1,5 @@
 /-  *whom, pals-sur=pals, hark=hark-store
-/+  default-agent, dbug, pals-lib=pals, verb, whom-fields, whom-pals
+/+  default-agent, dbug, pals-lib=pals, verb, whom-fields, *whom-morf, whom-pals
 |%
 ::
 +$  card  card:agent:gall

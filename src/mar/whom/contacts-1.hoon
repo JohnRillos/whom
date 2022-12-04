@@ -1,5 +1,5 @@
 /-  *whom
-/+  whom-enjs
+/+  whom-enjs, *whom-morf
 ::
 |_  con=contacts-1
 ++  grad  %noun
