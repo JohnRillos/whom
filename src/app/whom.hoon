@@ -113,6 +113,8 @@
   ++  watch-mutual-profiles
     |=  =state-1
     ^-  (list card)
+    %-  murn
+    :_  same
     %+  turn
       %+  skim  ~(tap in (mutuals:pals-scry ''))
       %+  cork  (lead %.y)
@@ -142,8 +144,8 @@
       :_  state
       ?~  ship.act  give-contacts:main
       =/  mutual=?  (~(has in (mutuals:pals-scry '')) u.ship.act)
-      %+  snoc  give-contacts:main
-      (watch-profile:main u.ship.act mutual)
+      %+  weld  give-contacts:main
+      (drop (watch-profile:main u.ship.act mutual))
       ::
         %del-contact
       =.  contacts  (~(del by contacts) key.act)
@@ -178,7 +180,7 @@
           ==
         ?~  ship.act  ~
         =/  mutual=?  (~(has in (mutuals:pals-scry '')) u.ship.act)
-        ~[(watch-profile:main u.ship.act mutual)]
+        (drop (watch-profile:main u.ship.act mutual))
       [cards state]
       ::
         %add-field
@@ -280,8 +282,7 @@
       [%rewatch @ta %profile ~]
     =/  =ship  (slav %p +<.wire)
     =/  mutual=?  (~(has in (mutuals:pals-scry '')) ship)
-    :: to-do: do not rewatch if already subbed to path
-    [[(watch-profile:main ship mutual)]~ this]
+    [(drop (watch-profile:main ship mutual)) this]
   ==
 ::
 ++  on-watch
@@ -367,12 +368,12 @@
           ?.  import-pals  ~
           [(poke-self:main [%add-contact `ship.effect *contact])]~
         ?.  (~(has in (mutuals:pals-scry '')) ship.effect)  ~
-        [(watch-profile:main ship.effect %.y)]~
+        (drop (watch-profile:main ship.effect %.y))
         ::
           %near :: pal added you
         ?.  (~(has by contacts) [%.y ship.effect])          ~
         ?.  (~(has in (mutuals:pals-scry '')) ship.effect)  ~
-        [(watch-profile:main ship.effect %.y)]~
+        (drop (watch-profile:main ship.effect %.y))
         ::
           %part :: you removed pal
         [%give %kick ~[/0/profile/mutual] `ship.effect]~
@@ -400,12 +401,12 @@
       ::
         [%~.0 %profile @p ~]
       :_  state
-      ~[(watch-profile:main src.bowl %.n)]
+      (drop (watch-profile:main src.bowl %.n))
       ::
         [%~.0 %profile @p %mutual ~]
       :_  state
       =/  mutual=?  (~(has in (mutuals:pals-scry '')) src.bowl)
-      ~[(watch-profile:main src.bowl mutual)]
+      (drop (watch-profile:main src.bowl mutual))
     ==
   ::
   ++  handle-ack
@@ -428,7 +429,7 @@
       ::
         [%~.0 %profile @p %mutual ~]
       :_  state
-      %+  weld  ~[(watch-profile:main src.bowl %.n)]
+      %+  weld  (drop (watch-profile:main src.bowl %.n))
       ^-  (list card)
       ?.  (~(has in (mutuals:pals-scry '')) src.bowl)  ~
       (schedule-rewatch-profile src.bowl)
@@ -515,12 +516,15 @@
 ::
 ++  watch-profile
   |=  [ship=@p mutual=?]
-  ^-  card
-  ?:  mutual
-    =/  =wire  /0/profile/(scot %p ship)/mutual
-    [%pass wire %agent [ship %whom] %watch /0/profile/mutual]
-  =/  =wire  /0/profile/(scot %p ship)
-  [%pass wire %agent [ship %whom] %watch /0/profile/public]
+  ^-  (unit card)
+  =/  =wire   ?.  mutual
+                /0/profile/(scot %p ship)
+              /0/profile/(scot %p ship)/mutual
+  ?:  (~(has by wex.bowl) [wire ship %whom])  ~
+  =/  =path   ?.  mutual
+                /0/profile/public
+              /0/profile/mutual
+  `[%pass wire %agent [ship %whom] %watch path]
 ::
 ++  leave-public-profile
   |=  ship=@p
