@@ -1061,7 +1061,7 @@
       =^  moz  u.cached-state
         ?.  ?=(%7 -.u.cached-state)  [~ u.cached-state]
         ~>  %slog.0^leaf/"ames: init daily recork timer"
-        :-  [[/ames]~ %pass /recork %b %wait `@da`(add now ~m20)]~
+        :-  [[/ames]~ %pass /recork %b %wait `@da`(add now ~d1)]~
         8+(state-7-to-8:load:adult-core +.u.cached-state)
       ?>  ?=(%8 -.u.cached-state)
       =.  ames-state.adult-gate  +.u.cached-state
@@ -1280,9 +1280,11 @@
         [%forward-lane ~]
       ::
       ::  this duplicates the routing hack from +send-blob:event-core
-      ::  so long as neither the peer nor the peer's sponsoring galaxy is us:
+      ::  so long as neither the peer nor the peer's sponsoring galaxy is us,
+      ::  and the peer has been reached recently:
       ::
-      ::    - no route to the peer: send to the peer's sponsoring galaxy
+      ::    - no route to the peer, or peer has not been contacted recently:
+      ::      send to the peer's sponsoring galaxy
       ::    - direct route to the peer: use that
       ::    - indirect route to the peer: send to both that route and the
       ::      the peer's sponsoring galaxy
@@ -1294,6 +1296,8 @@
           ==
         ~
       =;  zar=(trap (list lane))
+        ?:  (lth last-contact.qos.u.peer (sub now ~h1))
+          $:zar
         ?~  route.u.peer  $:zar
         =*  rot  u.route.u.peer
         ?:(direct.rot [lane.rot ~] [lane.rot $:zar])
@@ -1487,6 +1491,8 @@
       ?~  tim  acc
       %-  ~(put in acc)
       [u.tim `^duct`~[ames+(make-pump-timer-wire who b) /ames]]
+    =.  want
+      (~(put in want) (add now ~d1) ~[/ames/recork /ames])
     ::
     =/  have
       %-  ~(gas in *(set [@da ^duct]))
@@ -1494,7 +1500,7 @@
         ;;  (list [@da ^duct])
         =<  q.q  %-  need  %-  need
         (rof ~ %bx [[our %$ da+now] /debug/timers])
-      (skim tim |=([@da hen=^duct] ?=([[%ames %pump *] *] hen)))
+      (skim tim |=([@da hen=^duct] ?=([[%ames ?(%pump %recork) *] *] hen)))
     ::
     ::  set timers for flows that should have one set but don't
     ::
@@ -1801,7 +1807,7 @@
       ::  if we haven't received an attestation, ask again
       ::
       ?^  error
-        %-  (slog leaf+"ames: attestation timer failed: {<u.error>}" ~)
+        %-  (slog 'ames: attestation timer failed' u.error)
         event-core
       ?~  ship=`(unit @p)`(slaw %p i.t.wire)
         %-  (slog leaf+"ames: got timer for strange wire: {<wire>}" ~)
@@ -1827,7 +1833,11 @@
       abet:(on-wake:(make-peer-core u.state channel) bone.u.res error)
     ::
     =.  event-core
-      (emit duct %pass /recork %b %wait `@da`(add now ~m20))
+      (emit duct %pass /recork %b %wait `@da`(add now ~d1))
+    ::
+    ?^  error
+      %-  (slog 'ames: recork timer failed' u.error)
+      event-core
     ::  recork up to one bone per peer
     ::
     =/  pez  ~(tap by peers.ames-state)
@@ -1991,14 +2001,15 @@
       event-core
     ::  +on-publ-sponsor: handle new or lost sponsor for peer
     ::
-    ::    TODO: handle sponsor loss
+    ::    TODO: really handle sponsor loss
     ::
     ++  on-publ-sponsor
       |=  [=ship sponsor=(unit ship)]
       ^+  event-core
       ::
       ?~  sponsor
-        ~|  %ames-lost-sponsor^our^ship  !!
+        %-  (slog leaf+"ames: {(scow %p ship)} lost sponsor, ignoring" ~)
+        event-core
       ::
       =/  state=(unit peer-state)  (get-peer-state ship)
       ?~  state
@@ -2221,6 +2232,10 @@
           ::
           ?:  for
             event-core
+          (try-next-sponsor sponsor.peer-state)
+        ::  if forwarding, route must not be stale
+        ::
+        ?:  &(for (lth last-contact.qos.peer-state (sub now ~h1)))
           (try-next-sponsor sponsor.peer-state)
         ::
         ?~  route=route.peer-state
@@ -3074,8 +3089,11 @@
     ::
     ?-    -.u.cur
         %ok
-      =.  message-pump  (give %done current.state ~)
-      =?  message-pump  cork  (give %cork ~)
+      =.  message-pump
+        ::  don't give %done for corks
+        ::
+        ?:  cork  (give %cork ~)
+        (give %done current.state ~)
       $(current.state +(current.state))
     ::
         %nack
