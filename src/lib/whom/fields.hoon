@@ -8,6 +8,7 @@
       :+  %middle-name  'Middle Name'    %text
       :+  %last-name    'Last Name'      %text
       :+  %nickname     'Nickname'       %text
+      :+  %bio          'Bio'            %text
       :+  %desc         'Description'    %text
       :+  %dob          'Date of Birth'  %date
       :+  %job          'Occupation'     %text

@@ -1,5 +1,5 @@
-/-  *whom, pals-sur=pals, hark=hark-store
-/+  default-agent, dbug, pals-lib=pals, verb, whom-fields, *whom-morf, whom-pals
+/-  *whom, pals-sur=pals, hark=hark-store, contact-store
+/+  default-agent, dbug, pals-lib=pals, verb, whom-fields, whom-groups, *whom-morf, whom-pals
 |%
 ::
 +$  card  card:agent:gall
@@ -8,6 +8,7 @@
   $%  state-0
       state-1
       state-2
+      state-3
   ==
 ::
 +$  state-0
@@ -30,14 +31,23 @@
 +$  state-2
   $:  %2
       self=self-1
-      contacts=(map (each @p @t) contact)
+      contacts=(map (each @p @t) contact-1)
+      fields=(map @tas field-def)
+      next-id=@ud
+      import-pals=_|
+  ==
+::
++$  state-3
+  $:  %3
+      self=self-1
+      contacts=(map (each @p @t) contact-1)
       fields=(map @tas field-def)
       next-id=@ud
       import-pals=_|
   ==
 --
 ::
-=|  state-2
+=|  state-3
 =*  state  -
 ::
 %-  agent:dbug
@@ -49,13 +59,16 @@
     default    ~(. (default-agent this %|) bowl)
     main       ~(. +> bowl)
     pals-scry  ~(. pals-lib bowl)
+    groups     ~(. whom-groups bowl)
 ::
 ++  on-init
   ^-  (quip card _this)
   =^  cards  state
-    =|  state=state-2
+    =|  state=state-3
     =.  fields.state  default-fields:whom-fields
-    [watch-pals:main state]
+    :_  state
+    %+  snoc  watch-pals:main
+    watch-groups-profile:main
   [cards this]
 ::
 ++  on-save  !>(state)
@@ -70,14 +83,18 @@
   ::
   ++  build-state
     |=  old=versioned-state
-    ^-  (quip card state-2)
+    ^-  (quip card state-3)
     =|  cards=(list card)
     |-
     ?-  -.old
-      %2  [cards old]
+      %3  [cards old]
+      %2  %=  $
+            old    old(- %3)
+            cards  (snoc cards watch-groups-profile:main)
+          ==
       %1  %=  $
-            old     (state-1-to-2 old)
-            cards   (weld cards (cards-1-to-2 old))
+            old    (state-1-to-2 old)
+            cards  (weld cards (cards-1-to-2 old))
           ==
       %0  $(old (state-0-to-1 old), cards watch-pals:main)
     ==
@@ -103,6 +120,14 @@
       self      nu-self
     ==
   ::
+  ++  state-2-to-3
+    |=  old=state-2
+    ^-  state-3
+    %=  old
+      -       %3
+      fields  (~(put by fields.old) %bio ['Bio' %text])
+    ==
+  ::
   ++  cards-1-to-2
     |=  =state-1
     ^-  (list card)
@@ -113,14 +138,10 @@
   ++  watch-mutual-profiles
     |=  =state-1
     ^-  (list card)
-    %-  murn
-    :_  same
-    %+  turn
-      %+  skim  ~(tap in (mutuals:pals-scry ''))
-      %+  cork  (lead %.y)
-      %+  cork  (each @p @t)
-      ~(has by contacts.state-1)
-    (curr watch-profile:main %.y)
+    %+  murn  ~(tap in (mutuals:pals-scry ''))
+    |=  =ship
+    ?.  (~(has by contacts.state-1) [%.y ship])  ~
+    (watch-profile:main ship %.y)
   --
 ::
 ++  on-poke
@@ -183,7 +204,7 @@
         (drop (watch-profile:main u.ship.act mutual))
       [cards state]
       ::
-        %add-field
+        %add-field :: to-do: if adding bio/nic, sync from contact-store
       ?:  (~(has by fields) key.act)
         ~|  "Field {<key.act>} already exists!"  !!
       =.  fields  (~(put by fields) key.act def.act)
@@ -206,10 +227,11 @@
       ::
         %mod-self
       =.  info.self  (edit-self-map info.act info.self)
-      =.  info.self  ((edit-map ,[info-field access-level]) info.act info.self)
       =/  info-fields=(map @tas info-field)  (~(run by info.self) head)
       ?>  (is-info-valid:main info-fields)
       :_  state
+      %+  weld  (edit-groups-profile:groups info.act)
+      ^-  (list card)
       :~  give-self:main
           give-public-profile:main
           give-mutual-profile:main
@@ -353,10 +375,13 @@
     |=  [=cage =^wire]
     ^-  (quip card _state)
     ?+  wire  ~|  "Unknown wire {<wire>}"  !!
+      ::
         [%~.0 %profile @p ~]
       (take-profile (profile-0-to-1 !<(profile-0 q.cage)))
+      ::
         [%~.0 %profile @p %mutual ~]
       (take-profile !<(profile q.cage))
+      ::
         [%pals @tas ~]
       =/  =effect:pals-sur  !<(effect:pals-sur q.cage)
       :_  state
@@ -380,6 +405,39 @@
         ::
           %away :: pal removed you
         [%give %kick ~[/0/profile/mutual] `ship.effect]~
+      ==
+      ::
+        [%groups %profile ~]
+      =/  =update:contact-store  !<(update:contact-store q.cage)
+      :_  state
+      ^-  (list card)
+      ?+  -.update  ~
+        ::
+          %add
+        ~&  >  "update: {<update>}"  ~
+        :: ?.  =(our.bowl ship.update)  ~
+        :: =/  g-profile=contact:contact-store  contact.update
+        :: =/  changes=(map @tas (unit [val=info-field level=access-level]))
+        ::   :: ...
+        :: (poke-self:main [%mod-self changes]) :: think about downstream effects
+        ::
+          %edit
+        ~&  >  "update: {<update>}"
+        ?.  =(our.bowl ship.update)  ~
+        =/  =edit-field:contact-store  edit-field.update
+        ?.  ?=([?(%nickname %bio) @t] edit-field)  ~
+        =/  f=(unit field-def)  (~(get by fields) -.edit-field)
+        ?~  f  ~
+        ?.  =(%text type.u.f)  ~
+        =/  changes=(map @tas (unit [info-field access-level]))
+          =|  m=(map @tas (unit [info-field access-level]))
+          =/  access=access-level  %public :: use existing access level
+          =/  field=[@tas (unit [info-field access-level])]
+            :-  -.edit-field
+            ?:  =('' +.edit-field)  ~
+            `[[%text +.edit-field] access]
+          (~(gas by m) [field]~)
+        [(poke-self:main [%mod-self changes])]~ :: think about downstream effects
       ==
     ==
   ::
@@ -541,6 +599,10 @@
   :~  [%pass /pals/targets %agent [our.bowl %pals] %watch /targets]
       [%pass /pals/leeches %agent [our.bowl %pals] %watch /leeches]
   ==
+::
+++  watch-groups-profile
+  ^-  card
+  [%pass /groups/profile %agent [our.bowl %contact-store] %watch /our]
 ::
 ++  poke-self
   |=  =action
