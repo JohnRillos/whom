@@ -49,5 +49,5 @@
   (pure:m !>(`json`[%s 'invalid-request']))
 =,  format
 ;<  breh=(list @tas)  bind:m  (buds (so:dejs u.know))
-%-  pure:m  
+%-  pure:m
 !>(`json`(frond:enjs 'buds' a+(turn breh |=(@tas s+[+<]))))
