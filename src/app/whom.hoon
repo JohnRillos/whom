@@ -209,7 +209,7 @@
       =.  fields  (~(put by fields) key.act def.act)
       :_  state
       %+  weld  [give-fields:main]~
-      (drop (import-unknown-groups-profile-field:main key.act type.def.act))
+      (import-unknown-groups-profile-field:main key.act type.def.act)
       ::
         %del-field
       ?:  (~(has by info.self) key.act)
@@ -414,13 +414,12 @@
         ~&  >  "update: {<update>}"
         ?.  =(our.bowl ship.update)  ~
         %+  weld
-          (drop (import-groups-profile-field:main %bio bio.contact.update))
-        (drop (import-groups-profile-field:main %nickname nickname.contact.update))
+          (import-groups-profile-field:main %bio bio.contact.update)
+        (import-groups-profile-field:main %nickname nickname.contact.update)
         ::
           %edit
         ?.  =(our.bowl ship.update)  ~
         ?.  ?=([?(%nickname %bio) @t] edit-field.update)  ~
-        %-  drop
         (import-groups-profile-field:main edit-field.update)
       ==
     ==
@@ -607,15 +606,17 @@
 ::
 ++  import-unknown-groups-profile-field
   |=  [key=@tas type=@tas]
-  ^-  (unit card)
+  ^-  (list card)
   ?.  ?=(?(%bio %nickname) key)  ~
   ?.  ?=(%text type)             ~
-  %+  biff  (scry-profile-field:groups key)
-  (cury import-groups-profile-field key)
+  =/  value=(unit @t)  (scry-profile-field:groups key)
+  ?~  value                      ~
+  (import-groups-profile-field key u.value)
 ::
 ++  import-groups-profile-field
   |=  [key=?(%nickname %bio) value=@t]
-  ^-  (unit card)
+  ^-  (list card)
+  %-  drop
   %+  biff  (~(get by fields) key)
   |=  =field-def
   ?.  =(%text type.field-def)  ~
