@@ -89,7 +89,7 @@
     ?-  -.old
       %3  [cards old]
       %2  %=  $
-            old    old(- %3)
+            old    (state-2-to-3 old)
             cards  (snoc cards watch-groups-profile:main)
           ==
       %1  %=  $
@@ -123,10 +123,9 @@
   ++  state-2-to-3
     |=  old=state-2
     ^-  state-3
-    %=  old
-      -       %3
-      fields  (~(put by fields.old) %bio ['Bio' %text])
-    ==
+    =.  fields.old  (~(put by fields.old) %bio ['Bio' %text])
+    =.  fields.old  (~(put by fields.old) %nickname ['Nickname' %text])
+    old(- %3)
   ::
   ++  cards-1-to-2
     |=  =state-1
@@ -204,11 +203,13 @@
         (drop (watch-profile:main u.ship.act mutual))
       [cards state]
       ::
-        %add-field :: to-do: if adding bio/nic, sync from contact-store
+        %add-field 
       ?:  (~(has by fields) key.act)
         ~|  "Field {<key.act>} already exists!"  !!
       =.  fields  (~(put by fields) key.act def.act)
-      [[give-fields:main ~] state]
+      :_  state
+      %+  weld  [give-fields:main]~
+      (drop (import-unknown-groups-profile-field:main key.act type.def.act))
       ::
         %del-field
       ?:  (~(has by info.self) key.act)
@@ -285,10 +286,6 @@
     %-  ~(rep by changes)
     |=  [change=[@tas (unit val-type)] acc=_old]
     (~(mar by acc) change)
-  ::
-  ++  random-id
-    ^-  @t
-    (scot %uvj eny.bowl)
   --
 ::
 ++  on-arvo
@@ -414,30 +411,17 @@
       ?+  -.update  ~
         ::
           %add
-        ~&  >  "update: {<update>}"  ~
-        :: ?.  =(our.bowl ship.update)  ~
-        :: =/  g-profile=contact:contact-store  contact.update
-        :: =/  changes=(map @tas (unit [val=info-field level=access-level]))
-        ::   :: ...
-        :: (poke-self:main [%mod-self changes]) :: think about downstream effects
-        ::
-          %edit
         ~&  >  "update: {<update>}"
         ?.  =(our.bowl ship.update)  ~
-        =/  =edit-field:contact-store  edit-field.update
-        ?.  ?=([?(%nickname %bio) @t] edit-field)  ~
-        =/  f=(unit field-def)  (~(get by fields) -.edit-field)
-        ?~  f  ~
-        ?.  =(%text type.u.f)  ~
-        =/  changes=(map @tas (unit [info-field access-level]))
-          =|  m=(map @tas (unit [info-field access-level]))
-          =/  access=access-level  %public :: use existing access level
-          =/  field=[@tas (unit [info-field access-level])]
-            :-  -.edit-field
-            ?:  =('' +.edit-field)  ~
-            `[[%text +.edit-field] access]
-          (~(gas by m) [field]~)
-        [(poke-self:main [%mod-self changes])]~ :: think about downstream effects
+        %+  weld
+          (drop (import-groups-profile-field:main %bio bio.contact.update))
+        (drop (import-groups-profile-field:main %nickname nickname.contact.update))
+        ::
+          %edit
+        ?.  =(our.bowl ship.update)  ~
+        ?.  ?=([?(%nickname %bio) @t] edit-field.update)  ~
+        %-  drop
+        (import-groups-profile-field:main edit-field.update)
       ==
     ==
   ::
@@ -503,6 +487,8 @@
 ++  on-fail   on-fail:default
 --
 |_  =bowl:gall
+::
+++  groups  ~(. whom-groups bowl)
 ::
 ++  give-contacts
   ^-  (list card)
@@ -618,4 +604,30 @@
   =/  =action:hark  [%add-note bin content ~ now.bowl / /whom]
   =/  =cage         [%hark-action !>(action)]
   [%pass /hark %agent [our.bowl %hark-store] %poke cage]~
+::
+++  import-unknown-groups-profile-field
+  |=  [key=@tas type=@tas]
+  ^-  (unit card)
+  ?.  ?=(?(%bio %nickname) key)  ~
+  ?.  ?=(%text type)             ~
+  %+  biff  (scry-profile-field:groups key)
+  (cury import-groups-profile-field key)
+::
+++  import-groups-profile-field
+  |=  [key=?(%nickname %bio) value=@t]
+  ^-  (unit card)
+  %+  biff  (~(get by fields) key)
+  |=  =field-def
+  ?.  =(%text type.field-def)  ~
+  =/  access=access-level
+    =/  old  (~(get by info.self) key)
+    ?~  old  %public
+    access.u.old
+  =/  changes=(map @tas (unit [info-field access-level]))
+    %-  ~(gas by *(map @tas (unit [info-field access-level])))
+    :~  :-  key
+        ?:  =('' value)  ~
+        `[[%text value] access]
+    ==
+  `[(poke-self [%mod-self changes])]
 --

@@ -1,5 +1,5 @@
 /-  cs=contact-store, whom
-|_  =bowl:gall
+|_  bowl:gall
 ::
 +$  card  card:agent:gall
 ::
@@ -30,6 +30,28 @@
 ++  edit-one-field
   |=  =edit-field:cs
   ^-  card
-  =/  =update:cs  [%edit our.bowl [edit-field] now.bowl]
-  [%pass /profile-update %agent [our.bowl %contact-store] %poke %contact-update-0 !>(update)]
+  =/  =update:cs  [%edit our [edit-field] now]
+  [%pass /profile-update %agent [our %contact-store] %poke %contact-update-0 !>(update)]
+::
++$  scry-result  $%(update:cs [~ ~])
+::
+++  scry-profile-field
+  |=  key=@tas
+  ^-  (unit @t)
+  =/  base-path=path  /(scot %p our)/contact-store/(scot %da now)
+  ?.  .^(? %gu base-path)  ~
+  =/  raw  .^(scry-result %gx (weld base-path /contact/(scot %p our)/noun))
+  ?:  =([~ ~] raw)  ~
+  =/  =update:cs  (update:cs raw)
+  ?.  ?=(%add -.update)  ~
+  ?+  key  ~
+    %bio       (sani bio.contact.update)
+    %nickname  (sani nickname.contact.update)
+  ==
+::
+++  sani
+  |=  =cord
+  ^-  (unit @t)
+  ?:  =('' cord)  ~
+  `cord
 --
