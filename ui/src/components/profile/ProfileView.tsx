@@ -12,6 +12,9 @@ import isEqual from 'lodash.isequal';
 import SelectInput from '../input/SelectInput';
 import Modal from '../Modal';
 import InfoButton from '../buttons/InfoButton';
+import GroupsIcon from '../icons/GroupsIcon';
+
+const GROUPS_PROFILE_FIELDS = new Set(['bio', 'nickname']);
 
 export default function ProfileView(props: { closeContainer: () => void }): JSX.Element {
   const { api, displayError, fieldSettings, palsInfo, self } = useContext(AppContext);
@@ -136,9 +139,19 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
         <div className='mr-auto'>
           {renderInfoValue(key, field?.value)}
         </div>
-          {renderAccessLevel(key, field?.access)}
+        {renderGroupsIcon(key)}
+        {renderAccessLevel(key, field?.access)}
       </div>
     );
+  }
+
+  function renderGroupsIcon(key: string) {
+    if (GROUPS_PROFILE_FIELDS.has(key)) {
+      return <div className='py-1'>
+        <GroupsIcon title='synced with %groups'/>
+      </div>
+    }
+    return null;
   }
 
   function renderAccessLevel(key: string, access: AccessLevel | undefined) {

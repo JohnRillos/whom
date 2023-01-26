@@ -4,11 +4,11 @@
 ++  default-field-list
   ^~
   ^-  (list [key=@tas field-def])
-  :~  :+  %first-name   'First Name'     %text
+  :~  :+  %nickname     'Nickname'       %text
+      :+  %bio          'Bio'            %text
+      :+  %first-name   'First Name'     %text
       :+  %middle-name  'Middle Name'    %text
       :+  %last-name    'Last Name'      %text
-      :+  %nickname     'Nickname'       %text
-      :+  %bio          'Bio'            %text
       :+  %desc         'Description'    %text
       :+  %dob          'Date of Birth'  %date
       :+  %job          'Occupation'     %text
