@@ -17,6 +17,7 @@ import { Self } from './types/ProfileTypes';
 import { FieldSettings } from './types/SettingTypes';
 import { PalsInfo } from './types/PalsTypes';
 import PalView from './components/pals/PalView';
+import { ContactStoreProfile } from './types/ContactStoreTypes';
 
 export function App() {
   const [contacts, setContacts] = useState<Contacts>({});
@@ -32,12 +33,16 @@ export function App() {
   const [palsSyncEnabled, setPalsSyncEnabled] = useState<boolean>(false);
   const [palsInfo, setPalsInfo] = useState<PalsInfo>(initialContext.palsInfo);
   const [isPalModalOpen, setPalModalOpen] = useState<boolean>(false);
+  const [rolodex, setRolodex] = useState<Record<string, ContactStoreProfile>>({});
 
   useEffect(() => {
    Subscribe(initialContext.api, handleUpdate);
   }, []);
 
   function handleUpdate(update: GallUpdate) {
+    if (update.app == 'contact-store') {
+      setRolodex(update.data['contact-update'].initial.rolodex);
+    }
     if (update.app != 'whom') {
       return;
     }
@@ -90,7 +95,8 @@ export function App() {
     palsSyncEnabled: palsSyncEnabled,
     palsInfo: palsInfo,
     setPalsInfo: setPalsInfo,
-    setPalModalOpen: setPalModalOpen
+    setPalModalOpen: setPalModalOpen,
+    rolodex: rolodex
   };
 
   return (

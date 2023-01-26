@@ -3,17 +3,11 @@ import { PalsInfo } from './PalsTypes';
 import { Self, ProfileField } from './ProfileTypes';
 import { FieldDefWithKey, FieldTypeTag } from './SettingTypes';
 
-export declare type GallApp = 'whom';
+export declare type GallApp = 'whom' | 'contact-store';
 
-export enum ScryPath {
-  Contacts = '/1/contacts',
-  Fields = '/0/fields',
-  Self = '/0/self',
-  ImportPals = '/0/pals/import',
-  Pals = '/0/pals'
-}
+export declare type GallUpdate = WhomUpdate | ContactStoreUpdate;
 
-export declare type GallUpdate
+export declare type WhomUpdate
   = ContactUpdate
   | FieldUpdate
   | SelfUpdate
@@ -25,7 +19,8 @@ export enum SubscribePath {
   Fields = '/0/fields',
   Self = '/0/self',
   ImportPals = '/0/pals/import',
-  Pals = '/0/pals'
+  Pals = '/0/pals',
+  ContactStore = '/all'
 }
 
 export declare type ContactUpdate = {
@@ -56,6 +51,15 @@ export declare type PalsUpdate = {
   app: 'whom',
   path: SubscribePath.Pals,
   data: PalsInfo
+}
+
+export declare type ContactStoreUpdate = {
+  app: 'contact-store',
+  path: SubscribePath.ContactStore,
+  data: {
+    'is-public': boolean,
+    rolodex: Record<string, ContactStoreProfile>
+  }
 }
 
 export type WhomAction = AddContactAction |
