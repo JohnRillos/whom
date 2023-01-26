@@ -2,7 +2,7 @@
   title+'Contacts'
   info+'Manage your profile and contacts. Now with %pals!'
   color+0x33.8899
-  version+[1 4 0]
+  version+[1 5 0]
   website+'https://github.com/JohnRillos/whom'
   license+'MIT'
   image+'https://raw.githubusercontent.com/JohnRillos/whom/master/assets/tile.svg'

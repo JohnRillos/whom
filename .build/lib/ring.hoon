@@ -349,16 +349,15 @@
     |=  [our=@p now=@da ship=@p =life]
     ^-  @udpoint
     ::
-    =/  d=[=^life =pass *]
+    =/  d=[=^life =pass]
       =/  scry-path=path
-        :~  %j
+        :~  %k
             (scot %p our)
-            %deed
             (scot %da now)
             (scot %p ship)
             (scot %ud life)
         ==
-      .^([^life pass *] scry-path)
+      .^([^life pass] scry-path)
     ::  we have the deed which has pass, which is several numbers +cat-ed
     ::  together; pull out the keys
     ::
@@ -377,15 +376,15 @@
     ?~  invited
       [participants keys]
     ::
-    =/  lyfe=(unit @ud)
-      .^((unit @ud) j+/(scot %p our)/lyfe/(scot %da now)/(scot %p i.invited))
+    =/  =life
+      .^(life k+/(scot %p our)/life/(scot %da now)/(scot %p i.invited))
     ::
-    ?~  lyfe
+    ?:  =(life 0)
       $(invited t.invited)
     ::
-    =/  pubkey=@udpoint  (ship-life-to-pubid our now i.invited u.lyfe)
+    =/  pubkey=@udpoint  (ship-life-to-pubid our now i.invited life)
     ::
-    =.  participants  (~(put in participants) [i.invited u.lyfe])
+    =.  participants  (~(put in participants) [i.invited life])
     =.  keys          (~(put in keys) pubkey)
     ::
     $(invited t.invited)
@@ -437,11 +436,11 @@
   ::  get our ships' current life
   ::
   =/  our-life=life
-    .^(life %j /(scot %p our)/life/(scot %da now)/(scot %p our))
+    .^(life %k /(scot %p our)/life/(scot %da now)/(scot %p our))
   ::  get our ships' secret keyfile ring
   ::
   =/  secret-ring=ring
-    .^(ring %j /(scot %p our)/vein/(scot %da now)/(scot %ud our-life))
+    .^(ring %k /(scot %p our)/vein/(scot %da now)/(scot %ud our-life))
   ::  fetch the encoded auth seed from the ring
   ::
   =/  secret-auth-seed=@

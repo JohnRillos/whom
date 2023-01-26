@@ -108,25 +108,16 @@
   ++  parse-one-response
     |=  =json
     ^-  (unit response:rpc)
-    ?.  &(?=([%o *] json) (~(has by p.json) 'error'))
-      =/  res=(unit [@t ^json])
-        %.  json
-        =,  dejs-soft:format
-        (ot id+so result+some ~)
-      ?~  res  ~
-      `[%result u.res]
-    ~|  parse-one-response=json
-    =/  error=(unit [id=@t ^json code=@ta mssg=@t])
+    =/  res=(unit [@t ^json])
       %.  json
       =,  dejs-soft:format
-      ::  A 'result' member is present in the error
-      ::  response when using ganache, even though
-      ::  that goes against the JSON-RPC spec
-      ::
-      (ot id+so result+some error+(ot code+no message+so ~) ~)
-    ?~  error  ~
-    =*  err  u.error
-    `[%error id.err code.err mssg.err]
+      (ot id+so result+some ~)
+    ?^  res  `[%result u.res]
+    ~|  parse-one-response=json
+    :+  ~  %error  %-  need
+    %.  json
+    =,  dejs-soft:format
+    (ot id+so error+(ot code+no message+so ~) ~)
   --
 ::
 ::  +read-contract: calls a read function on a contract, produces result hex
@@ -218,19 +209,6 @@
   ++  parse-hex  |=(=json `(unit @)`(some (parse-hex-result:rpc:ethereum json)))
   --
 ::
-++  get-tx-by-hash
-  |=  [url=@ta tx-hash=@ux]
-  =/  m  (strand:strandio transaction-result:rpc:ethereum)
-  ^-  form:m
-  ;<  =json  bind:m
-    %+  request-rpc  url
-    :*  `'tx by hash'
-        %eth-get-transaction-by-hash
-        tx-hash
-    ==
-  %-  pure:m
-  (parse-transaction-result:rpc:ethereum json)
-::
 ++  get-logs-by-hash
   |=  [url=@ta =hash:block contracts=(list address) =topics]
   =/  m  (strand:strandio (list event-log:rpc:ethereum))
@@ -276,14 +254,4 @@
     [%eth-get-transaction-count address [%label %latest]]
   %-  pure:m
   (parse-eth-get-transaction-count:rpc:ethereum json)
-::
-++  get-balance
-  |=  [url=@ta =address]
-  =/  m  (strand:strandio ,@ud)
-  ^-  form:m
-  ;<  =json  bind:m
-    %^  request-rpc  url  `'balance'
-    [%eth-get-balance address [%label %latest]]
-  %-  pure:m
-  (parse-eth-get-balance:rpc:ethereum json)
 --

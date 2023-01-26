@@ -66,7 +66,7 @@
   ::
   ++  rest
     |=  p=@da
-    (arvo %b %rest p)
+    (arvo %b %wait p)
   ::
   ++  warp
     |=  [wer=ship =riff:clay]
@@ -84,9 +84,6 @@
     =/  =rave:clay
       ?:(?=(%sing genre) [genre mood] [genre mood])
     (warp-our q.byk.bowl `rave)
-  ::
-  ++  tire
-    (arvo %c %tire `~)
   ::
   ++  connect
     |=  [=binding:eyre app=term]

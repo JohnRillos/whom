@@ -22,77 +22,29 @@
     %-  serialize-point
     (priv-to-pub prv)
   ::
-  ++  sign-typed-transaction
-    |=  [tx=typed-transaction:rpc pk=@]
-    ^-  @ux
-    =-  (cat 3 - -.tx)
-    ?-  -.tx
-      %0x0  (sign-transaction +.tx pk)
-      %0x2  (sign-transaction-1559 +.tx pk)
-    ==
-  ::
   ++  sign-transaction
     =,  crypto
     |=  [tx=transaction:rpc pk=@]
-    |^  ^-  @ux
-        ::  hash the raw transaction data
-        =/  hash=@
-          %-  keccak-256:keccak
-          =+  dat=(encode chain-id.tx 0 0)
-          =+  wid=(met 3 dat)
-          [wid (rev 3 wid dat)]
-        ::  sign transaction hash with private key
-        =+  (ecdsa-raw-sign:secp256k1:secp hash pk)
-        ::  complete transaction is raw data, with r and s
-        ::  taken from the signature, and v as per eip-155
-        (encode :(add (mul chain-id.tx 2) 35 v) r s)
-    ::
-    ++  encode
-      |=  [v=@ r=@ s=@]
-      %+  encode:rlp  %l
-      tx(to b+20^to.tx, chain-id [v r s ~])
-    --
-  ::
-  ++  sign-transaction-1559
-    =,  crypto
-    |=  [tx=transaction-1559:rpc pk=@]
-    |^  ^-  @ux
-        =;  hash=@
-          =+  (ecdsa-raw-sign:secp256k1:secp hash pk)
-          ::NOTE  we retrieve y's parity from the v value
-          (encode-1559 ~ (end 0 v) r s)
-        ::  hash the raw transaction data including leading 0x2
-        %-  keccak-256:keccak
-        =+  dat=(cat 3 (encode-1559 ~) 0x2)
-        =+  wid=(met 3 dat)
-        [wid (rev 3 wid dat)]
-    ::
-    ++  encode-1559
-      |=  sig=(unit [y=@ r=@ s=@])
-      %+  encode:rlp  %l
-      =,  tx
-      :*  chain-id
-          nonce
-          max-priority-gas-fee
-          max-gas-fee
-          gas
-          b+20^to
-          value
-          data
-        ::
-          :-  %l
-          %+  turn  ~(tap by access-list)
-          |=  [a=address b=(list @ux)]
-          l+~[b+20^a l+(turn b |=(c=@ux b+32^c))]
-        ::
-          ?~  sig  ~
-          ~[y r s]:u.sig
-      ==
-    --
+    ^-  @ux
+    ::  hash the raw transaction data
+    =/  hash=@
+      =/  dat=@
+        %-  encode-atoms:rlp
+        ::  with v=chain-id, r=0, s=0
+        tx(chain-id [chain-id.tx 0 0 ~])
+      =+  wid=(met 3 dat)
+      %-  keccak-256:keccak
+      [wid (rev 3 wid dat)]
+    ::  sign transaction hash with private key
+    =+  (ecdsa-raw-sign:secp256k1:secp hash pk)
+    ::  complete transaction is raw data, with r and s
+    ::  taken from the signature, and v as per eip-155
+    %-  encode-atoms:rlp
+    tx(chain-id [:(add (mul chain-id.tx 2) 35 v) r s ~])
   --
 ::
 ::  rlp en/decoding
-::NOTE  https://eth.wiki/en/fundamentals/rlp
+::NOTE  https://github.com/ethereum/wiki/wiki/RLP
 ::
 ++  rlp
   |%
@@ -101,42 +53,35 @@
   ::      and one-byte zero (and also empty list) we end up with
   ::      this awful type...
   +$  item
-    $@  @
     $%  [%l l=(list item)]
         [%b b=byts]
     ==
   ::  +encode-atoms: encode list of atoms as a %l of %b items
   ::
-  ++  encode-atoms  ::NOTE  deprecated
+  ++  encode-atoms
     |=  l=(list @)
     ^-  @
-    (encode l+l)
+    %+  encode  %l
+    %+  turn  l
+    |=(a=@ b+[(met 3 a) a])
   ::
   ++  encode
     |=  in=item
     |^  ^-  @
-        ?-  in
-            @
-          $(in [%b (met 3 in) in])
-        ::
-            [%b *]
+        ?-  -.in
+            %b
           ?:  &(=(1 wid.b.in) (lte dat.b.in 0x7f))
             dat.b.in
           =-  (can 3 ~[b.in [(met 3 -) -]])
           (encode-length wid.b.in 0x80)
         ::
-            [%l *]
-          ::  we +can because b+1^0x0 encodes to 0x00
-          ::
-          =/  l=(list byts)
-            %+  turn  l.in
-            |=  ni=item
-            =+  (encode ni)
-            [(max 1 (met 3 -)) -]
-          %+  can  3
-          %-  flop
-          =-  [(met 3 -)^- l]
-          (encode-length (roll (turn l head) add) 0xc0)
+            %l
+          =/  out=@
+            %+  roll  l.in
+            |=  [ni=item en=@]
+            (cat 3 (encode ni) en)
+          %^  cat  3  out
+          (encode-length (met 3 out) 0xc0)
         ==
     ::
     ++  encode-length
@@ -500,11 +445,6 @@
         ==
       ::
       ::  raw transaction data
-      +$  typed-transaction
-        $%  [%0x0 transaction]
-            [%0x2 transaction-1559]
-        ==
-      ::
       +$  transaction
         $:  nonce=@ud
             gas-price=@ud
@@ -513,18 +453,6 @@
             value=@ud
             data=@ux
             chain-id=@ux
-        ==
-      ::
-      +$  transaction-1559
-        $:  chain-id=@ux
-            nonce=@ud
-            max-priority-gas-fee=@ud
-            max-gas-fee=@ud
-            gas=@ud
-            to=address
-            value=@ud
-            data=@ux
-            access-list=(jar address @ux)
         ==
       ::
       ::  ethereum json rpc api
@@ -553,9 +481,7 @@
                 top=(list ?(@ux (list @ux)))
             ==
             [%eth-get-filter-changes fid=@ud]
-            [%eth-get-transaction-by-hash txh=@ux]
             [%eth-get-transaction-count adr=address =block]
-            [%eth-get-balance adr=address =block]
             [%eth-get-transaction-receipt txh=@ux]
             [%eth-send-raw-transaction dat=@ux]
         ==
@@ -571,20 +497,10 @@
             [%eth-transaction-hash haz=@ux]
         ==
       ::
-      ++  transaction-result
-        $:  block-hash=(unit @ux)
-            block-number=(unit @ud)
-            transaction-index=(unit @ud)
-            from=@ux
-            to=(unit @ux)
-            input=@t
-        ==
-      ::
       ++  event-log
         $:  ::  null for pending logs
             $=  mined  %-  unit
-            $:  input=(unit @ux)
-                log-index=@ud
+            $:  log-index=@ud
                 transaction-index=@ud
                 transaction-hash=@ux
                 block-number=@ud
@@ -719,7 +635,7 @@
           ?~  tob.req  ~
           `['toBlock' (block-to-json u.tob.req)]
         ::
-          ::NOTE  tmi
+          ::TODO  fucking tmi
           ?:  =(0 (lent adr.req))  ~
           :+  ~  'address'
           ?:  =(1 (lent adr.req))  (tape (address-to-hex (snag 0 adr.req)))
@@ -790,15 +706,6 @@
       :~  (tape (address-to-hex adr.req))
           (block-to-json block.req)
       ==
-    ::
-        %eth-get-balance
-      :-  'eth_getBalance'
-      :~  (tape (address-to-hex adr.req))
-          (block-to-json block.req)
-      ==
-    ::
-        %eth-get-transaction-by-hash
-      ['eth_getTransactionByHash' (tape (transaction-to-hex txh.req)) ~]
     ::
         %eth-get-transaction-receipt
       ['eth_getTransactionReceipt' (tape (transaction-to-hex txh.req)) ~]
@@ -875,8 +782,6 @@
   ::
   ++  parse-eth-get-transaction-count  parse-hex-result
   ::
-  ++  parse-eth-get-balance  parse-hex-result
-  ::
   ++  parse-event-logs
     (ar:dejs:format parse-event-log)
   ::
@@ -888,7 +793,7 @@
     :~  =-  ['logIndex'^(cu - (mu so))]
         |=  li=(unit @t)
         ?~  li  ~
-        =-  ``((ou -) log)  ::TODO  not sure if elegant or hacky.
+        =-  `((ou -) log)  ::TODO  not sure if elegant or hacky.
         :~  'logIndex'^(un (cu hex-to-num so))
             'transactionIndex'^(un (cu hex-to-num so))
             'transactionHash'^(un (cu hex-to-num so))
@@ -907,27 +812,6 @@
         :-  (hex-to-num i.r)
         (turn t.r hex-to-num)
     ==
-  ::
-  ++  parse-transaction-result
-    =,  dejs:format
-    |=  jon=json
-    ~|  jon=jon
-    ^-  transaction-result
-    =-  ((ot -) jon)
-    :~  'blockHash'^_~  :: TODO: fails if maybe-num?
-        'blockNumber'^maybe-num
-        'transactionIndex'^maybe-num
-        from+(cu hex-to-num so)
-        to+maybe-num
-        input+so
-    ==
-  ::
-  ++  maybe-num
-    =,  dejs:format
-    =-  (cu - (mu so))
-    |=  r=(unit @t)
-    ?~  r  ~
-    `(hex-to-num u.r)
   --
 ::
 ::  utilities
@@ -947,21 +831,6 @@
   ^-  tape
   %-  prefix-hex
   (render-hex-bytes 20 `@`a)
-::
-++  address-to-checksum
-  |=  a=address
-  ^-  tape
-  =/  hexed  (render-hex-bytes 20 `@`a)
-  =/  hash  (keccak-256:keccak:crypto (as-octs:mimes:html (crip hexed)))
-  =|  ret=tape
-  =/  pos  63
-  |-
-  ?~  hexed  (prefix-hex (flop ret))
-  =/  char  i.hexed
-  ?:  (lth char 58)  $(pos (dec pos), ret [char ret], hexed t.hexed)
-  =/  nib  (cut 2 [pos 1] hash)
-  ?:  (lth 7 nib)  $(pos (dec pos), ret [(sub char 32) ret], hexed t.hexed)
-  $(pos (dec pos), ret [char ret], hexed t.hexed)
 ::
 ++  transaction-to-hex
   |=  h=@
@@ -993,8 +862,5 @@
 ::
 ++  hex-to-num
   |=  a=@t
-  ~|  %non-hex-cord
-  ?>  =((end [3 2] a) '0x')
-  =<  ?<(=(0 p) q)  %-  need
-  (de:base16:mimes:html (rsh [3 2] a))
+  (rash (rsh [3 2] a) hex)
 --
