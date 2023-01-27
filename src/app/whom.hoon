@@ -342,12 +342,34 @@
 ++  on-peek
   |=  =path
   ^-  (unit (unit cage))
-  ?+  path  (on-peek:default path)
-    [%x %~.0 %contacts ~]  ``whom-contacts-1+!>(contacts)
-    [%x %~.0 %fields ~]    ``whom-fields-0+!>(field-list:field-util:main)
-    [%x %~.0 %self ~]      ``whom-self-1+!>(self)
-    [%x %~.0 %pals ~]      ``whom-pals-0+!>(get:pals-util:main)
-  ==
+  |^  ?+  path  (on-peek:default path)
+        [%x %~.0 %contacts ~]            ``whom-contacts-1+!>(contacts)
+        [%x %~.0 %contacts %mars ~]      ``whom-contacts-1+!>((get-contacts path))
+        [%x %~.0 %contacts %urth ~]      ``whom-contacts-1+!>((get-contacts path))
+        [%x %~.0 %contacts %mars @ta ~]  ``whom-contact-1+!>((get-contact path))
+        [%x %~.0 %contacts %urth @ta ~]  ``whom-contact-1+!>((get-contact path))
+        [%x %~.0 %fields ~]              ``whom-fields-0+!>(field-list:field-util:main)
+        [%x %~.0 %self ~]                ``whom-self-1+!>(self)
+        [%x %~.0 %pals ~]                ``whom-pals-0+!>(get:pals-util:main)
+      ==
+  ::
+  ++  get-contacts
+    |=  [* * * type=?(%mars %urth) ~]
+    ^-  _contacts
+    %-  ~(gas by *(map (each @p @t) contact))
+    %+  skim  ~(tap by contacts)
+    |=  [key=(each @p @t) *]
+    =(-.key ?=(%mars type))
+  ::
+  ++  get-contact
+    |=  [* * * type=?(%mars %urth) key=@ta ~]
+    ^-  (unit contact-1)
+    %-  ~(get by contacts)
+    ?-  type
+      %mars  [%& (slav %p key)]
+      %urth  [%| key]
+    ==
+  --
 ::
 ++  on-agent
   |=  [=^wire =sign:agent:gall]
