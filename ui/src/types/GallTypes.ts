@@ -1,3 +1,4 @@
+import { ContactStoreProfile } from './ContactStoreTypes';
 import { Contact, Contacts, InfoValue } from './ContactTypes';
 import { PalsInfo } from './PalsTypes';
 import { Self, ProfileField } from './ProfileTypes';
@@ -57,8 +58,16 @@ export declare type ContactStoreUpdate = {
   app: 'contact-store',
   path: SubscribePath.ContactStore,
   data: {
-    'is-public': boolean,
-    rolodex: Record<string, ContactStoreProfile>
+    'contact-update': {
+      initial?: {
+        'is-public': boolean,
+        rolodex: Record<string, ContactStoreProfile>
+      },
+      add?: {
+        ship: string,
+        contact: ContactStoreProfile
+      }
+    }
   }
 }
 

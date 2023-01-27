@@ -12,7 +12,7 @@ import ErrorNotification from './components/ErrorNotification';
 import ProfileButton from './components/buttons/ProfileButton';
 import ProfileContainer from './components/profile/ProfileContainer';
 import { Contacts } from './types/ContactTypes';
-import { GallUpdate, SubscribePath } from './types/GallTypes';
+import { ContactStoreUpdate, GallUpdate, SubscribePath } from './types/GallTypes';
 import { Self } from './types/ProfileTypes';
 import { FieldSettings } from './types/SettingTypes';
 import { PalsInfo } from './types/PalsTypes';
@@ -41,7 +41,7 @@ export function App() {
 
   function handleUpdate(update: GallUpdate) {
     if (update.app == 'contact-store') {
-      setRolodex(update.data['contact-update'].initial.rolodex);
+      handleContactStoreUpdate(update);
     }
     if (update.app != 'whom') {
       return;
@@ -69,6 +69,18 @@ export function App() {
       }
     }
   };
+
+  function handleContactStoreUpdate(update: ContactStoreUpdate) {
+    const content = update.data['contact-update'];
+    if (content.initial) {
+      setRolodex(content.initial.rolodex);
+    } else if (content.add) {
+      setRolodex({
+        ...rolodex,
+        [content.add.ship]: content.add.contact
+      });
+    }
+  }
 
   const appContext: AppContextType = {
     api: initialContext.api,
