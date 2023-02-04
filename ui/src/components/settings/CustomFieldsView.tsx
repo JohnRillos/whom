@@ -30,7 +30,7 @@ export default function CustomFieldsView() {
   }
 
   function onDeleteError(error: string | null) {
-    displayError(error || 'Error creating field!');
+    displayError(error || 'Error deleting field!');
     setDeleting(false);
   }
 

@@ -12,11 +12,12 @@ import ErrorNotification from './components/ErrorNotification';
 import ProfileButton from './components/buttons/ProfileButton';
 import ProfileContainer from './components/profile/ProfileContainer';
 import { Contacts } from './types/ContactTypes';
-import { GallUpdate, SubscribePath } from './types/GallTypes';
+import { ContactStoreUpdate, GallUpdate, SubscribePath } from './types/GallTypes';
 import { Self } from './types/ProfileTypes';
 import { FieldSettings } from './types/SettingTypes';
 import { PalsInfo } from './types/PalsTypes';
 import PalView from './components/pals/PalView';
+import { ContactStoreProfile } from './types/ContactStoreTypes';
 
 export function App() {
   const [contacts, setContacts] = useState<Contacts>({});
@@ -32,12 +33,17 @@ export function App() {
   const [palsSyncEnabled, setPalsSyncEnabled] = useState<boolean>(false);
   const [palsInfo, setPalsInfo] = useState<PalsInfo>(initialContext.palsInfo);
   const [isPalModalOpen, setPalModalOpen] = useState<boolean>(false);
+  const [rolodex, setRolodex] = useState<Record<string, ContactStoreProfile>>({});
+  const [groupsProfileIsPublic, setGroupsProfileIsPublic] = useState<boolean>(false);
 
   useEffect(() => {
    Subscribe(initialContext.api, handleUpdate);
   }, []);
 
   function handleUpdate(update: GallUpdate) {
+    if (update.app == 'contact-store') {
+      handleContactStoreUpdate(update);
+    }
     if (update.app != 'whom') {
       return;
     }
@@ -65,6 +71,21 @@ export function App() {
     }
   };
 
+  function handleContactStoreUpdate(update: ContactStoreUpdate) {
+    const content = update.data['contact-update'];
+    if (content.initial) {
+      setRolodex(content.initial.rolodex);
+      setGroupsProfileIsPublic(content.initial['is-public']);
+    } else if (content.add) {
+      setRolodex({
+        ...rolodex,
+        [content.add.ship]: content.add.contact
+      });
+    } else if (content['set-public'] !== undefined) {
+      setGroupsProfileIsPublic(content['set-public']);
+    }
+  }
+
   const appContext: AppContextType = {
     api: initialContext.api,
     errorMessage: errorMessage,
@@ -90,7 +111,9 @@ export function App() {
     palsSyncEnabled: palsSyncEnabled,
     palsInfo: palsInfo,
     setPalsInfo: setPalsInfo,
-    setPalModalOpen: setPalModalOpen
+    setPalModalOpen: setPalModalOpen,
+    rolodex: rolodex,
+    groupsProfileIsPublic: groupsProfileIsPublic
   };
 
   return (

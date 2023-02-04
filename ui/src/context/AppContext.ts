@@ -1,5 +1,6 @@
 import Urbit from '@urbit/http-api';
 import { createContext } from 'react';
+import { ContactStoreProfile } from '../types/ContactStoreTypes';
 import { Contacts } from '../types/ContactTypes';
 import { PalsInfo } from '../types/PalsTypes';
 import { Self } from '../types/ProfileTypes';
@@ -24,7 +25,9 @@ export type AppContextType = {
   palsSyncEnabled: boolean,
   palsInfo: PalsInfo,
   setPalsInfo: (pals: PalsInfo) => void,
-  setPalModalOpen: (open: boolean) => void
+  setPalModalOpen: (open: boolean) => void,
+  rolodex: Record<string, ContactStoreProfile>,
+  groupsProfileIsPublic: boolean
 }
 
 function getUrbitApi(): Urbit {
@@ -52,7 +55,9 @@ const initialContext: AppContextType = {
   palsSyncEnabled: false,
   palsInfo: { running: false, pals: {} },
   setPalsInfo: () => {},
-  setPalModalOpen: () => {}
+  setPalModalOpen: () => {},
+  rolodex: {},
+  groupsProfileIsPublic: false
 }
 
 const AppContext = createContext(initialContext);

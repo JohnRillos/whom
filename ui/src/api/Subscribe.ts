@@ -6,7 +6,7 @@ const Subscribe = (api: Urbit, handleUpdate: (update: GallUpdate) => any) => {
     api.subscribe({
       app: app,
       path: path,
-      event: (data) => handleUpdate({ app, path, data }),
+      event: (data) => handleUpdate({ app, path, data } as GallUpdate),
       quit: (qui) => console.error(qui),
       err: (err) => console.error(err)
     });
@@ -16,6 +16,8 @@ const Subscribe = (api: Urbit, handleUpdate: (update: GallUpdate) => any) => {
   subscribe('whom', SubscribePath.Self);
   subscribe('whom', SubscribePath.ImportPals);
   subscribe('whom', SubscribePath.Pals);
+
+  subscribe('contact-store', SubscribePath.ContactStore);
 };
 
 export { Subscribe };
