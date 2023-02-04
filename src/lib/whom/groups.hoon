@@ -18,6 +18,7 @@
 ++  get-edit-field
   |=  [edits=(map @tas whom-edit) key=profile-key]
   ^-  (unit edit-field:cs)
+  ?.  is-profile-public  ~
   %+  bind  (~(get by edits) key)
   |=  =whom-edit
   %-  edit-field:cs
@@ -35,23 +36,22 @@
 ::
 +$  scry-result  $%(update:cs [~ ~])
 ::
+++  base-path  /(scot %p our)/contact-store/(scot %da now)
+::
 ++  scry-profile-field
   |=  key=@tas
   ^-  (unit @t)
-  =/  base-path=path  /(scot %p our)/contact-store/(scot %da now)
-  ?.  .^(? %gu base-path)  ~
+  ?.  is-profile-public  ~
   =/  raw  .^(scry-result %gx (weld base-path /contact/(scot %p our)/noun))
-  ?:  =([~ ~] raw)  ~
+  ?:  =([~ ~] raw)       ~
   =/  =update:cs  (update:cs raw)
   ?.  ?=(%add -.update)  ~
-  ?+  key  ~
-    %bio       (sani bio.contact.update)
-    %nickname  (sani nickname.contact.update)
+  ?+  key                ~
+    %bio       `bio.contact.update
+    %nickname  `nickname.contact.update
   ==
 ::
-++  sani
-  |=  =cord
-  ^-  (unit @t)
-  ?:  =('' cord)  ~
-  `cord
+++  is-profile-public  ~+
+  ?.  .^(? %gu base-path)  %.n
+  .^(? %gx (weld base-path /is-public/noun))
 --

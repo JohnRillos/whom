@@ -17,7 +17,7 @@ import GroupsIcon from '../icons/GroupsIcon';
 const GROUPS_PROFILE_FIELDS = new Set(['bio', 'nickname']);
 
 export default function ProfileView(props: { closeContainer: () => void }): JSX.Element {
-  const { api, displayError, fieldSettings, palsInfo, self } = useContext(AppContext);
+  const { api, displayError, fieldSettings, groupsProfileIsPublic, palsInfo, self } = useContext(AppContext);
   let [submitting, setSubmitting] = useState<boolean>(false);
   let [infoFields, setInfoFields] = useState<Record<string, ProfileField | null>>(self.info);
   let [showPrivacyHelp, setShowPrivacyHelp] = useState<boolean>(false);
@@ -147,8 +147,14 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
 
   function renderGroupsIcon(key: string) {
     if (GROUPS_PROFILE_FIELDS.has(key)) {
-      return <div className='py-1'>
-        <GroupsIcon title='synced with %groups'/>
+      return <div className={groupsProfileIsPublic ? 'py-1' : 'py-1 opacity-50'}>
+        <GroupsIcon
+          title={
+            groupsProfileIsPublic
+            ? 'synced with %groups'
+            : 'not synced: %groups profile is private'
+          }
+        />
       </div>
     }
     return null;
@@ -235,11 +241,21 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
       );
     }
     return (
-      <div className='text-sm'>
-        <b>Public:</b> can be seen by anybody
-        <br/>
-        <b>Pals:</b> can be seen by your pals (mutuals)
-        {palsBlurb}
+      <div className='text-sm space-y-2'>
+        <div>
+          <b>Public:</b> can be seen by anybody
+          <br/>
+          <b>Pals:</b> can be seen by your pals (mutuals)
+          {palsBlurb}
+        </div>
+        <div>
+          If your <b>%groups</b> profile is public, some shared fields 
+          like <b>Nickname</b> and <b>Bio</b> will be synced 
+          across both apps.
+          <br/>
+          If your <b>%groups</b> profile is private, 
+          these fields will not be synced.
+        </div>
       </div>
     );
   }

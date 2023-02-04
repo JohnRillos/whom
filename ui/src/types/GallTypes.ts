@@ -21,7 +21,7 @@ export enum SubscribePath {
   Self = '/0/self',
   ImportPals = '/0/pals/import',
   Pals = '/0/pals',
-  ContactStore = '/all'
+  ContactStore = '/all',
 }
 
 export declare type ContactUpdate = {
@@ -66,7 +66,8 @@ export declare type ContactStoreUpdate = {
       add?: {
         ship: string,
         contact: ContactStoreProfile
-      }
+      },
+      'set-public'?: boolean
     }
   }
 }

@@ -26,7 +26,8 @@ export type AppContextType = {
   palsInfo: PalsInfo,
   setPalsInfo: (pals: PalsInfo) => void,
   setPalModalOpen: (open: boolean) => void,
-  rolodex: Record<string, ContactStoreProfile>
+  rolodex: Record<string, ContactStoreProfile>,
+  groupsProfileIsPublic: boolean
 }
 
 function getUrbitApi(): Urbit {
@@ -55,7 +56,8 @@ const initialContext: AppContextType = {
   palsInfo: { running: false, pals: {} },
   setPalsInfo: () => {},
   setPalModalOpen: () => {},
-  rolodex: {}
+  rolodex: {},
+  groupsProfileIsPublic: false
 }
 
 const AppContext = createContext(initialContext);

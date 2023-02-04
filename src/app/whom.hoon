@@ -68,7 +68,7 @@
     =.  fields.state  default-fields:whom-fields
     :_  state
     %+  snoc  watch-pals:main
-    watch-groups-profile:main
+    watch-contact-store:main
   [cards this]
 ::
 ++  on-save  !>(state)
@@ -90,7 +90,7 @@
       %3  [cards old]
       %2  %=  $
             old    (state-2-to-3 old)
-            cards  (snoc cards watch-groups-profile:main)
+            cards  (weld cards cards-2-to-3)
           ==
       %1  %=  $
             old    (state-1-to-2 old)
@@ -133,6 +133,12 @@
     %+  weld  (watch-mutual-profiles state-1)
     %-  notify:main
     '1.3.0: New privacy settings: profile fields can now be restricted to pals'
+  ::
+  ++  cards-2-to-3
+    ^-  (list card)
+    %+  weld  [watch-contact-store:main]~
+    %-  notify:main
+    '1.6.0: Your Nickname and Bio are now synced with your Groups profile'
   ::
   ++  watch-mutual-profiles
     |=  =state-1
@@ -432,17 +438,23 @@
       ^-  (list card)
       ?+  -.update  ~
         ::
-          %add
-        ~&  >  "update: {<update>}"
-        ?.  =(our.bowl ship.update)  ~
-        %+  weld
-          (import-groups-profile-field:main %bio bio.contact.update)
-        (import-groups-profile-field:main %nickname nickname.contact.update)
+          %initial
+        ?.  is-public.update  ~
+        =/  prof  (~(get by rolodex.update) our.bowl)
+        ?~  prof              ~
+        %+  weld  (import-groups-profile-field:main %bio bio.u.prof)
+        (import-groups-profile-field:main %nickname nickname.u.prof)
         ::
           %edit
-        ?.  =(our.bowl ship.update)  ~
+        ?.  =(our.bowl ship.update)   ~
+        ?.  is-profile-public:groups  ~
         ?.  ?=([?(%nickname %bio) @t] edit-field.update)  ~
         (import-groups-profile-field:main edit-field.update)
+        ::
+          %set-public
+        ?.  public.update  ~
+        %+  weld  (import-unknown-groups-profile-field:main %bio %text)
+        (import-unknown-groups-profile-field:main %nickname %text)
       ==
     ==
   ::
@@ -607,9 +619,9 @@
       [%pass /pals/leeches %agent [our.bowl %pals] %watch /leeches]
   ==
 ::
-++  watch-groups-profile
+++  watch-contact-store
   ^-  card
-  [%pass /groups/profile %agent [our.bowl %contact-store] %watch /our]
+  [%pass /groups/profile %agent [our.bowl %contact-store] %watch /all]
 ::
 ++  poke-self
   |=  =action
@@ -638,6 +650,7 @@
 ++  import-groups-profile-field
   |=  [key=?(%nickname %bio) value=@t]
   ^-  (list card)
+  ?.  is-profile-public:groups  ~
   %-  drop
   %+  biff  (~(get by fields) key)
   |=  =field-def
