@@ -1,5 +1,5 @@
-/-  *whom, pals-sur=pals, hark=hark-store
-/+  default-agent, dbug, pals-lib=pals, verb, whom-fields, *whom-morf, whom-pals
+/-  *whom, pals-sur=pals, hark=hark-store, contact-store
+/+  default-agent, dbug, pals-lib=pals, verb, whom-fields, whom-groups, *whom-morf, whom-pals
 |%
 ::
 +$  card  card:agent:gall
@@ -8,6 +8,7 @@
   $%  state-0
       state-1
       state-2
+      state-3
   ==
 ::
 +$  state-0
@@ -30,14 +31,23 @@
 +$  state-2
   $:  %2
       self=self-1
-      contacts=(map (each @p @t) contact)
+      contacts=(map (each @p @t) contact-1)
+      fields=(map @tas field-def)
+      next-id=@ud
+      import-pals=_|
+  ==
+::
++$  state-3
+  $:  %3
+      self=self-1
+      contacts=(map (each @p @t) contact-1)
       fields=(map @tas field-def)
       next-id=@ud
       import-pals=_|
   ==
 --
 ::
-=|  state-2
+=|  state-3
 =*  state  -
 ::
 %-  agent:dbug
@@ -49,13 +59,16 @@
     default    ~(. (default-agent this %|) bowl)
     main       ~(. +> bowl)
     pals-scry  ~(. pals-lib bowl)
+    groups     ~(. whom-groups bowl)
 ::
 ++  on-init
   ^-  (quip card _this)
   =^  cards  state
-    =|  state=state-2
+    =|  state=state-3
     =.  fields.state  default-fields:whom-fields
-    [watch-pals:main state]
+    :_  state
+    %+  snoc  watch-pals:main
+    watch-contact-store:main
   [cards this]
 ::
 ++  on-save  !>(state)
@@ -70,14 +83,18 @@
   ::
   ++  build-state
     |=  old=versioned-state
-    ^-  (quip card state-2)
+    ^-  (quip card state-3)
     =|  cards=(list card)
     |-
     ?-  -.old
-      %2  [cards old]
+      %3  [cards old]
+      %2  %=  $
+            old    (state-2-to-3 old)
+            cards  (weld cards cards-2-to-3)
+          ==
       %1  %=  $
-            old     (state-1-to-2 old)
-            cards   (weld cards (cards-1-to-2 old))
+            old    (state-1-to-2 old)
+            cards  (weld cards (cards-1-to-2 old))
           ==
       %0  $(old (state-0-to-1 old), cards watch-pals:main)
     ==
@@ -103,6 +120,13 @@
       self      nu-self
     ==
   ::
+  ++  state-2-to-3
+    |=  old=state-2
+    ^-  state-3
+    =.  fields.old  (~(put by fields.old) %bio ['Bio' %text])
+    =.  fields.old  (~(put by fields.old) %nickname ['Nickname' %text])
+    old(- %3)
+  ::
   ++  cards-1-to-2
     |=  =state-1
     ^-  (list card)
@@ -110,17 +134,19 @@
     %-  notify:main
     '1.3.0: New privacy settings: profile fields can now be restricted to pals'
   ::
+  ++  cards-2-to-3
+    ^-  (list card)
+    %+  weld  [watch-contact-store:main]~
+    %-  notify:main
+    '1.6.0: Your Nickname and Bio are now synced with your Groups profile'
+  ::
   ++  watch-mutual-profiles
     |=  =state-1
     ^-  (list card)
-    %-  murn
-    :_  same
-    %+  turn
-      %+  skim  ~(tap in (mutuals:pals-scry ''))
-      %+  cork  (lead %.y)
-      %+  cork  (each @p @t)
-      ~(has by contacts.state-1)
-    (curr watch-profile:main %.y)
+    %+  murn  ~(tap in (mutuals:pals-scry ''))
+    |=  =ship
+    ?.  (~(has by contacts.state-1) [%.y ship])  ~
+    (watch-profile:main ship %.y)
   --
 ::
 ++  on-poke
@@ -183,11 +209,13 @@
         (drop (watch-profile:main u.ship.act mutual))
       [cards state]
       ::
-        %add-field
+        %add-field 
       ?:  (~(has by fields) key.act)
         ~|  "Field {<key.act>} already exists!"  !!
       =.  fields  (~(put by fields) key.act def.act)
-      [[give-fields:main ~] state]
+      :_  state
+      %+  weld  [give-fields:main]~
+      (import-unknown-groups-profile-field:main key.act type.def.act)
       ::
         %del-field
       ?:  (~(has by info.self) key.act)
@@ -206,10 +234,11 @@
       ::
         %mod-self
       =.  info.self  (edit-self-map info.act info.self)
-      =.  info.self  ((edit-map ,[info-field access-level]) info.act info.self)
       =/  info-fields=(map @tas info-field)  (~(run by info.self) head)
       ?>  (is-info-valid:main info-fields)
       :_  state
+      %+  weld  (edit-groups-profile:groups info.act)
+      ^-  (list card)
       :~  give-self:main
           give-public-profile:main
           give-mutual-profile:main
@@ -263,10 +292,6 @@
     %-  ~(rep by changes)
     |=  [change=[@tas (unit val-type)] acc=_old]
     (~(mar by acc) change)
-  ::
-  ++  random-id
-    ^-  @t
-    (scot %uvj eny.bowl)
   --
 ::
 ++  on-arvo
@@ -323,12 +348,34 @@
 ++  on-peek
   |=  =path
   ^-  (unit (unit cage))
-  ?+  path  (on-peek:default path)
-    [%x %~.0 %contacts ~]  ``whom-contacts-1+!>(contacts)
-    [%x %~.0 %fields ~]    ``whom-fields-0+!>(field-list:field-util:main)
-    [%x %~.0 %self ~]      ``whom-self-1+!>(self)
-    [%x %~.0 %pals ~]      ``whom-pals-0+!>(get:pals-util:main)
-  ==
+  |^  ?+  path  (on-peek:default path)
+        [%x %~.0 %contacts ~]            ``whom-contacts-1+!>(contacts)
+        [%x %~.0 %contacts %mars ~]      ``whom-contacts-1+!>((get-contacts path))
+        [%x %~.0 %contacts %urth ~]      ``whom-contacts-1+!>((get-contacts path))
+        [%x %~.0 %contacts %mars @ta ~]  ``whom-contact-1+!>((get-contact path))
+        [%x %~.0 %contacts %urth @ta ~]  ``whom-contact-1+!>((get-contact path))
+        [%x %~.0 %fields ~]              ``whom-fields-0+!>(field-list:field-util:main)
+        [%x %~.0 %self ~]                ``whom-self-1+!>(self)
+        [%x %~.0 %pals ~]                ``whom-pals-0+!>(get:pals-util:main)
+      ==
+  ::
+  ++  get-contacts
+    |=  [* * * type=?(%mars %urth) ~]
+    ^-  _contacts
+    %-  ~(gas by *(map (each @p @t) contact))
+    %+  skim  ~(tap by contacts)
+    |=  [key=(each @p @t) *]
+    =(-.key ?=(%mars type))
+  ::
+  ++  get-contact
+    |=  [* * * type=?(%mars %urth) key=@ta ~]
+    ^-  (unit contact-1)
+    %-  ~(get by contacts)
+    ?-  type
+      %mars  [%& (slav %p key)]
+      %urth  [%| key]
+    ==
+  --
 ::
 ++  on-agent
   |=  [=^wire =sign:agent:gall]
@@ -353,10 +400,13 @@
     |=  [=cage =^wire]
     ^-  (quip card _state)
     ?+  wire  ~|  "Unknown wire {<wire>}"  !!
+      ::
         [%~.0 %profile @p ~]
       (take-profile (profile-0-to-1 !<(profile-0 q.cage)))
+      ::
         [%~.0 %profile @p %mutual ~]
       (take-profile !<(profile q.cage))
+      ::
         [%pals @tas ~]
       =/  =effect:pals-sur  !<(effect:pals-sur q.cage)
       :_  state
@@ -380,6 +430,31 @@
         ::
           %away :: pal removed you
         [%give %kick ~[/0/profile/mutual] `ship.effect]~
+      ==
+      ::
+        [%groups %profile ~]
+      =/  =update:contact-store  !<(update:contact-store q.cage)
+      :_  state
+      ^-  (list card)
+      ?+  -.update  ~
+        ::
+          %initial
+        ?.  is-public.update  ~
+        =/  prof  (~(get by rolodex.update) our.bowl)
+        ?~  prof              ~
+        %+  weld  (import-groups-profile-field:main %bio bio.u.prof)
+        (import-groups-profile-field:main %nickname nickname.u.prof)
+        ::
+          %edit
+        ?.  =(our.bowl ship.update)   ~
+        ?.  is-profile-public:groups  ~
+        ?.  ?=([?(%nickname %bio) @t] edit-field.update)  ~
+        (import-groups-profile-field:main edit-field.update)
+        ::
+          %set-public
+        ?.  public.update  ~
+        %+  weld  (import-unknown-groups-profile-field:main %bio %text)
+        (import-unknown-groups-profile-field:main %nickname %text)
       ==
     ==
   ::
@@ -445,6 +520,8 @@
 ++  on-fail   on-fail:default
 --
 |_  =bowl:gall
+::
+++  groups  ~(. whom-groups bowl)
 ::
 ++  give-contacts
   ^-  (list card)
@@ -542,6 +619,10 @@
       [%pass /pals/leeches %agent [our.bowl %pals] %watch /leeches]
   ==
 ::
+++  watch-contact-store
+  ^-  card
+  [%pass /groups/profile %agent [our.bowl %contact-store] %watch /all]
+::
 ++  poke-self
   |=  =action
   ^-  card
@@ -556,4 +637,33 @@
   =/  =action:hark  [%add-note bin content ~ now.bowl / /whom]
   =/  =cage         [%hark-action !>(action)]
   [%pass /hark %agent [our.bowl %hark-store] %poke cage]~
+::
+++  import-unknown-groups-profile-field
+  |=  [key=@tas type=@tas]
+  ^-  (list card)
+  ?.  ?=(?(%bio %nickname) key)  ~
+  ?.  ?=(%text type)             ~
+  =/  value=(unit @t)  (scry-profile-field:groups key)
+  ?~  value                      ~
+  (import-groups-profile-field key u.value)
+::
+++  import-groups-profile-field
+  |=  [key=?(%nickname %bio) value=@t]
+  ^-  (list card)
+  ?.  is-profile-public:groups  ~
+  %-  drop
+  %+  biff  (~(get by fields) key)
+  |=  =field-def
+  ?.  =(%text type.field-def)  ~
+  =/  access=access-level
+    =/  old  (~(get by info.self) key)
+    ?~  old  %public
+    access.u.old
+  =/  changes=(map @tas (unit [info-field access-level]))
+    %-  ~(gas by *(map @tas (unit [info-field access-level])))
+    :~  :-  key
+        ?:  =('' value)  ~
+        `[[%text value] access]
+    ==
+  `[(poke-self [%mod-self changes])]
 --
