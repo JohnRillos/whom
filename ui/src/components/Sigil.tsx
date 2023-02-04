@@ -16,7 +16,7 @@ export default function Sigil(props: { ship: string }): JSX.Element | null {
     size: 28
   };
   if (color) {
-    const bgColor = '#' + color.split('x')[1]?.padStart(6, '0');
+    const bgColor = '#' + color.split('x')[1]?.replaceAll('.', '')?.padStart(6, '0');
     config = Object.assign(config, { colors: [ bgColor, '#ffffff' ] } );
   }
   return sigil(config);
