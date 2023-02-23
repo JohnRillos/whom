@@ -9,7 +9,7 @@ export default function Sigil(props: { ship: string }): JSX.Element | null {
   if (props.ship.split('-').length > 2) {
     return null;
   }
-  var config = {
+  let config = {
     class: 'rounded',
     patp: props.ship,
     renderer: reactRenderer,

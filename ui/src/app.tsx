@@ -69,7 +69,7 @@ export function App() {
         break
       }
     }
-  };
+  }
 
   function handleContactStoreUpdate(update: ContactStoreUpdate) {
     const content = update.data['contact-update'];

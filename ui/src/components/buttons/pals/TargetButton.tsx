@@ -43,4 +43,4 @@ export default function TargetButton(props: { onClick: () => void, disabled: boo
       </div>
     </button>
   );
-};
+}

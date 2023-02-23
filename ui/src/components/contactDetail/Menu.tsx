@@ -55,7 +55,7 @@ export default function Menu() {
         title='Delete Contact'
         onClick={() => {
           closeModal();
-          deleteContact(api, selectedContactKey!!, onDeleteError);
+          deleteContact(api, selectedContactKey!, onDeleteError);
         }}
         disabled={editContactMode}/>
       {renderPalsButton()}

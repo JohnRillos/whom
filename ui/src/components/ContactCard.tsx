@@ -6,7 +6,7 @@ import { AppContext } from '../context/AppContext'
 import Sigil from './Sigil';
 
 export const ContactCard = (props:{contact:ContactWithKey}) => {
-  let { selectContact, openModal } = useContext(AppContext);
+  const { selectContact, openModal } = useContext(AppContext);
 
   return (
     <button

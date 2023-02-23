@@ -11,9 +11,9 @@ import TextInput from './input/TextInput';
 
 export default function AddContactForm() {
   const { api, closeAddContactModal, displayError, fieldSettings } = useContext(AppContext);
-  let [submitting, setSubmitting] = useState<boolean>(false);
-  let [ship, setShip] = useState<string | null>(null);
-  let [infoFields, setInfoFields] = useState<InfoFields>({});
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [ship, setShip] = useState<string | null>(null);
+  const [infoFields, setInfoFields] = useState<InfoFields>({});
 
   function submitChanges() {
     const contact = {
@@ -44,7 +44,7 @@ export default function AddContactForm() {
 
   function sanitizeInfo(info: InfoFields): InfoFields {
     return Object.fromEntries(
-      Object.entries(info).filter(([key, val]) => val != '')
+      Object.entries(info).filter(([, val]) => val != '')
     );
   }
 

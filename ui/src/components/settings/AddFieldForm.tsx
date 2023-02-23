@@ -8,17 +8,17 @@ import TextInput from '../input/TextInput';
 
 export default function AddFieldForm(props: { closeForm: () => void }) {
   const { api, displayError } = useContext(AppContext);
-  let [ submitting, setSubmitting ] = useState<boolean>(false);
-  let [ key, setKey ] = useState<string>('');
-  let [ name, setName ] = useState<string>('');
-  let [ type, setType ] = useState<FieldTypeTag>('text');
+  const [ submitting, setSubmitting ] = useState<boolean>(false);
+  const [ key, setKey ] = useState<string>('');
+  const [ name, setName ] = useState<string>('');
+  const [ type, setType ] = useState<FieldTypeTag>('text');
 
   function onSubmit() {
     setSubmitting(true);
     addField(api, {
-      key: key!,
-      name: name!,
-      type: type!,
+      key: key,
+      name: name,
+      type: type,
     }, onError, () => {
       setSubmitting(false);
       props.closeForm();

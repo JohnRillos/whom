@@ -7,8 +7,8 @@ import AddFieldForm from './AddFieldForm';
 
 export default function CustomFieldsView() {
   const { api, displayError, fieldSettings } = useContext(AppContext);
-  let [ addFieldMode, setAddFieldMode ] = useState<boolean>(false);
-  let [ isDeleting, setDeleting ] = useState<boolean>(false);
+  const [ addFieldMode, setAddFieldMode ] = useState<boolean>(false);
+  const [ isDeleting, setDeleting ] = useState<boolean>(false);
 
   function renderFieldDef(def: FieldDefWithKey) {
     return (

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 import { isValidPatp } from 'urbit-ob';
 
 function renderLabel(label: string, val: string | null) {

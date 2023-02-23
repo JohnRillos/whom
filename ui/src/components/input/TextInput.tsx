@@ -26,7 +26,7 @@ export default function TextInput(
   }
 
   function handleEvent(event: ChangeEvent<HTMLInputElement>) {
-    let value = event.target.value;
+    const value = event.target.value;
     if (value && props.pattern) {
       if(!props.pattern.test(value)) {
         return;

@@ -15,4 +15,4 @@ export default function AddPalButton(props: { onClick: () => void, disabled: boo
       </div>
     </button>
   );
-};
+}
