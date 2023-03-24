@@ -22,18 +22,10 @@
 ++  profile-0-to-1
   |=  =profile-0
   ^-  profile-1
-  %=  profile-0
-    info  %-  ~(run by info.profile-0)
-          |=  =info-field
-          [info-field %public]
-  ==
+  profile-0(info (~(run by info.profile-0) (late %public)))
 ::
 ++  profile-1-to-0
   |=  =profile-1
   ^-  profile-0
-  %=  profile-1
-    info  %-  ~(run by info.profile-1)
-          |=  [=info-field *]
-          info-field
-  ==
+  profile-1(info (~(run by info.profile-1) head))
 --
