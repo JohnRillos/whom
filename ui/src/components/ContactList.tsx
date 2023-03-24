@@ -8,8 +8,8 @@ import { getDisplayName, withKey } from '../util/ContactUtil';
 // todo: add option to sort by either @p or name
 function sortContacts(contacts: ContactWithKey[]): ContactWithKey[] {
   return contacts.sort((a, b) => {
-    var sortByA = getDisplayName(a).toLowerCase();
-    var sortByB = getDisplayName(b).toLowerCase();
+    const sortByA = getDisplayName(a).toLowerCase();
+    const sortByB = getDisplayName(b).toLowerCase();
     return sortByA > sortByB ? 1 : -1;
   });
 }
@@ -23,7 +23,7 @@ export const ContactList = () => {
   return (
     <div className="h-full w-full overflow-y-auto">
       <ul className="m-auto max-w-fit divide-y divide-gray-400/50">
-        {unifiedContactsList(contacts!!).map((contact: ContactWithKey) => (
+        {unifiedContactsList(contacts).map((contact: ContactWithKey) => (
           <li key={contact.key} className="flex items-center space-x-3 leading-tight mx-4">
             <ContactCard contact={contact}/>
           </li>

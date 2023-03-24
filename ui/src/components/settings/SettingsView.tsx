@@ -14,8 +14,8 @@ enum Mode {
 
 export default function SettingsView(props: { closeModal: () => void }): JSX.Element {
   const { api, displayError, palsSyncEnabled } = useContext(AppContext);
-  let [ mode, setMode ] = useState<Mode>(Mode.OVERVIEW);
-  let [ submitting, setSubmitting ] = useState<boolean>(false);
+  const [ mode, setMode ] = useState<Mode>(Mode.OVERVIEW);
+  const [ submitting, setSubmitting ] = useState<boolean>(false);
 
   function renderContent(): JSX.Element {
     switch(mode) {

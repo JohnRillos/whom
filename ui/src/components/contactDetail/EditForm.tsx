@@ -10,9 +10,9 @@ import TextInput from '../input/TextInput';
 
 export default function EditForm(props: { contact: ContactWithKey }) {
   const { api, closeModal, selectContact, displayError, setEditContactMode, fieldSettings } = useContext(AppContext);
-  let [submitting, setSubmitting] = useState<boolean>(false);
-  let [ship, setShip] = useState<string | null>(props.contact.ship);
-  let [infoFields, setInfoFields] = useState<InfoFields>(props.contact.info);
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [ship, setShip] = useState<string | null>(props.contact.ship);
+  const [infoFields, setInfoFields] = useState<InfoFields>(props.contact.info);
 
   function submitChanges() {
     setSubmitting(true);

@@ -18,9 +18,9 @@ const GROUPS_PROFILE_FIELDS = new Set(['bio', 'nickname']);
 
 export default function ProfileView(props: { closeContainer: () => void }): JSX.Element {
   const { api, displayError, fieldSettings, groupsProfileIsPublic, palsInfo, self } = useContext(AppContext);
-  let [submitting, setSubmitting] = useState<boolean>(false);
-  let [infoFields, setInfoFields] = useState<Record<string, ProfileField | null>>(self.info);
-  let [showPrivacyHelp, setShowPrivacyHelp] = useState<boolean>(false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [infoFields, setInfoFields] = useState<Record<string, ProfileField | null>>(self.info);
+  const [showPrivacyHelp, setShowPrivacyHelp] = useState<boolean>(false);
 
   function submitChanges() {
     setSubmitting(true);
@@ -60,8 +60,8 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
         });
         return;
       }
-      var before = infoFields[key];
-      var after = {
+      const before = infoFields[key];
+      const after = {
         value: value,
         access: before ? before.access : 'public'
       };
@@ -81,8 +81,8 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
         });
         return;
       }
-      var before = infoFields[key];
-      var after = {
+      const before = infoFields[key];
+      const after = {
         value: value,
         access: before ? before.access : 'public'
       };
@@ -95,7 +95,7 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
 
   function onAccessChange(key: string): (arg: string) => void {
     return (access: string) => {
-      var before = infoFields[key];
+      const before = infoFields[key];
       if (!before) {
         return;
       }
@@ -162,7 +162,7 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
 
   function renderAccessLevel(key: string, access: AccessLevel | undefined) {
     return (
-      <SelectInput className={!!access ? '' : 'invisible'}
+      <SelectInput className={access ? '' : 'invisible'}
         label={''}
         value={access}
         options={[
@@ -234,7 +234,7 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
       // todo: better link to install
       palsBlurb = (
         <div className='mt-2'>
-          You don't have the %pals app installed!
+          You don&apos;t have the %pals app installed!
           <br/>
           Install {palsInstallLink} to let your pals see more info about you.
         </div>
@@ -276,4 +276,4 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
       </div>
     </div>
   );
-};
+}

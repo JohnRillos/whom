@@ -15,4 +15,4 @@ export default function MutualButton(props: { onClick: () => void, disabled: boo
       </div>
     </button>
   );
-};
+}

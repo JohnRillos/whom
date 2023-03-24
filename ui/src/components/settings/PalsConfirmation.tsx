@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import SubmitButton from '../buttons/SubmitButton';
 import { syncPals } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
@@ -14,8 +14,8 @@ export default function PalsConfirmation(props: { onConfirm: () => void }): JSX.
   }
 
   const pals: string[] = Object.entries(palsInfo.pals)
-    .filter(([_, pal]) => pal.status == PalStatus.TARGET)
-    .map(([ship, _]) => ship);
+    .filter(([, pal]) => pal.status == PalStatus.TARGET)
+    .map(([ship, ]) => ship);
   const importedPalCount = pals.filter(pal => pal in contacts).length;
   const unimportedPalCount = pals.length - importedPalCount;
 
@@ -28,7 +28,7 @@ export default function PalsConfirmation(props: { onConfirm: () => void }): JSX.
   return (
     <div className='flex flex-col space-y-2 w-fit max-w-sm'>
       <p className={palsInfo.running ? 'hidden' : ''}>
-        You don't have the %pals app installed!
+        You don&apos;t have the %pals app installed!
         Install {palsInstallLink} to manage your friends list.
       </p>
       <p className={palsInfo.running ? 'hidden' : ''}>

@@ -164,7 +164,6 @@
     |=  act=action
     ^-  (quip card _state)
     ?-    -.act
-      ::
         %add-contact
       =.  state  (add-contact ship.act contact.act)
       :_  state
@@ -172,7 +171,7 @@
       =/  mutual=?  (~(has in (mutuals:pals-scry '')) u.ship.act)
       %+  weld  give-contacts:main
       (drop (watch-profile:main u.ship.act mutual))
-      ::
+    ::
         %del-contact
       =.  contacts  (~(del by contacts) key.act)
       :_  state
@@ -183,16 +182,16 @@
               ==
         %.n   give-contacts:main
       ==
-      ::
+    ::
         %mod-contact-info
-      =/  contact  (~(got by contacts) key.act)
+      =/  =contact  (~(got by contacts) key.act)
       =.  info.contact  (edit-info-map info.act info.contact)
       ?>  (is-info-valid:main info.contact)
       =.  contacts  (~(put by contacts) key.act contact)
       [give-contacts:main state]
-      ::
+    ::
         %mod-contact-ship
-      =/  contact   (~(got by contacts) key.act)
+      =/  =contact  (~(got by contacts) key.act)
       =.  contacts  (~(del by contacts) key.act)
       =.  profile.contact  ~
       =.  state  (add-contact ship.act contact)
@@ -208,7 +207,7 @@
         =/  mutual=?  (~(has in (mutuals:pals-scry '')) u.ship.act)
         (drop (watch-profile:main u.ship.act mutual))
       [cards state]
-      ::
+    ::
         %add-field 
       ?:  (~(has by fields) key.act)
         ~|  "Field {<key.act>} already exists!"  !!
@@ -216,7 +215,7 @@
       :_  state
       %+  weld  [give-fields:main]~
       (import-unknown-groups-profile-field:main key.act type.def.act)
-      ::
+    ::
         %del-field
       ?:  (~(has by info.self) key.act)
         ~|("Cannot delete field {<key.act>}: Still in use by your profile!" !!)
@@ -231,7 +230,7 @@
         ~|("Cannot delete field {<key.act>}: Still in use by {<count>} contacts!" !!)
       =.  fields  (~(del by fields) key.act)
       [[give-fields:main ~] state]
-      ::
+    ::
         %mod-self
       =.  info.self  (edit-self-map info.act info.self)
       =/  info-fields=(map @tas info-field)  (~(run by info.self) head)
@@ -243,7 +242,7 @@
           give-public-profile:main
           give-mutual-profile:main
       ==
-      ::
+    ::
         %pal-sync
       =.  import-pals  enabled.act
       ?.  enabled.act  [~[give-import-pals:main] state]
@@ -255,12 +254,12 @@
       %+  turn  new-pals
       |=  =ship
       [%pass /pals/import/[(scot %p ship)] %arvo %b %wait now.bowl]
-      ::
+    ::
         %hey-pal
       :_  state
       =/  =cage  [%pals-command !>([%meet ship.act ~])]
       [%pass /hey-pal %agent [our.bowl %pals] %poke cage]~
-      ::
+    ::
         %bye-pal
       :_  state
       =/  =cage  [%pals-command !>([%part ship.act ~])]
@@ -299,11 +298,10 @@
   ^-  (quip card _this)
   ?.  ?=([%behn %wake *] sign-arvo)  (on-arvo:default wire sign-arvo)
   ?+  wire  ~&  >>>  "%wake with unknown wire {<wire>}"  !!
-    ::
       [%pals %import @ta ~]
     =/  =ship  (slav %p (rear `(list @ta)`wire))
     [[(poke-self:main [%add-contact `ship *contact])]~ this]
-    ::
+  ::
       [%rewatch @ta %profile ~]
     =/  =ship  (slav %p +<.wire)
     =/  mutual=?  (~(has in (mutuals:pals-scry '')) ship)
@@ -324,7 +322,6 @@
         [%~.0 %profile %public ~]      (give %whom-profile-0 public-profile:main)
         [%~.0 %profile %mutual ~]  (we (give %whom-profile-1 mutual-profile:main))
       ==
-  ::
   ++  me
     |=  cards=(list card)
     ~|  'Unauthorized!'
@@ -381,15 +378,14 @@
   |=  [=^wire =sign:agent:gall]
   ^-  (quip card _this)
   |^  ?+  -.sign  (on-agent:default wire sign)
-        ::
         %fact       =^  cards  state
                       (handle-fact cage.sign wire)
                     [cards this]
-        ::
+      ::
         %kick       =^  cards  state
                       (handle-kick wire)
                     [cards this]
-        ::
+      ::
         %watch-ack  =^  cards  state
                       ?~  p.sign  (handle-ack wire)
                       (handle-nack wire u.p.sign)
@@ -400,57 +396,54 @@
     |=  [=cage =^wire]
     ^-  (quip card _state)
     ?+  wire  ~|  "Unknown wire {<wire>}"  !!
-      ::
-        [%~.0 %profile @p ~]
+        [%~.0 %profile @ta ~]
       (take-profile (profile-0-to-1 !<(profile-0 q.cage)))
-      ::
-        [%~.0 %profile @p %mutual ~]
+    ::
+        [%~.0 %profile @ta %mutual ~]
       (take-profile !<(profile q.cage))
-      ::
+    ::
         [%pals @tas ~]
       =/  =effect:pals-sur  !<(effect:pals-sur q.cage)
       :_  state
       :-  give-pals:main
       ?-  -.effect
-        ::
           %meet :: you added pal
         ?.  (~(has by contacts) %.y ship.effect)
           ?.  import-pals  ~
           [(poke-self:main [%add-contact `ship.effect *contact])]~
         ?.  (~(has in (mutuals:pals-scry '')) ship.effect)  ~
         (drop (watch-profile:main ship.effect %.y))
-        ::
+      ::
           %near :: pal added you
         ?.  (~(has by contacts) [%.y ship.effect])          ~
         ?.  (~(has in (mutuals:pals-scry '')) ship.effect)  ~
         (drop (watch-profile:main ship.effect %.y))
-        ::
+      ::
           %part :: you removed pal
         [%give %kick ~[/0/profile/mutual] `ship.effect]~
-        ::
+      ::
           %away :: pal removed you
         [%give %kick ~[/0/profile/mutual] `ship.effect]~
       ==
-      ::
+    ::
         [%groups %profile ~]
       =/  =update:contact-store  !<(update:contact-store q.cage)
       :_  state
       ^-  (list card)
       ?+  -.update  ~
-        ::
           %initial
         ?.  is-public.update  ~
         =/  prof  (~(get by rolodex.update) our.bowl)
         ?~  prof              ~
         %+  weld  (import-groups-profile-field:main %bio bio.u.prof)
         (import-groups-profile-field:main %nickname nickname.u.prof)
-        ::
+      ::
           %edit
         ?.  =(our.bowl ship.update)   ~
         ?.  is-profile-public:groups  ~
         ?.  ?=([?(%nickname %bio) @t] edit-field.update)  ~
         (import-groups-profile-field:main edit-field.update)
-        ::
+      ::
           %set-public
         ?.  public.update  ~
         %+  weld  (import-unknown-groups-profile-field:main %bio %text)
@@ -462,23 +455,19 @@
     |=  =profile
     ^-  (quip card _state)
     =/  key=(each @p @t)  [%.y src.bowl]
-    =/  =contact
-      ~|  "No contact: {<src.bowl>}"
-      (~(got by contacts) key)
-    =.  profile.contact  `profile
-    =.  contacts  (~(put by contacts) key contact)
+    =.  contacts  (~(jab by contacts) key |=(c=contact c(profile `profile)))
     [give-contacts:main state]
   ::
   ++  handle-kick
     |=  =^wire
     ^-  (quip card _state)
     ?+  wire  [~ state]
-      ::
-        [%~.0 %profile @p ~]
+    ::
+        [%~.0 %profile @ta ~]
       :_  state
       (drop (watch-profile:main src.bowl %.n))
-      ::
-        [%~.0 %profile @p %mutual ~]
+    ::
+        [%~.0 %profile @ta %mutual ~]
       :_  state
       =/  mutual=?  (~(has in (mutuals:pals-scry '')) src.bowl)
       (drop (watch-profile:main src.bowl mutual))
@@ -488,7 +477,7 @@
     |=  =^wire
     ^-  (quip card _state)
     ?+  wire  [~ state]
-        [%~.0 %profile @p %mutual ~]
+        [%~.0 %profile @ta %mutual ~]
       :_  state
       ~[(leave-public-profile:main src.bowl)]
     ==
@@ -497,12 +486,11 @@
     |=  [=^wire =tang]
     ^-  (quip card _state)
     ?+  wire  ((slog tang) [~ state])
-      ::
-        [%~.0 %profile @p ~]
+        [%~.0 %profile @ta ~]
       :_  state
       (schedule-rewatch-profile src.bowl)
-      ::
-        [%~.0 %profile @p %mutual ~]
+    ::
+        [%~.0 %profile @ta %mutual ~]
       :_  state
       %+  weld  (drop (watch-profile:main src.bowl %.n))
       ^-  (list card)
@@ -598,9 +586,7 @@
                 /0/profile/(scot %p ship)
               /0/profile/(scot %p ship)/mutual
   ?:  (~(has by wex.bowl) [wire ship %whom])  ~
-  =/  =path   ?.  mutual
-                /0/profile/public
-              /0/profile/mutual
+  =/  =path   /0/profile/[?:(mutual %mutual %public)]
   `[%pass wire %agent [ship %whom] %watch path]
 ::
 ++  leave-public-profile

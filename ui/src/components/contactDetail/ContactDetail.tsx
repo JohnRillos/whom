@@ -67,7 +67,7 @@ export default function ContactDetail(): JSX.Element {
         .filter((arg: { key: string, value: InfoValue | undefined}) => arg.value !== undefined)
         .map((arg: {key: string, value: InfoValue | undefined}) => (
           <li key={arg.key}>
-            {renderInfoField(arg.key, arg.value, defs[arg.key]!!)}
+            {renderInfoField(arg.key, arg.value, defs[arg.key]!)}
           </li>
         ))}
       </ul>
@@ -86,7 +86,7 @@ export default function ContactDetail(): JSX.Element {
         .map((arg: {key: string, value: ProfileField | undefined}) => (
           <li key={arg.key} className='flex'>
             {allPublic ? null : renderAccessLevel(arg.value?.access)}
-            {renderInfoField(arg.key, arg.value?.value, defs[arg.key]!!)}
+            {renderInfoField(arg.key, arg.value?.value, defs[arg.key]!)}
           </li>
         ))}
       </ul>
@@ -126,4 +126,4 @@ export default function ContactDetail(): JSX.Element {
       <Menu/>
     </div>
   );
-};
+}

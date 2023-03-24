@@ -15,7 +15,7 @@ export default function PalView(props: { closeModal: () => void }): JSX.Element 
     palsInfo,
     selectedContactKey
   } = useContext(AppContext);
-  let [ submitting, setSubmitting ] = useState<boolean>(false);
+  const [ submitting, setSubmitting ] = useState<boolean>(false);
   if (!selectedContactKey) {
     return null;
   }
