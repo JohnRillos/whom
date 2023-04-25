@@ -34,7 +34,6 @@ export function App() {
   const [palsInfo, setPalsInfo] = useState<PalsInfo>(initialContext.palsInfo);
   const [isPalModalOpen, setPalModalOpen] = useState<boolean>(false);
   const [rolodex, setRolodex] = useState<Record<string, ContactStoreProfile>>({});
-  const [groupsProfileIsPublic, setGroupsProfileIsPublic] = useState<boolean>(false);
 
   useEffect(() => {
    Subscribe(initialContext.api, handleUpdate);
@@ -75,14 +74,11 @@ export function App() {
     const content = update.data['contact-update'];
     if (content.initial) {
       setRolodex(content.initial.rolodex);
-      setGroupsProfileIsPublic(content.initial['is-public']);
     } else if (content.add) {
       setRolodex({
         ...rolodex,
         [content.add.ship]: content.add.contact
       });
-    } else if (content['set-public'] !== undefined) {
-      setGroupsProfileIsPublic(content['set-public']);
     }
   }
 
@@ -113,7 +109,6 @@ export function App() {
     setPalsInfo: setPalsInfo,
     setPalModalOpen: setPalModalOpen,
     rolodex: rolodex,
-    groupsProfileIsPublic: groupsProfileIsPublic
   };
 
   return (
