@@ -1,7 +1,7 @@
 import Urbit from '@urbit/http-api';
 import { createContext } from 'react';
-import { ContactStoreProfile } from '../types/ContactStoreTypes';
 import { Contacts } from '../types/ContactTypes';
+import { GroupsProfile } from '../types/GroupsTypes';
 import { PalsInfo } from '../types/PalsTypes';
 import { Self } from '../types/ProfileTypes';
 import { FieldSettings } from '../types/SettingTypes';
@@ -26,7 +26,7 @@ export type AppContextType = {
   palsInfo: PalsInfo,
   setPalsInfo: (pals: PalsInfo) => void,
   setPalModalOpen: (open: boolean) => void,
-  rolodex: Record<string, ContactStoreProfile>,
+  rolodex: Record<string, GroupsProfile>,
 }
 
 function getUrbitApi(): Urbit {

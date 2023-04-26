@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Subscribe } from './api/Subscribe';
+import { scryRolodex } from './api/Scry';
 import { ContactList } from './components/ContactList';
 import Modal from './components/Modal';
 import ContactDetail from './components/contactDetail/ContactDetail';
@@ -12,12 +13,12 @@ import ErrorNotification from './components/ErrorNotification';
 import ProfileButton from './components/buttons/ProfileButton';
 import ProfileContainer from './components/profile/ProfileContainer';
 import { Contacts } from './types/ContactTypes';
-import { ContactStoreUpdate, GallUpdate, SubscribePath } from './types/GallTypes';
+import { GallUpdate, SubscribePath } from './types/GallTypes';
 import { Self } from './types/ProfileTypes';
 import { FieldSettings } from './types/SettingTypes';
 import { PalsInfo } from './types/PalsTypes';
+import { GroupsProfile } from './types/GroupsTypes';
 import PalView from './components/pals/PalView';
-import { ContactStoreProfile } from './types/ContactStoreTypes';
 
 export function App() {
   const [contacts, setContacts] = useState<Contacts>({});
@@ -33,16 +34,14 @@ export function App() {
   const [palsSyncEnabled, setPalsSyncEnabled] = useState<boolean>(false);
   const [palsInfo, setPalsInfo] = useState<PalsInfo>(initialContext.palsInfo);
   const [isPalModalOpen, setPalModalOpen] = useState<boolean>(false);
-  const [rolodex, setRolodex] = useState<Record<string, ContactStoreProfile>>({});
+  const [rolodex, setRolodex] = useState<Record<string, GroupsProfile>>({});
 
   useEffect(() => {
-   Subscribe(initialContext.api, handleUpdate);
+    Subscribe(initialContext.api, handleUpdate);
+    scryRolodex(initialContext.api).then(setRolodex);
   }, []);
 
   function handleUpdate(update: GallUpdate) {
-    if (update.app == 'contact-store') {
-      handleContactStoreUpdate(update);
-    }
     if (update.app != 'whom') {
       return;
     }
@@ -67,18 +66,6 @@ export function App() {
         setPalsInfo(update.data);
         break
       }
-    }
-  }
-
-  function handleContactStoreUpdate(update: ContactStoreUpdate) {
-    const content = update.data['contact-update'];
-    if (content.initial) {
-      setRolodex(content.initial.rolodex);
-    } else if (content.add) {
-      setRolodex({
-        ...rolodex,
-        [content.add.ship]: content.add.contact
-      });
     }
   }
 
