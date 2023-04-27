@@ -1,5 +1,14 @@
 ;>
 
+## 1.8.0
+
+Date: ~2023.4.25
+- update profile syncing for %groups 3.0.0
+  - support new %contacts agent
+  - remove support for old %contact-store agent
+  - profile
+
+
 ## 1.7.0
 
 Date: ~2023.3.23

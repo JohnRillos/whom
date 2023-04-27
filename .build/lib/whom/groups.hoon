@@ -1,4 +1,4 @@
-/-  cs=contact-store, whom
+/-  gc=contacts, whom
 |_  bowl:gall
 ::
 +$  card  card:agent:gall
@@ -12,46 +12,34 @@
   ^-  (list card)
   =/  bio  (get-edit-field edits %bio)
   =/  nic  (get-edit-field edits %nickname)
-  %+  turn  (weld (drop bio) (drop nic))
-  edit-one-field
+  [(edit-fields (weld (drop bio) (drop nic)))]~
 ::
 ++  get-edit-field
   |=  [edits=(map @tas whom-edit) key=profile-key]
-  ^-  (unit edit-field:cs)
-  ?.  is-profile-public  ~
+  ^-  (unit field:gc)
   %+  bind  (~(get by edits) key)
   |=  =whom-edit
-  %-  edit-field:cs
+  %-  field:gc
   :-  key
   ?~  whom-edit  ''
   =/  =info-field:whom  info-field.u.whom-edit
   ?>  ?=(%text -.info-field)
   +.info-field
 ::
-++  edit-one-field
-  |=  =edit-field:cs
+++  edit-fields
+  |=  fields=(list field:gc)
   ^-  card
-  =/  =update:cs  [%edit our [edit-field] now]
-  [%pass /profile-update %agent [our %contact-store] %poke %contact-update-0 !>(update)]
+  =/  =action:gc  [%edit fields]
+  [%pass /profile-update %agent [our %contacts] %poke %contact-action-0 !>(action)]
 ::
-+$  scry-result  $%(update:cs [~ ~])
-::
-++  base-path  /(scot %p our)/contact-store/(scot %da now)
+++  base-path  /(scot %p our)/contacts/(scot %da now)
 ::
 ++  scry-profile-field
   |=  key=@tas
   ^-  (unit @t)
-  ?.  is-profile-public  ~
-  =/  raw  .^(scry-result %gx (weld base-path /contact/(scot %p our)/noun))
-  ?:  =([~ ~] raw)       ~
-  =/  =update:cs  (update:cs raw)
-  ?.  ?=(%add -.update)  ~
-  ?+  key                ~
-    %bio       `bio.contact.update
-    %nickname  `nickname.contact.update
+  =/  =contact:gc  ~+  .^(contact:gc %gx (weld base-path /contact/(scot %p our)/noun))
+  ?+  key      ~
+    %bio       `bio.contact
+    %nickname  `nickname.contact
   ==
-::
-++  is-profile-public  ~+
-  ?.  .^(? %gu base-path)  %.n
-  .^(? %gx (weld base-path /is-public/noun))
 --

@@ -1,4 +1,4 @@
-/-  *whom, pals-sur=pals, hark=hark-store, contact-store
+/-  *whom, pals-sur=pals, hark=hark-store, g-contacts=contacts
 /+  default-agent, dbug, pals-lib=pals, verb, whom-fields, whom-groups, *whom-morf, whom-pals
 |%
 ::
@@ -9,6 +9,7 @@
       state-1
       state-2
       state-3
+      state-4
   ==
 ::
 +$  state-0
@@ -28,18 +29,14 @@
       import-pals=?
   ==
 ::
-+$  state-2
-  $:  %2
-      self=self-1
-      contacts=(map (each @p @t) contact-1)
-      fields=(map @tas field-def)
-      next-id=@ud
-      import-pals=_|
-  ==
++$  state-2  $:(%2 base-state)
 ::
-+$  state-3
-  $:  %3
-      self=self-1
++$  state-3  $:(%3 base-state)
+::
++$  state-4  $:(%4 base-state)
+::
++$  base-state
+  $:  self=self-1
       contacts=(map (each @p @t) contact-1)
       fields=(map @tas field-def)
       next-id=@ud
@@ -47,7 +44,7 @@
   ==
 --
 ::
-=|  state-3
+=|  state-4
 =*  state  -
 ::
 %-  agent:dbug
@@ -64,11 +61,11 @@
 ++  on-init
   ^-  (quip card _this)
   =^  cards  state
-    =|  state=state-3
+    =|  state=state-4
     =.  fields.state  default-fields:whom-fields
     :_  state
     %+  snoc  watch-pals:main
-    watch-contact-store:main
+    watch-groups-profile:main
   [cards this]
 ::
 ++  on-save  !>(state)
@@ -83,15 +80,16 @@
   ::
   ++  build-state
     |=  old=versioned-state
-    ^-  (quip card state-3)
+    ^-  (quip card state-4)
     =|  cards=(list card)
     |-
     ?-  -.old
-      %3  [cards old]
-      %2  %=  $
-            old    (state-2-to-3 old)
-            cards  (weld cards cards-2-to-3)
+      %4  [cards old]
+      %3  %=  $
+            old    old(- %4)
+            cards  (weld cards cards-3-to-4)
           ==
+      %2  $(old (state-2-to-3 old))
       %1  %=  $
             old    (state-1-to-2 old)
             cards  (weld cards (cards-1-to-2 old))
@@ -134,11 +132,7 @@
     %-  notify:main
     '1.3.0: New privacy settings: profile fields can now be restricted to pals'
   ::
-  ++  cards-2-to-3
-    ^-  (list card)
-    %+  weld  [watch-contact-store:main]~
-    %-  notify:main
-    '1.6.0: Your Nickname and Bio are now synced with your Groups profile'
+  ++  cards-3-to-4  ~[leave-contact-store watch-groups-profile:main]
   ::
   ++  watch-mutual-profiles
     |=  =state-1
@@ -147,6 +141,10 @@
     |=  =ship
     ?.  (~(has by contacts.state-1) [%.y ship])  ~
     (watch-profile:main ship %.y)
+  ::
+  ++  leave-contact-store
+    ^-  card
+    [%pass /groups/profile %agent [our.bowl %contact-store] %leave ~]
   --
 ::
 ++  on-poke
@@ -426,29 +424,13 @@
         [%give %kick ~[/0/profile/mutual] `ship.effect]~
       ==
     ::
-        [%groups %profile ~]
-      =/  =update:contact-store  !<(update:contact-store q.cage)
+        [%groups %profile %v2 ~]
+      =/  =update:g-contacts  !<(update:g-contacts q.cage)
       :_  state
-      ^-  (list card)
-      ?+  -.update  ~
-          %initial
-        ?.  is-public.update  ~
-        =/  prof  (~(get by rolodex.update) our.bowl)
-        ?~  prof              ~
-        %+  weld  (import-groups-profile-field:main %bio bio.u.prof)
-        (import-groups-profile-field:main %nickname nickname.u.prof)
-      ::
-          %edit
-        ?.  =(our.bowl ship.update)   ~
-        ?.  is-profile-public:groups  ~
-        ?.  ?=([?(%nickname %bio) @t] edit-field.update)  ~
-        (import-groups-profile-field:main edit-field.update)
-      ::
-          %set-public
-        ?.  public.update  ~
-        %+  weld  (import-unknown-groups-profile-field:main %bio %text)
-        (import-unknown-groups-profile-field:main %nickname %text)
-      ==
+      ?~  con.update  ~
+      =/  prof=contact:g-contacts  con.update
+      %+  weld  (import-groups-profile-field:main %bio bio.prof)
+      (import-groups-profile-field:main %nickname nickname.prof)
     ==
   ::
   ++  take-profile
@@ -605,9 +587,9 @@
       [%pass /pals/leeches %agent [our.bowl %pals] %watch /leeches]
   ==
 ::
-++  watch-contact-store
+++  watch-groups-profile
   ^-  card
-  [%pass /groups/profile %agent [our.bowl %contact-store] %watch /all]
+  [%pass /groups/profile/v2 %agent [our.bowl %contacts] %watch /contact]
 ::
 ++  poke-self
   |=  =action
@@ -636,13 +618,13 @@
 ++  import-groups-profile-field
   |=  [key=?(%nickname %bio) value=@t]
   ^-  (list card)
-  ?.  is-profile-public:groups  ~
   %-  drop
   %+  biff  (~(get by fields) key)
   |=  =field-def
   ?.  =(%text type.field-def)  ~
+  =/  old  (~(get by info.self) key)
+  ?:  ?~(old %| =(value +.value.u.old))  ~
   =/  access=access-level
-    =/  old  (~(get by info.self) key)
     ?~  old  %public
     access.u.old
   =/  changes=(map @tas (unit [info-field access-level]))

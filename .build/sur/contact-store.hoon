@@ -1,3 +1,4 @@
+ :: todo: delete this file
 /-  *resource
 |%
 +$  rolodex  (map ship contact)
