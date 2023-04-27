@@ -622,8 +622,9 @@
   %+  biff  (~(get by fields) key)
   |=  =field-def
   ?.  =(%text type.field-def)  ~
+  =/  old  (~(get by info.self) key)
+  ?:  ?~(old %| =(value +.value.u.old))  ~
   =/  access=access-level
-    =/  old  (~(get by info.self) key)
     ?~  old  %public
     access.u.old
   =/  changes=(map @tas (unit [info-field access-level]))
