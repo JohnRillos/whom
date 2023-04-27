@@ -16,8 +16,6 @@ const Subscribe = (api: Urbit, handleUpdate: (update: GallUpdate) => unknown) =>
   subscribe('whom', SubscribePath.Self);
   subscribe('whom', SubscribePath.ImportPals);
   subscribe('whom', SubscribePath.Pals);
-
-  subscribe('contact-store', SubscribePath.ContactStore);
 };
 
 export { Subscribe };

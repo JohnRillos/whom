@@ -1,12 +1,11 @@
-import { ContactStoreProfile } from './ContactStoreTypes';
 import { Contact, Contacts, InfoValue } from './ContactTypes';
 import { PalsInfo } from './PalsTypes';
 import { Self, ProfileField } from './ProfileTypes';
 import { FieldDefWithKey, FieldTypeTag } from './SettingTypes';
 
-export declare type GallApp = 'whom' | 'contact-store';
+export declare type GallApp = 'whom';
 
-export declare type GallUpdate = WhomUpdate | ContactStoreUpdate;
+export declare type GallUpdate = WhomUpdate;
 
 export declare type WhomUpdate
   = ContactUpdate
@@ -21,7 +20,7 @@ export enum SubscribePath {
   Self = '/0/self',
   ImportPals = '/0/pals/import',
   Pals = '/0/pals',
-  ContactStore = '/all',
+  GroupsContacts = '/news',
 }
 
 export declare type ContactUpdate = {
@@ -52,24 +51,6 @@ export declare type PalsUpdate = {
   app: 'whom',
   path: SubscribePath.Pals,
   data: PalsInfo
-}
-
-export declare type ContactStoreUpdate = {
-  app: 'contact-store',
-  path: SubscribePath.ContactStore,
-  data: {
-    'contact-update': {
-      initial?: {
-        'is-public': boolean,
-        rolodex: Record<string, ContactStoreProfile>
-      },
-      add?: {
-        ship: string,
-        contact: ContactStoreProfile
-      },
-      'set-public'?: boolean
-    }
-  }
 }
 
 export type WhomAction = AddContactAction |

@@ -17,7 +17,7 @@ import GroupsIcon from '../icons/GroupsIcon';
 const GROUPS_PROFILE_FIELDS = new Set(['bio', 'nickname']);
 
 export default function ProfileView(props: { closeContainer: () => void }): JSX.Element {
-  const { api, displayError, fieldSettings, groupsProfileIsPublic, palsInfo, self } = useContext(AppContext);
+  const { api, displayError, fieldSettings, palsInfo, self } = useContext(AppContext);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [infoFields, setInfoFields] = useState<Record<string, ProfileField | null>>(self.info);
   const [showPrivacyHelp, setShowPrivacyHelp] = useState<boolean>(false);
@@ -147,14 +147,8 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
 
   function renderGroupsIcon(key: string) {
     if (GROUPS_PROFILE_FIELDS.has(key)) {
-      return <div className={groupsProfileIsPublic ? 'py-1' : 'py-1 opacity-50'}>
-        <GroupsIcon
-          title={
-            groupsProfileIsPublic
-            ? 'synced with %groups'
-            : 'not synced: %groups profile is private'
-          }
-        />
+      return <div className='py-1'>
+        <GroupsIcon title='synced with %groups'/>
       </div>
     }
     return null;
@@ -249,12 +243,8 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
           {palsBlurb}
         </div>
         <div>
-          If your <b>%groups</b> profile is public, some shared fields 
-          like <b>Nickname</b> and <b>Bio</b> will be synced 
-          across both apps.
-          <br/>
-          If your <b>%groups</b> profile is private, 
-          these fields will not be synced.
+          Some fields like <b>Nickname</b> and <b>Bio</b> are
+          synced with your <b>%groups</b> profile.
         </div>
       </div>
     );
