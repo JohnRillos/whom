@@ -599,7 +599,7 @@
 ++  notify
   |=  message=@t
   ^-  (list card)
-  ?.  .^(? %gu /(scot %p our.bowl)/hark-store/(scot %da now.bowl))  ~
+  ?.  .^(? %gu /(scot %p our.bowl)/hark-store/(scot %da now.bowl)/$)  ~
   =/  content=(list content:hark)  ~[text+message]
   =/  =bin:hark     [/[dap.bowl] q.byk.bowl /notification]
   =/  =action:hark  [%add-note bin content ~ now.bowl / /whom]
