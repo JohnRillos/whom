@@ -4,7 +4,7 @@
     base+'whom'
     image+'https://raw.githubusercontent.com/JohnRillos/whom/master/assets/tile.svg'
     glob-ames+[~holnes 0v0]
-    version+[1 9 0]
+    version+[1 9 1]
     website+'https://github.com/JohnRillos/whom'
     license+'MIT'
 ==
