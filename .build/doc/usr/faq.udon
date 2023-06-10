@@ -1,0 +1,53 @@
+;>
+
+## Wait, is it called %whom or Contacts?
+
+Behind-the-scenes the contacts app is called `%whom`,
+mostly so we don't get confused using the word "contacts" for multiple things in the code,
+but also because it's some fun wordplay.
+
+The user-facing name is "Contacts", or just "the contacts app".
+I want %whom to be treated like any common contacts app you'd have on your phone,
+so it should be self-explanatory what this app does when you see it on your home screen.
+
+
+## Who can see my contacts?
+
+Only you can see your contacts list and information you've entered about your contacts.
+
+
+## Who can see my profile? What can I do about privacy?
+
+You control who can see each field in your profile.
+Public fields can be seen by anybody who adds you as a contact,
+but you can also restrict any field so only your pals can see them.
+
+
+## What's the difference between `%whom` and `%pals`?
+
+Simply put, %whom is a contacts book and %pals is a friends list.
+A pal is someone on Urbit who you know and trust to some degree.
+A contact could be your friend, a stranger, or someone who isn't even on Urbit.
+
+While %pals is a great tool for managing your friends list, it isn't meant for storing much information _about_ your friends.
+%whom lets you privately record any contact info about anyone, and share contact info about yourself.
+
+
+## How does `%whom` work with `%pals`?
+
+While you don't need to install %pals to use `%whom`, I recommend you do.
+
+%whom supports these features if you have %pals installed:
+- automatically create contacts for all your pals
+- privacy settings: restrict some fields on your profile so only your pals can see them
+- send and accept %pals requests from within the Contacts app
+
+
+## How does `%whom` work with my `%groups` profile?
+
+While the Groups app already has a user profile, I don't want to make users maintain two separate profiles.
+If you update your Nickname or Bio in either app, %whom will keep your info in sync across both profiles.
+
+%whom does not sync with other data in the Groups profile such as avatar, background image,
+and favorite Groups. While this is subject to change, I chose not to sync these fields at this time
+because they are less straightforward to integrate as "contact info".

@@ -1,2 +1,42 @@
 ;>
-To-do
+
+# Types
+
+Types can be found in `%whom/sur/whom/hoon`
+
+## contact
+
+```
++$  contact
+  $:  info=(map @tas info-field)
+      profile=(unit profile)
+  ==
+```
+
+`info`: Contact info created by the user for their contact. A map of field name (ex: `%first-name`) to value (ex: `[%text 'John']`).
+
+`profile`: Contact info imported from another user's profile.
+A contact may not have a profile if that contact doesn't have a `ship`, doesn't have %whom installed, or the profile hasn't come through via the subscription yet.
+
+## profile
+
+```
++$  profile
+  $:  info=(map @tas [value=info-field access=access-level])
+      fields=(map @tas field-def)
+  ==
+::
++$  access-level  ?(%public %mutual)
+::
++$  field-def  [name=@t type=field-type-tag]
+::
++$  field-type-tag  ?(%text %date)
+```
+
+`info`: Map of field name to value, however unlike `info.contact` each value also includes `access`.
+- `%public`: this profile field is visible to anyone who adds that user as a contact.
+- `%mutual`: this profile field can only be seen by users who are mutual `%pals`.
+
+`fields`: A map of field definitions created by the other user.
+This is included in profiles so we can know what display names to use for fields not known by the local user.
+For example, profile could have a custom field `%anniversary` with the `field-def` `['Marriage Anniversary' %date]`.

@@ -5,4 +5,15 @@
 - Source repo: [https://github.com/JohnRillos/whom](https://github.com/JohnRillos/whom)
 - Bug reports: [https://github.com/JohnRillos/whom/issues](https://github.com/JohnRillos/whom/issues)
 
-%whom is an app for managing your contacts.
+%whom is an app for managing your contacts and profile.
+
+## Feature requests
+
+If you have a feature request or inquiry, please join the group [~rivmud-fabwen/whom](web+urbitgraph://~rivmud-fabwen/whom)
+and post in the discussion chat, or DM ~rivmud-fabwen.
+
+
+## Using contacts in your app
+
+%whom can be used by any app that has need of contacts or user profiles.
+Please refer to the Developer Guide, or reach out to ~rivmud-fabwen if you have any questions.
