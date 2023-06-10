@@ -1,0 +1,32 @@
+;>
+
+All `%whom` scries support `json` as well as versioned whom-specific marks.
+
+I *strongly recommend* specifying an explicit versioned mark instead of the `noun` mark to guarantee compatibility with future versions.
+
+Paths are versioned in case of future breaking changes. All scry paths are still on version `0`.
+
+- `/0/contacts` - All contacts
+  - marks: `json`, `whom-contacts-1`, `whom-contacts-0`
+
+- `/0/contacts/mars` - Mars contacts (all contacts with ships)
+  - marks: `json`, `whom-contacts-1`, `whom-contacts-0`
+
+- `/0/contacts/mars/~sampel-palnet` - Get a specific contact by ship
+  - marks: `json`, `whom-contact-1`, `whom-contact-0`
+
+- `/0/contacts/urth` - Urth contacts (all contacts without ships)
+  - marks: `json`, `whom-contacts-1`, `whom-contacts-0`
+
+- `/0/contacts/urth/123` - Get a specific Urth contact by @t key
+  - marks: `json`, `whom-contact-1`, `whom-contact-0`
+
+- `/0/fields` - Field definitions
+  - marks: `json`, `whom-fields-0`
+
+- `/0/self` - Local user's profile
+  - marks: `json`, `whom-self-1`, `whom-self-0`
+
+- `/0/pals` - Pals data
+  - marks: `json`, `whom-pals-0`
+  - This scry exposes relevant `%pals` data as json for the `%whom` UI. `%whom` does not sync any state with `%pals`.
