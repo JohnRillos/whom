@@ -292,16 +292,16 @@
   --
 ::
 ++  on-arvo
-  |=  [=wire =sign-arvo]
+  |=  [wire=(pole knot) =sign-arvo]
   ^-  (quip card _this)
   ?.  ?=([%behn %wake *] sign-arvo)  (on-arvo:default wire sign-arvo)
   ?+  wire  ~&  >>>  "%wake with unknown wire {<wire>}"  !!
-      [%pals %import @ta ~]
-    =/  =ship  (slav %p (rear `(list @ta)`wire))
+      [%pals %import patp=@ta ~]
+    =/  =ship  (slav %p patp.wire)
     [[(poke-self:main [%add-contact `ship *contact])]~ this]
   ::
-      [%rewatch @ta %profile ~]
-    =/  =ship  (slav %p +<.wire)
+      [%rewatch patp=@ta %profile ~]
+    =/  =ship  (slav %p patp.wire)
     =/  mutual=?  (~(has in (mutuals:pals-scry '')) ship)
     [(drop (watch-profile:main ship mutual)) this]
   ==
@@ -341,35 +341,33 @@
 ++  on-leave  on-leave:default
 ::
 ++  on-peek
-  |=  =path
+  |=  path=(pole knot)
   ^-  (unit (unit cage))
   |^  ?+  path  (on-peek:default path)
-        [%x %~.0 %contacts ~]            ``whom-contacts-1+!>(contacts)
-        [%x %~.0 %contacts %mars ~]      ``whom-contacts-1+!>((get-contacts path))
-        [%x %~.0 %contacts %urth ~]      ``whom-contacts-1+!>((get-contacts path))
-        [%x %~.0 %contacts %mars @ta ~]  ``whom-contact-1+!>((get-contact path))
-        [%x %~.0 %contacts %urth @ta ~]  ``whom-contact-1+!>((get-contact path))
-        [%x %~.0 %fields ~]              ``whom-fields-0+!>(field-list:field-util:main)
-        [%x %~.0 %self ~]                ``whom-self-1+!>(self)
-        [%x %~.0 %pals ~]                ``whom-pals-0+!>(get:pals-util:main)
+        [%x %~.0 %contacts ~]                ``whom-contacts-1+!>(contacts)
+        [%x %~.0 %contacts %mars ~]          ``whom-contacts-1+!>((get-contacts &))
+        [%x %~.0 %contacts %urth ~]          ``whom-contacts-1+!>((get-contacts |))
+        [%x %~.0 %contacts %mars key=@ta ~]  ``whom-contact-1+!>((get-contact & key.path))
+        [%x %~.0 %contacts %urth key=@ta ~]  ``whom-contact-1+!>((get-contact | key.path))
+        [%x %~.0 %fields ~]                  ``whom-fields-0+!>(field-list:field-util:main)
+        [%x %~.0 %self ~]                    ``whom-self-1+!>(self)
+        [%x %~.0 %pals ~]                    ``whom-pals-0+!>(get:pals-util:main)
       ==
   ::
   ++  get-contacts
-    |=  [* * * type=?(%mars %urth) ~]
+    |=  [mars=?]
     ^-  _contacts
     %-  ~(gas by *(map (each @p @t) contact))
     %+  skim  ~(tap by contacts)
     |=  [key=(each @p @t) *]
-    =(-.key ?=(%mars type))
+    =(-.key mars)
   ::
   ++  get-contact
-    |=  [* * * type=?(%mars %urth) key=@ta ~]
+    |=  [mars=? key=@ta]
     ^-  (unit contact-1)
     %-  ~(get by contacts)
-    ?-  type
-      %mars  [%& (slav %p key)]
-      %urth  [%| key]
-    ==
+    ?.  mars  [%| key]
+    [%& (slav %p key)]
   --
 ::
 ++  on-agent
