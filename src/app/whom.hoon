@@ -533,7 +533,9 @@
 ::
 ++  mutual-profile
   ^-  profile
-  [info.self fields]
+  :-  info.self
+  %-  (filter-map fields)
+  |=([key=@tas *] (~(has by info.self) key))
 ::
 ++  filter-map
   |*  raw=(map)

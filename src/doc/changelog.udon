@@ -1,5 +1,11 @@
 ;>
 
+## 1.10.0
+
+Date: TBD
+- filter unused field-defs from public profiles
+
+
 ## 1.9.2
 
 Date: ~2023.6.10
