@@ -350,6 +350,7 @@
         [%x %~.0 %contacts %urth ~]          ``whom-contacts-1+!>((get-contacts |))
         [%x %~.0 %contacts %mars key=@ta ~]  ``whom-contact-1+!>((get-contact & key.path))
         [%x %~.0 %contacts %urth key=@ta ~]  ``whom-contact-1+!>((get-contact | key.path))
+        [%x %~.0 %contacts %fuse key=@ta ~]  ``whom-contact-1+!>((get-fuse-contact key.path))
         [%x %~.0 %fields ~]                  ``whom-fields-0+!>(field-list:field-util:main)
         [%x %~.0 %self ~]                    ``whom-self-1+!>(self)
         [%x %~.0 %pals ~]                    ``whom-pals-0+!>(get:pals-util:main)
@@ -369,6 +370,11 @@
     %-  ~(get by contacts)
     ?.  mars  [%| key]
     [%& (slav %p key)]
+  ::
+  ++  get-fuse-contact
+    |=  key=@ta
+    ^-  (unit contact-1)
+    `(build-fuse-contact:main (slav %p key))
   --
 ::
 ++  on-agent
@@ -609,6 +615,17 @@
   =/  =action:hark  [%add-note bin content ~ now.bowl / /whom]
   =/  =cage         [%hark-action !>(action)]
   [%pass /hark %agent [our.bowl %hark-store] %poke cage]~
+::
+::  "fuse" contact: falls back to Groups data if profile is not present in %whom
+::
+++  build-fuse-contact
+  |=  =ship
+  ^-  contact
+  =/  con=(unit contact)  (~(get by contacts) [%& ship])
+  :-  ?~(con ~ info.u.con)
+  =/  prof=(unit profile)  ?~(con ~ profile.u.con)
+  ?~  prof  (scry-contact-as-profile:groups ship)
+  prof
 ::
 ++  import-unknown-groups-profile-field
   |=  [key=@tas type=@tas]

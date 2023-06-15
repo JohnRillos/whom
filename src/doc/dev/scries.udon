@@ -24,6 +24,10 @@ I *strongly recommend* specifying an explicit versioned mark instead of the `nou
 - `/0/contacts/urth/123` - Get a specific Urth contact by @t key
   - marks: `json`, `whom-contact-1`, `whom-contact-0`
 
+- `/0/contacts/fuse/~sampel-palnet` - Get a contact, fallback to Groups data
+  - marks: `json`, `whom-contact-1`, `whom-contact-0`
+  - if a ship doesn't have a contact or profile in %whom, use data from Groups %contacts instead
+
 - `/0/fields` - Field definitions
   - marks: `json`, `whom-fields-0`
 

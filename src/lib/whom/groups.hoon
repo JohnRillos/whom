@@ -34,12 +34,39 @@
 ::
 ++  base-path  /(scot %p our)/contacts/(scot %da now)
 ::
+++  is-running  ~+  .^(? %gu (weld base-path /$))
+::
 ++  scry-profile-field
   |=  key=@tas
   ^-  (unit @t)
+  ?.  is-running  ~
   =/  =contact:gc  ~+  .^(contact:gc %gx (weld base-path /contact/(scot %p our)/noun))
   ?+  key      ~
     %bio       `bio.contact
     %nickname  `nickname.contact
+  ==
+::
+++  scry-contact
+  |=  =ship
+  ^-  (unit [bio=@t nickname=@t])
+  ?.  is-running  ~
+  =/  =rolodex:gc  ~+  .^(rolodex:gc %gx (weld base-path /all/noun))
+  ?.  (~(has by rolodex) ship)  ~
+  =/  =contact:gc  ~+  .^(contact:gc %gx (weld base-path /contact/(scot %p ship)/noun))
+  `[bio.contact nickname.contact]
+::
+++  scry-contact-as-profile
+  |=  =ship
+  ^-  (unit profile:whom)
+  %+  bind  (scry-contact ship)
+  |=  [bio=@t nickname=@t]
+  ^-  profile:whom
+  :-  %-  ~(gas by *(map @tas [info-field:whom access-level:whom]))
+      :~  :-  %bio       [[%text bio] %public]
+          :-  %nickname  [[%text nickname] %public]
+      ==
+  %-  ~(gas by *(map @tas field-def:whom))
+  :~  :-  %bio       ['Bio' %text]
+      :-  %nickname  ['Nickname' %text]
   ==
 --
