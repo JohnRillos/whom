@@ -239,6 +239,7 @@
       :~  give-self:main
           give-public-profile:main
           give-mutual-profile:main
+          grow-public-profile:main
       ==
     ::
         %pal-sync
@@ -515,6 +516,9 @@
 ::
 ++  give-pals
   [%give %fact ~[/0/pals] %whom-pals-0 !>(get:pals-util)]
+::
+++  grow-public-profile
+  [%pass /remote/0/profile %grow /0/profile [%whom-profile-0 public-profile]]
 ::
 ++  public-profile
   ~|  "failed to build public profile"

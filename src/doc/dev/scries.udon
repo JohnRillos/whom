@@ -1,10 +1,13 @@
 ;>
 
-All `%whom` scries support `json` as well as versioned whom-specific marks.
+Paths are versioned in case of future breaking changes. All scry paths are still on version `0`.
+
+
+## Local Scry
+
+All local `%whom` scries support `json` as well as versioned whom-specific marks.
 
 I *strongly recommend* specifying an explicit versioned mark instead of the `noun` mark to guarantee compatibility with future versions.
-
-Paths are versioned in case of future breaking changes. All scry paths are still on version `0`.
 
 - `/0/contacts` - All contacts
   - marks: `json`, `whom-contacts-1`, `whom-contacts-0`
@@ -30,3 +33,9 @@ Paths are versioned in case of future breaking changes. All scry paths are still
 - `/0/pals` - Pals data
   - marks: `json`, `whom-pals-0`
   - This scry exposes relevant `%pals` data as json for the `%whom` UI. `%whom` does not sync any state with `%pals`.
+
+
+## Remote Scry
+
+- `/0/profile` - Remote user's public profile
+  - mark: `whom-profile-0`

@@ -4,6 +4,7 @@
 
 Date: TBD
 - filter unused field-defs from public profiles
+- expose public profile via remote scry
 
 
 ## 1.9.2
