@@ -5,6 +5,9 @@
 Date: TBD
 - filter unused field-defs from public profiles
 - expose public profile via remote scry
+- local scry for "fuse" contact
+  - similar to `/mars/~sampel-palnet` scry, but if the contact doesn't
+    exist or has no profile, falls back to %contacts (Groups) data
 
 
 ## 1.9.2
