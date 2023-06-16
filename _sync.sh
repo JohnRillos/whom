@@ -5,6 +5,6 @@ desk_path="$pier_path/$desk_name"
 
 while :
 do
-    rsync -aRz ./deps/./* ./src/./* $desk_path --delete
+    rsync -aR --delete ./deps/./ ./src/./ $desk_path
     sleep 3
 done
