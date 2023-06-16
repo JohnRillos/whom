@@ -8,6 +8,8 @@ Date: TBD
 - local scry for "fuse" contact
   - similar to `/mars/~sampel-palnet` scry, but if the contact doesn't
     exist or has no profile, falls back to %contacts (Groups) data
+- manage dependencies manually
+  - delete unneeded dependencies, decrease desk size
 
 
 ## 1.9.2

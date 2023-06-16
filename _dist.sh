@@ -3,5 +3,5 @@ pier_path=$1
 desk_name=$(cat ./desk)
 desk_path="$pier_path/$desk_name"
 
-echo "Copying build desk from project to distributor pier..."
-cp -r .build/* $desk_path
+echo "Copying desk from project to distributor pier..."
+rsync -aR --delete ./deps/./ ./src/./ $desk_path
