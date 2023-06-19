@@ -1,23 +1,34 @@
-import { sigil, reactRenderer } from '@tlon/sigil-js'
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../context/AppContext';
+import { Ast, Config } from '@tlon/sigil-js/types';
+
+declare type SigilJS = {
+  sigil: (props: Config) => JSX.Element,
+  reactRenderer: (node: Ast, i: string) => JSX.Element
+};
 
 export default function Sigil(props: { ship: string }): JSX.Element | null {
-  const { rolodex, } = useContext(AppContext);
-  const color = rolodex[props.ship]?.color;
+  useEffect(() => { import('@tlon/sigil-js').then(setSigilJS) });
 
+  const [ sigilJS, setSigilJS ] = useState<SigilJS | null>(null);
+  const { rolodex, } = useContext(AppContext);
+
+  if (sigilJS == null) {
+    return null;
+  }
   if (props.ship.split('-').length > 2) {
     return null;
   }
   let config = {
     class: 'rounded',
     patp: props.ship,
-    renderer: reactRenderer,
+    renderer: sigilJS.reactRenderer,
     size: 28
   };
+  const color = rolodex[props.ship]?.color;
   if (color) {
     const bgColor = '#' + color.split('x')[1]?.replaceAll('.', '')?.padStart(6, '0');
     config = Object.assign(config, { colors: [ bgColor, '#ffffff' ] } );
   }
-  return sigil(config);
+  return sigilJS.sigil(config);
 }

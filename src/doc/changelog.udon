@@ -4,6 +4,7 @@
 
 Date: ~2023.6.18
 - publish profile via remote scry on-init and on-load for this update
+- split chunks in React app dist, maybe improve glob distribution?
 
 
 ## 1.10.0
