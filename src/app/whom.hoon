@@ -10,6 +10,7 @@
       state-2
       state-3
       state-4
+      state-5
   ==
 ::
 +$  state-0
@@ -35,6 +36,8 @@
 ::
 +$  state-4  $:(%4 base-state)
 ::
++$  state-5  $:(%5 base-state)
+::
 +$  base-state
   $:  self=self-1
       contacts=(map (each @p @t) contact-1)
@@ -44,7 +47,7 @@
   ==
 --
 ::
-=|  state-4
+=|  state-5
 =*  state  -
 ::
 %-  agent:dbug
@@ -61,11 +64,13 @@
 ++  on-init
   ^-  (quip card _this)
   =^  cards  state
-    =|  state=state-4
+    =|  state=state-5
     =.  fields.state  default-fields:whom-fields
     :_  state
-    %+  snoc  watch-pals:main
-    watch-groups-profile:main
+    %+  weld  watch-pals:main
+    :~  watch-groups-profile:main
+        grow-public-profile:main
+    ==
   [cards this]
 ::
 ++  on-save  !>(state)
@@ -80,20 +85,15 @@
   ::
   ++  build-state
     |=  old=versioned-state
-    ^-  (quip card state-4)
+    ^-  (quip card state-5)
     =|  cards=(list card)
     |-
     ?-  -.old
-      %4  [cards old]
-      %3  %=  $
-            old    old(- %4)
-            cards  (weld cards cards-3-to-4)
-          ==
+      %5  [cards old]
+      %4  $(old old(- %5), cards (weld cards cards-4-to-5))
+      %3  $(old old(- %4), cards (weld cards cards-3-to-4))
       %2  $(old (state-2-to-3 old))
-      %1  %=  $
-            old    (state-1-to-2 old)
-            cards  (weld cards (cards-1-to-2 old))
-          ==
+      %1  $(old (state-1-to-2 old), cards (weld cards (cards-1-to-2 old)))
       %0  $(old (state-0-to-1 old), cards watch-pals:main)
     ==
   ::
@@ -133,6 +133,8 @@
     '1.3.0: New privacy settings: profile fields can now be restricted to pals'
   ::
   ++  cards-3-to-4  ~[leave-contact-store watch-groups-profile:main]
+  ::
+  ++  cards-4-to-5  ~[grow-public-profile:main]
   ::
   ++  watch-mutual-profiles
     |=  =state-1
@@ -524,6 +526,7 @@
   [%give %fact ~[/0/pals] %whom-pals-0 !>(get:pals-util)]
 ::
 ++  grow-public-profile
+  ^-  card
   [%pass /pro/pub %grow /0/profile/public %whom-profile-0 public-profile]
 ::
 ++  public-profile

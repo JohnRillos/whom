@@ -1,5 +1,11 @@
 ;>
 
+## 1.10.1
+
+Date: ~2023.6.18
+- publish profile via remote scry on-init and on-load for this update
+
+
 ## 1.10.0
 
 Date: ~2023.6.18
