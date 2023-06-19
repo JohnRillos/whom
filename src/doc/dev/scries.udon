@@ -41,5 +41,5 @@ I *strongly recommend* specifying an explicit versioned mark instead of the `nou
 
 ## Remote Scry
 
-- `/0/profile` - Remote user's public profile
+- `/0/profile/public` - Remote user's public profile
   - mark: `whom-profile-0`

@@ -2,7 +2,7 @@
 
 ## 1.10.0
 
-Date: TBD
+Date: ~2023.6.18
 - filter unused field-defs from public profiles
 - expose public profile via remote scry
 - local scry for "fuse" contact
