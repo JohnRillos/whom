@@ -61,11 +61,11 @@
   %+  bind  (scry-contact ship)
   |=  [bio=@t nickname=@t]
   ^-  profile:whom
-  :-  %-  ~(gas by *(map @tas [info-field:whom access-level:whom]))
+  :-  %-  my
       :~  :-  %bio       [[%text bio] %public]
           :-  %nickname  [[%text nickname] %public]
       ==
-  %-  ~(gas by *(map @tas field-def:whom))
+  %-  my
   :~  :-  %bio       ['Bio' %text]
       :-  %nickname  ['Nickname' %text]
   ==

@@ -1,5 +1,7 @@
 /-  *whom, pals-sur=pals, hark=hark-store, g-contacts=contacts
-/+  default-agent, dbug, pals-lib=pals, verb, whom-fields, whom-groups, *whom-morf, whom-pals
+/+  default-agent, dbug, pals-lib=pals, verb
+/+  whom-fields, whom-groups, *whom-morf, whom-pals
+/~  marks  *  /mar/whom
 |%
 ::
 +$  card  card:agent:gall
@@ -361,7 +363,7 @@
   ++  get-contacts
     |=  [mars=?]
     ^-  _contacts
-    %-  ~(gas by *(map (each @p @t) contact))
+    %-  my
     %+  skim  ~(tap by contacts)
     |=  [key=(each @p @t) *]
     =(-.key mars)
@@ -556,8 +558,8 @@
   =*  v  ~+  _?>(?=(^ raw) q.n.raw)
   |=  filter=$-([k v] ?)
   ^-  (map k v)
-  %-  ~(gas by *(map k v))
-  =/  tapd=(list [k v])  ~(tap by raw)
+  %-  my
+  =/  tapd=(list (pair k v))  ~(tap by raw)
   (skim tapd filter)
 ::
 ++  is-info-valid
@@ -651,11 +653,9 @@
   =/  access=access-level
     ?~  old  %public
     access.u.old
-  =/  changes=(map @tas (unit [info-field access-level]))
-    %-  ~(gas by *(map @tas (unit [info-field access-level])))
-    :~  :-  key
-        ?:  =('' value)  ~
-        `[[%text value] access]
-    ==
+  =/  change=(unit [info-field access-level])
+    ?:  =('' value)  ~
+    `[[%text value] access]
+  =/  changes  (my [key change]~)
   `[(poke-self [%mod-self changes])]
 --

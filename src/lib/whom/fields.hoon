@@ -21,14 +21,13 @@
   ==
 ::
 ++  default-fields
-  ^~  (~(gas by *(map @tas field-def)) default-field-list)
+  ^~  (my `(list (pair @tas field-def))`default-field-list)
 ::
 ++  field-util
   |_  field-map=(map @tas field-def)
   ::
   ++  field-list
-    |^
-    (sort ~(tap by field-map) sort-fields)
+    |^  (sort ~(tap by field-map) sort-fields)
     ::
     ++  sort-fields
       |=  [a=[key=@tas def=field-def] b=[key=@tas def=field-def]]
@@ -48,7 +47,7 @@
       (lth u.index-a u.index-b)
     ::
     ++  default-key-list
-      ^~  (turn default-field-list |=([key=@tas *] key))
+      ^~  (turn default-field-list head)
     --
   ::
   ++  is-valid
