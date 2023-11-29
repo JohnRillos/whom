@@ -56,16 +56,6 @@
     (turn ~(tap in (~(dif in old) new)) (lead %del-group))
   (weld add del)
 ::
-::+$  field
-:: $%  [%nickname nickname=@t]
-::     [%bio bio=@t]
-::     [%status status=@t]
-::     [%color color=@ux]
-::     [%avatar avatar=(unit @t)]
-::     [%cover cover=(unit @t)]
-::     [%add-group =flag:g]
-::     [%del-group =flag:g]
-:: ==
 ++  edit-fields
   |=  fields=(list field:gc)
   ^-  card

@@ -166,10 +166,7 @@
     |=  =state-5
     :-  grow-public-profile:main
     ;:  weld
-      (import-unknown-groups-profile-field:main %avatar %look)
-      (import-unknown-groups-profile-field:main %color %tint)
-      (import-unknown-groups-profile-field:main %cover %look)
-      (import-unknown-groups-profile-field:main %groups %coll)
+      refresh-groups-profile
       (watch-v1-profiles state-5)
     ==
   ::
@@ -184,6 +181,12 @@
   ++  leave-contact-store
     ^-  card
     [%pass /groups/profile %agent [our.bowl %contact-store] %leave ~]
+  ::
+  ++  refresh-groups-profile
+    ^-  (list card)
+    :~  [%pass /groups/profile/v2 %agent [our.bowl %contacts] %leave ~]
+        [%pass /groups/profile/v2 %agent [our.bowl %contacts] %watch /contact]
+    ==
   ::
   ++  watch-v1-profiles
     |=  =state-5
@@ -739,7 +742,7 @@
     ?~  old  %public
     access.u.old
   =/  change=(unit [info-field access-level])
-    ?:  =('' +.value)  ~
+    ?:  =(~ +.value)  ~
     `[value access]
   =/  changes  (my [key change]~)
   `[(poke-self [%mod-self changes])]
