@@ -65,7 +65,7 @@ export function App() {
       }
       case SubscribePath.Pals: {
         setPalsInfo(update.data);
-        break
+        break;
       }
     }
   }
