@@ -2,12 +2,13 @@ import React, { useContext, useState } from 'react';
 import { isValidPatp } from 'urbit-ob';
 import { createContact } from '../api/WhomPokes';
 import { AppContext } from '../context/AppContext';
-import { InfoValue, InfoDate, InfoFields } from '../types/ContactTypes';
+import { InfoValue, InfoDate, InfoFields, InfoLook, InfoTint } from '../types/ContactTypes';
 import CloseButton from './buttons/CloseButton';
 import SubmitButton from './buttons/SubmitButton';
 import DateInput from './input/DateInput';
 import ShipInput from './input/ShipInput';
 import TextInput from './input/TextInput';
+import TintInput from './input/TintInput';
 
 export default function AddContactForm() {
   const { api, closeAddContactModal, displayError, fieldSettings } = useContext(AppContext);
@@ -66,6 +67,24 @@ export default function AddContactForm() {
     }
   }
 
+  function onInfoLookChange(key: string): (arg: string) => void {
+    return (value: string) => {
+      setInfoFields({
+        ...infoFields,
+        [key]: (value && value.length) ? { look: value } : undefined
+      });
+    }
+  }
+
+  function onInfoTintChange(key: string): (arg: string | undefined) => void {
+    return (value: string | undefined) => {
+      setInfoFields({
+        ...infoFields,
+        [key]: (value && value.length) ? { tint: value } : undefined
+      });
+    }
+  }
+
   function renderShipName() {
     return <ShipInput label='Urbit' value={ship} onChange={setShip}/>
   }
@@ -77,6 +96,10 @@ export default function AddContactForm() {
         return <TextInput label={label} value={val as string | undefined} onChange={onInfoTextChange(key)} />;
       case 'date':
         return <DateInput label={label} value={val as InfoDate | undefined} onChange={onInfoDateChange(key)}/>;
+      case 'look':
+        return <TextInput label={label} value={(val as InfoLook | undefined)?.look} onChange={onInfoLookChange(key)}/>;
+      case 'tint':
+        return <TintInput label={label} value={val as InfoTint | undefined} onChange={onInfoTintChange(key)}/>;
       default:
         return <span>error</span>;
     }
@@ -85,10 +108,12 @@ export default function AddContactForm() {
   function renderInfoFields() {
     return (
       <ul>
-        {fieldSettings.order.map((key: string) => {
-          return <li key={key}>
-            {renderInfoField(key, infoFields[key])}
-          </li>
+        {fieldSettings.order
+          .filter(key => fieldSettings.defs[key]?.type !== 'coll') // todo
+          .map(key => {
+            return <li key={key}>
+              {renderInfoField(key, infoFields[key])}
+            </li>
         })}
       </ul>
     );

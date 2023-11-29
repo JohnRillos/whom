@@ -10,8 +10,8 @@
   ++  whom-self-0
     ^-  self-0
     %-  ~(run by info.self)
-    |=  [=info-field =access-level]
-    info-field
+    |=  [=info-field-0 =access-level]
+    info-field-0
   --
 ::
 ++  grab

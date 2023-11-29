@@ -19,7 +19,8 @@ export type InfoFields = {
   [key: string]: InfoValue | undefined
 };
 
-export declare type InfoValue = string | InfoDate;
+export declare type InfoValue =
+  string | InfoDate | InfoLook | InfoTint | InfoColl;
 
 export declare type InfoDate = {
   date: {
@@ -27,4 +28,21 @@ export declare type InfoDate = {
     month: number,
     day: number
   }
+}
+
+export declare type InfoLook = {
+  look: string
+}
+
+export declare type InfoTint = {
+  tint: string
+}
+
+export declare type InfoColl = {
+  coll: CollItem[]
+}
+
+export declare type CollItem = {
+  ship: string,
+  slug: string
 }

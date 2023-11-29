@@ -1,12 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { editContact, editContactShip } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
-import { InfoValue, InfoDate, ContactWithKey, InfoFields } from '../../types/ContactTypes';
+import { InfoValue, InfoDate, ContactWithKey, InfoFields, InfoLook, InfoTint } from '../../types/ContactTypes';
 import { getDisplayName } from '../../util/ContactUtil';
 import SubmitButton from '../buttons/SubmitButton';
 import DateInput from '../input/DateInput';
 import ShipInput from '../input/ShipInput';
 import TextInput from '../input/TextInput';
+import TintInput from '../input/TintInput';
 
 export default function EditForm(props: { contact: ContactWithKey }) {
   const { api, closeModal, selectContact, displayError, setEditContactMode, fieldSettings } = useContext(AppContext);
@@ -87,6 +88,24 @@ export default function EditForm(props: { contact: ContactWithKey }) {
     }
   }
 
+  function onInfoLookChange(key: string): (arg: string) => void {
+    return (value: string) => {
+      setInfoFields({
+        ...infoFields,
+        [key]: (value && value.length) ? { look: value } : undefined
+      });
+    }
+  }
+
+  function onInfoTintChange(key: string): (arg: string | undefined) => void {
+    return (value: string | undefined) => {
+      setInfoFields({
+        ...infoFields,
+        [key]: (value && value.length) ? { tint: value } : undefined
+      });
+    }
+  }
+
   function renderShipName() {
     return <ShipInput label='Urbit' value={ship} onChange={setShip}/>
   }
@@ -98,6 +117,10 @@ export default function EditForm(props: { contact: ContactWithKey }) {
         return <TextInput label={label} value={val as string | undefined} onChange={onInfoTextChange(key)}/>;
       case 'date':
         return <DateInput label={label} value={val as InfoDate | undefined} onChange={onInfoDateChange(key)}/>;
+      case 'look':
+        return <TextInput label={label} value={(val as InfoLook | undefined)?.look} onChange={onInfoLookChange(key)}/>;
+      case 'tint':
+        return <TintInput label={label} value={val as InfoTint | undefined} onChange={onInfoTintChange(key)}/>;
       default:
         return <span>error</span>;
     }
@@ -106,10 +129,12 @@ export default function EditForm(props: { contact: ContactWithKey }) {
   function renderInfoFields() {
     return (
       <ul>
-        {fieldSettings.order.map((key: string) => {
-          return <li key={key}>
-            {renderInfoField(key, infoFields[key])}
-          </li>
+        {fieldSettings.order
+          .filter(key => fieldSettings.defs[key]?.type !== 'coll') // todo
+          .map(key => {
+            return <li key={key}>
+              {renderInfoField(key, infoFields[key])}
+            </li>
         })}
       </ul>
     );

@@ -14,13 +14,17 @@
 ::
 ++  enjs-contacts-1
   |=  contacts=(map (each @p @t) contact-1)
+  (enjs-contacts-2 contacts)
+::
+++  enjs-contacts-2
+  |=  contacts=(map (each @p @t) contact-2)
   ^-  json
   %-  pairs
   %+  turn   ~(tap by contacts)
-  |=  [key=(each @p @t) =contact-1]
+  |=  [key=(each @p @t) =contact-2]
   ^-  [@tas json]
   :-  (enjs-key key)
-  (enjs-contact-1 contact-1)
+  (enjs-contact-2 contact-2)
 ::
 ++  enjs-key
   |=  key=(each @p @t)
@@ -46,6 +50,14 @@
       profile+(enjs-unit-profile-1 profile.contact)
   ==
 ::
+++  enjs-contact-2
+  |=  contact=contact-2
+  ^-  json
+  %-  pairs
+  :~  info+(enjs-info info.contact)
+      profile+(enjs-unit-profile-2 profile.contact)
+  ==
+::
 ++  enjs-unit-patp
   |=  patp=(unit @p)
   ^-  json
@@ -53,19 +65,52 @@
   [%s (crip <u.patp>)]
 ::
 ++  enjs-info
-  |=  info=(map @tas info-field)
+  |=  info=(map @tas info-field-1)
   ^-  json
   %-  pairs
   %+  turn  ~(tap by info)
-  |=  [key=@tas =info-field]
-  [key (enjs-info-field info-field)]
+  |=  [key=@tas =info-field-1]
+  [key (enjs-info-field info-field-1)]
 ::
 ++  enjs-info-field
-  |=  val=info-field
+  |=  val=info-field-1
   ^-  json
   ?-  val
     [%text *]         [%s +.val]
     [%date *]  (enjs-date +.val)
+    [%look *]  (enjs-look +.val)
+    [%tint *]  (enjs-tint +.val)
+    [%coll *]  (enjs-coll +.val)
+  ==
+::
+++  enjs-tint
+  |=  hex=@ux
+  (frond %tint (enjs-hex hex))
+::
+++  enjs-hex
+  |=  hex=@ux
+  ^-  json
+  :-  %s
+  ^-  @t
+  =/  raw  (trip (scot %ux hex))
+  =/  num  (slag 2 raw)
+  %-  crip
+  %-  cuss
+  |-
+  ?~  match=(find "." num)  num
+  $(num (oust [u.match 1] num))
+::
+++  enjs-coll
+  |=  =coll
+  ^-  json
+  %+  frond  %coll
+  :-  %a
+  %+  turn  ~(tap in coll)
+  |=  [ship=@p slug=@ta]
+  %-  pairs
+  =/  s=json  [%s (scot %p ship)]
+  :~  [%ship [%s (scot %p ship)]]
+      [%slug %s slug]
   ==
 ::
 ++  enjs-date
@@ -80,8 +125,12 @@
       ==
   ==
 ::
-++  enjs-fields-0
-  |=  fields=(list [key=@tas field-def])
+++  enjs-look
+  |=  atom=@t
+  (frond %look [%s atom])
+::
+++  enjs-fields
+  |=  fields=(list [key=@tas name=@t type=@tas])
   a+(turn fields enjs-field-def)
 ::
 ++  enjs-field-def
@@ -99,22 +148,26 @@
   :~  info+(enjs-info info.self)
   ==
 ::
-++  enjs-self-1
+++  enjs-self-1  
   |=  self=self-1
+  (enjs-self-2 ^-(self-2 self))
+::
+++  enjs-self-2
+  |=  self=self-2
   ^-  json
   %-  pairs
   :~  info+(enjs-info-with-access info.self)
   ==
 ::
 ++  enjs-info-with-access
-  |=  info=(map @tas [info-field access-level])
+  |=  info=(map @tas [info-field-1 access-level])
   ^-  json
   %-  pairs
   %+  turn  ~(tap by info)
-  |=  [key=@tas =info-field =access-level]
+  |=  [key=@tas =info-field-1 =access-level]
   :-  key
   %-  pairs
-  :~  value+(enjs-info-field info-field)
+  :~  value+(enjs-info-field info-field-1)
       access+s+access-level
   ==
 ::
@@ -130,6 +183,12 @@
   ?~  profile  ~
   (enjs-profile-1 u.profile)
 ::
+++  enjs-unit-profile-2
+  |=  profile=(unit profile-2)
+  ^-  json
+  ?~  profile  ~
+  (enjs-profile-2 u.profile)
+::
 ++  enjs-profile-0
   |=  profile=profile-0
   ^-  json
@@ -140,6 +199,10 @@
 ::
 ++  enjs-profile-1
   |=  profile=profile-1
+  (enjs-profile-2 profile)
+::
+++  enjs-profile-2
+  |=  profile=profile-2
   ^-  json
   %-  pairs
   :~  info+(enjs-info-with-access info.profile)
@@ -147,11 +210,11 @@
   ==
 ::
 ++  enjs-field-defs-map
-  |=  fields=(map @tas field-def)
+  |=  fields=(map @tas [name=@t type=@tas])
   ^-  json
   %-  pairs
   %+  turn  ~(tap by fields)
-  |=  [key=@tas val=field-def]
+  |=  [key=@tas val=[name=@t type=@tas]]
   ^-  [@t json]
   :-  key
   %-  pairs

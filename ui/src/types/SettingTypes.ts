@@ -12,4 +12,4 @@ export declare type FieldDef = {
   type: FieldTypeTag,
 }
 
-export declare type FieldTypeTag = 'text' | 'date';
+export declare type FieldTypeTag = 'text' | 'date' | 'tint' | 'look' | 'coll';

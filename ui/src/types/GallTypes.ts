@@ -15,9 +15,9 @@ export declare type WhomUpdate
   | PalsUpdate;
 
 export enum SubscribePath {
-  Contacts = '/1/contacts',
-  Fields = '/0/fields',
-  Self = '/0/self',
+  Contacts = '/2/contacts',
+  Fields = '/1/fields',
+  Self = '/1/self',
   ImportPals = '/0/pals/import',
   Pals = '/0/pals',
   GroupsContacts = '/news',

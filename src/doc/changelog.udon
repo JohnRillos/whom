@@ -1,5 +1,44 @@
 ;>
 
+## 1.12.0
+
+Date: ~2023.11.28
+- sync the entire `%groups` profile
+- new default fields
+  - %avatar
+  - %color
+  - %cover
+  - %groups
+- added support for new field types
+  - %look: image link
+  - %tint: color hex code
+  - %coll: list of Urbit resources (groups/apps/etc)
+    - %coll fields are not visible in the UI yet
+- new versions of scry endpoints
+  - `/1/contacts`
+  - `/1/contacts/mars`
+  - `/1/contacts/mars/~sampel-palnet`
+  - `/1/contacts/urth`
+  - `/1/contacts/urth/123`
+  - `/1/contacts/fuse/~sampel-palnet`
+  - `/1/fields`
+  - `/1/self`
+  - `/1/profile/public` (remote)
+- deprecated remote scry endpoint
+  - `/0/profile/public`
+- new versions of subscriptions
+  - `/2/contacts`
+  - `/1/fields`
+  - `/1/self`
+  - `/1/profile/public`
+  - `/1/profile/mutual`
+- deleted unused subscriptions
+  - `/0/contacts`
+  - `/1/contacts`
+  - `/0/fields`
+  - `/0/self`
+
+
 ## 1.11.0
 
 Date: ~2023.9.19
@@ -49,7 +88,6 @@ Date: ~2023.4.25
 - update profile syncing for %groups 3.0.0
   - support new %contacts agent
   - remove support for old %contact-store agent
-  - profile
 
 
 ## 1.7.0
