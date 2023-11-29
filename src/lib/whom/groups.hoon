@@ -69,7 +69,7 @@
 ++  scry-profile  ~+
   ^-  (unit contact:gc)
   ?.  is-running  ~
-  `.^(contact:gc %gx (weld base-path /contact/(scot %p our)/noun))
+  `.^(contact:gc %gx (weld base-path /contact/(scot %p our)/contact))
 ::
 ++  scry-profile-field
   |=  key=@tas
@@ -90,10 +90,10 @@
   |=  =ship
   ^-  (unit contact:gc)
   ?.  is-running  ~
-  =/  =rolodex:gc  ~+  .^(rolodex:gc %gx (weld base-path /all/noun))
+  =/  =rolodex:gc  ~+  .^(rolodex:gc %gx (weld base-path /all/contact-rolodex))
   ?.  (~(has by rolodex) ship)  ~
   :-  ~
-  ~+  .^(contact:gc %gx (weld base-path /contact/(scot %p ship)/noun))
+  ~+  .^(contact:gc %gx (weld base-path /contact/(scot %p ship)/contact))
 ::
 ++  scry-contact-as-profile
   |=  =ship

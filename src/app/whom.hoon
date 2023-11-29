@@ -14,6 +14,7 @@
       state-4
       state-5
       state-6
+      state-7
   ==
 ::
 +$  state-0
@@ -43,6 +44,8 @@
 ::
 +$  state-6  $:(%6 base-state)
 ::
++$  state-7  $:(%7 base-state)
+::
 +$  base-state-0
   $:  self=self-1
       contacts=(map (each @p @t) contact-1)
@@ -60,7 +63,7 @@
   ==
 --
 ::
-=|  state-6
+=|  state-7
 =*  state  -
 ::
 %-  agent:dbug
@@ -77,7 +80,7 @@
 ++  on-init
   ^-  (quip card _this)
   =^  cards  state
-    =|  state=state-6
+    =|  state=state-7
     =.  fields.state  default-fields:whom-fields
     :_  state
     %+  weld  watch-pals:main
@@ -98,11 +101,12 @@
   ::
   ++  build-state
     |=  old=versioned-state
-    ^-  (quip card state-6)
+    ^-  (quip card state-7)
     =|  cards=(list card)
     |-
     ?-  -.old
-      %6  [cards old]
+      %7  [cards old]
+      %6  $(old old(- %7), cards (weld cards cards-6-to-7))
       %5  $(old (state-5-to-6 old), cards (weld cards (cards-5-to-6 old)))
       %4  $(old old(- %5))
       %3  $(old old(- %4), cards (weld cards cards-3-to-4))
@@ -165,10 +169,10 @@
   ++  cards-5-to-6
     |=  =state-5
     :-  grow-public-profile:main
-    ;:  weld
-      refresh-groups-profile
-      (watch-v1-profiles state-5)
-    ==
+    (watch-v1-profiles state-5)
+  ::
+  ++  cards-6-to-7
+    refresh-groups-profile
   ::
   ++  watch-mutual-profiles
     |=  =state-1
