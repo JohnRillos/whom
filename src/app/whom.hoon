@@ -719,15 +719,13 @@
   ?~  prof  (scry-contact-as-profile:groups ship)
   prof
 ::
-++  import-unknown-groups-profile-field :: todo
+++  import-unknown-groups-profile-field
   |=  [key=@tas type=@tas]
   ^-  (list card)
   ?.  ?=(groups-profile-key key)  ~
-  =/  value=(unit @t)  (scry-profile-field:groups key) :: todo
+  =/  value=(unit info-field)  (scry-profile-field:groups key)
   ?~  value                      ~
-  =/  data  [type u.value]
-  :: (info-field data)  ~
-  (import-groups-profile-field key ;;(info-field data))
+  (import-groups-profile-field key u.value)
 ::
 ++  import-groups-profile-field
   |=  [key=groups-profile-key value=info-field]

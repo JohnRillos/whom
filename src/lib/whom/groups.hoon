@@ -83,13 +83,17 @@
 ::
 ++  scry-profile-field
   |=  key=@tas
-  ^-  (unit @t)
+  ^-  (unit info-field:whom)
   %+  biff  scry-profile
-  |=  =contact:gc
+  |=  con=contact:gc
   ?+  key      ~
-    %bio       `bio.contact
-    %nickname  `nickname.contact
-    :: todo ?
+    %bio       `[%text bio.con]
+    %nickname  `[%text nickname.con]
+    %status    `[%text status.con]
+    %avatar    (bind avatar.con (lead %look))
+    %color     `[%tint color.con]
+    %cover     (bind cover.con (lead %look))
+    %groups    `[%coll groups.con]
   ==
 ::
 ++  scry-contact
