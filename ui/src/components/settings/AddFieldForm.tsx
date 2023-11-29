@@ -62,6 +62,9 @@ export default function AddFieldForm(props: { closeForm: () => void }) {
             options={[
               { value: 'text', display: 'text' },
               { value: 'date', display: 'date' },
+              { value: 'tint', display: 'color' },
+              { value: 'look', display: 'image link' },
+              { value: 'coll', display: 'collection' },
             ]}
             onChange={(val) => setType(val as FieldTypeTag)}
           />

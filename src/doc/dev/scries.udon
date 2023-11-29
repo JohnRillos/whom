@@ -1,6 +1,7 @@
 ;>
 
-Paths are versioned in case of future breaking changes. All scry paths are still on version `0`.
+Paths are versioned in case of future breaking changes. Versioned marks can be 
+automatically converted to older marks if the older mark is provided in the path.
 
 
 ## Local Scry
@@ -9,37 +10,60 @@ All local `%whom` scries support `json` as well as versioned whom-specific marks
 
 I *strongly recommend* specifying an explicit versioned mark instead of the `noun` mark to guarantee compatibility with future versions.
 
-- `/0/contacts` - All contacts
-  - marks: `json`, `whom-contacts-1`, `whom-contacts-0`
+- `/1/contacts` - All contacts
+  - marks: `json`, `whom-contacts-2` and earlier
 
-- `/0/contacts/mars` - Mars contacts (all contacts with ships)
-  - marks: `json`, `whom-contacts-1`, `whom-contacts-0`
+- `/1/contacts/mars` - Mars contacts (all contacts with ships)
+  - marks: `json`, `whom-contacts-2` and earlier
 
-- `/0/contacts/mars/~sampel-palnet` - Get a specific contact by ship
-  - marks: `json`, `whom-contact-1`, `whom-contact-0`
+- `/1/contacts/mars/~sampel-palnet` - Get a specific contact by ship
+  - marks: `json`, `whom-contact-2` and earlier
 
-- `/0/contacts/urth` - Urth contacts (all contacts without ships)
-  - marks: `json`, `whom-contacts-1`, `whom-contacts-0`
+- `/1/contacts/urth` - Urth contacts (all contacts without ships)
+  - marks: `json`, `whom-contacts-2` and earlier
 
-- `/0/contacts/urth/123` - Get a specific Urth contact by @t key
-  - marks: `json`, `whom-contact-1`, `whom-contact-0`
+- `/1/contacts/urth/123` - Get a specific Urth contact by @t key
+  - marks: `json`, `whom-contact-2` and earlier
 
-- `/0/contacts/fuse/~sampel-palnet` - Get a contact, fallback to Groups data
-  - marks: `json`, `whom-contact-1`, `whom-contact-0`
+- `/1/contacts/fuse/~sampel-palnet` - Get a contact, fallback to Groups data
+  - marks: `json`, `whom-contact-2` and earlier
   - if a ship doesn't have a contact or profile in %whom, use data from Groups %contacts instead
 
-- `/0/fields` - Field definitions
-  - marks: `json`, `whom-fields-0`
+- `/1/fields` - Field definitions
+  - marks: `json`, `whom-fields-1` and earlier
 
-- `/0/self` - Local user's profile
-  - marks: `json`, `whom-self-1`, `whom-self-0`
+- `/1/self` - Local user's profile
+  - marks: `json`, `whom-self-2` and earlier
 
 - `/0/pals` - Pals data
   - marks: `json`, `whom-pals-0`
   - This scry exposes relevant `%pals` data as json for the `%whom` UI. `%whom` does not sync any state with `%pals`.
 
 
+### Deprecated
+
+The following scries are deprecated because of a breaking change to the `json` 
+representations. These scries are still functional, but they filter out any 
+fields with the newer types `look`, `tint`, and `coll` for compatibility.
+
+- `/0/contacts` - marks: `json`, `whom-contacts-1`, `whom-contacts-0`
+- `/0/contacts/mars` - marks: `json`, `whom-contacts-1`, `whom-contacts-0`
+- `/0/contacts/mars/~sampel-palnet` - marks: `json`, `whom-contact-1`, `whom-contact-0`
+- `/0/contacts/urth` - marks: `json`, `whom-contacts-1`, `whom-contacts-0`
+- `/0/contacts/urth/123` - marks: `json`, `whom-contact-1`, `whom-contact-0`
+- `/0/contacts/fuse/~sampel-palnet` - marks: `json`, `whom-contact-1`, `whom-contact-0`
+- `/0/fields` - marks: `json`, `whom-fields-0`
+- `/0/self` - marks: `json`, `whom-self-1`, `whom-self-0`
+
+
 ## Remote Scry
+
+- `/1/profile/public` - Remote user's public profile
+  - mark: `whom-profile-2`
+
+
+### Deprecated
 
 - `/0/profile/public` - Remote user's public profile
   - mark: `whom-profile-0`
+  - Starting with %whom 1.12.0, profiles will no longer be published to this path.

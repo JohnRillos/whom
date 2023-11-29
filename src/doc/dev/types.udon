@@ -30,6 +30,9 @@ The user can do this by editing the "Urbit" field in the UI, or by poking `%whom
 +$  info-field
   $%  [%text @t]
       [%date @da]
+      [%look @t]   :: link to image
+      [%tint @ux]  :: color hex code (0-255)
+      [%coll coll] :: collection of items on Urbit (groups, apps, wikis, etc)
   ==
 ```
 
@@ -51,7 +54,7 @@ A contact may not have a profile if that contact doesn't have a `ship`, doesn't 
 ::
 +$  field-def  [name=@t type=field-type-tag]
 ::
-+$  field-type-tag  ?(%text %date)
++$  field-type-tag  ?(%text %date %look %tint %coll)
 ```
 
 `info.profile`: Map of field key to value, however unlike `info.contact` each value also includes `access`.

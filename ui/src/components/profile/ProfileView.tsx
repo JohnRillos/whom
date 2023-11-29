@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useContext } from 'react';
 import { editSelf } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
-import { InfoValue, InfoDate } from '../../types/ContactTypes';
+import { InfoValue, InfoDate, InfoLook, InfoTint } from '../../types/ContactTypes';
 import { AccessLevel, ProfileField } from '../../types/ProfileTypes';
 import BackButton from '../buttons/BackButton';
 import SubmitButton from '../buttons/SubmitButton';
@@ -13,8 +13,9 @@ import SelectInput from '../input/SelectInput';
 import Modal from '../Modal';
 import InfoButton from '../buttons/InfoButton';
 import GroupsIcon from '../icons/GroupsIcon';
+import TintInput from '../input/TintInput';
 
-const GROUPS_PROFILE_FIELDS = new Set(['bio', 'nickname']);
+const GROUPS_PROFILE_FIELDS = new Set(['bio', 'nickname', 'avatar', 'status', 'color', 'cover', 'groups']);
 
 export default function ProfileView(props: { closeContainer: () => void }): JSX.Element {
   const { api, displayError, fieldSettings, palsInfo, self } = useContext(AppContext);
@@ -93,6 +94,48 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
     }
   }
 
+  function onInfoLookChange(key: string): (arg: string) => void {
+    return (value: string) => {
+      if (!value || value.length == 0) {
+        setInfoFields({
+          ...infoFields,
+          [key]: null
+        });
+        return;
+      }
+      const before = infoFields[key];
+      const after = {
+        value: { look: value },
+        access: before ? before.access : 'public'
+      };
+      setInfoFields({
+        ...infoFields,
+        [key]: after
+      });
+    }
+  }
+
+  function onInfoTintChange(key: string): (arg: string | undefined) => void {
+    return (value: string | undefined) => {
+      if (!value || value.length == 0) {
+        setInfoFields({
+          ...infoFields,
+          [key]: null
+        });
+        return;
+      }
+      const before = infoFields[key];
+      const after = {
+        value: { tint: value },
+        access: before ? before.access : 'public'
+      };
+      setInfoFields({
+        ...infoFields,
+        [key]: after
+      });
+    }
+  }
+
   function onAccessChange(key: string): (arg: string) => void {
     return (access: string) => {
       const before = infoFields[key];
@@ -128,6 +171,10 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
         return <TextInput label={label} value={val as string | undefined} onChange={onInfoTextChange(key)}/>;
       case 'date':
         return <DateInput label={label} value={val as InfoDate | undefined} onChange={onInfoDateChange(key)}/>;
+      case 'look':
+        return <TextInput label={label} value={(val as InfoLook | undefined)?.look} onChange={onInfoLookChange(key)}/>;
+      case 'tint':
+        return <TintInput label={label} value={val as InfoTint | undefined} onChange={onInfoTintChange(key)}/>;
       default:
         return <span>error</span>;
     }
@@ -171,11 +218,13 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
   function renderProfileFields() {
     return (
       <ul>
-        {fieldSettings.order.map((key: string) => {
-          return <li key={key}>
-            {renderProfileField(key, hasEdits ? infoFields[key] : self.info[key])}
-          </li>
-        })}
+        {fieldSettings.order
+          .filter(key => fieldSettings.defs[key]?.type !== 'coll') // todo
+          .map(key => (
+            <li key={key}>
+              {renderProfileField(key, hasEdits ? infoFields[key] : self.info[key])}
+            </li>
+        ))}
       </ul>
     );
   }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
-import { InfoValue, InfoDate, ContactWithKey, InfoFields } from '../../types/ContactTypes';
+import { InfoValue, InfoDate, ContactWithKey, InfoFields, InfoLook, InfoTint } from '../../types/ContactTypes';
 import { getContactWithKey, getDisplayName } from '../../util/ContactUtil';
 import { combineFieldOrders } from '../../util/FieldUtil';
 import EditForm from './EditForm';
@@ -40,6 +40,12 @@ export default function ContactDetail(): JSX.Element {
         return <TextField label={label} value={val as string | undefined}/>;
       case 'date':
         return <DateField label={label} value={val as InfoDate | undefined}/>;
+      case 'look':
+        return <TextField label={label} value={(val as InfoLook | undefined)?.look}/>;
+      case 'tint': {
+        const tint = (val as InfoTint | undefined)?.tint;
+        return <TextField label={label} value={tint ? '#' + tint : undefined}/>;
+      }
       default:
         return <span>{JSON.stringify(val)}</span>;
     }

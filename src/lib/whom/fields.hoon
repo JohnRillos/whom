@@ -6,6 +6,9 @@
   ^-  (list [key=@tas field-def])
   :~  :+  %nickname     'Nickname'       %text
       :+  %bio          'Bio'            %text
+      :+  %avatar       'Avatar'         %look
+      :+  %color        'Sigil Color'    %tint
+      :+  %cover        'Cover Image'    %look
       :+  %first-name   'First Name'     %text
       :+  %middle-name  'Middle Name'    %text
       :+  %last-name    'Last Name'      %text
@@ -18,6 +21,9 @@
       :+  %website      'Website'        %text
       :+  %github       'Github'         %text
       :+  %twitter      'Twitter'        %text
+      :+  %groups       'Favorite Groups'    %coll
+      :+  %apps         'Favorite Apps'      %coll
+      :+  %wikis        'Favorite Wikis'     %coll
   ==
 ::
 ++  default-fields
@@ -54,6 +60,9 @@
     |=  [key=@tas val=info-field]
     =/  def=(unit field-def)  (~(get by field-map) key)
     ?~  def  %.n
-    =(type.u.def -.val)
+    ?.  =(type.u.def -.val)  %.n
+    ?+  -.val  %.y
+      %tint  (lth +.val (bex 24))
+    ==
   --
 --

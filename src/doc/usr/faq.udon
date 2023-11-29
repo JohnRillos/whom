@@ -46,8 +46,14 @@ While you don't need to install %pals to use `%whom`, I recommend you do.
 ## How does `%whom` work with my `%groups` profile?
 
 While the Groups app already has a user profile, I don't want to make users maintain two separate profiles.
-If you update your Nickname or Bio in either app, %whom will keep your info in sync across both profiles.
+If you update your profile in either app, %whom will keep your info in sync across both profiles, 
+including all fields in the `%groups` profile:
+- nickname
+- bio
+- avatar
+- sigil color
+- cover image
+- favorite groups
 
-%whom does not sync with other data in the Groups profile such as avatar, background image,
-and favorite Groups. While this is subject to change, I chose not to sync these fields at this time
-because they are less straightforward to integrate as "contact info".
+%whom does not yet have UI for viewing or editing "favorite groups" but the data 
+is available in the backend like the other fields.

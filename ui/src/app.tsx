@@ -45,6 +45,7 @@ export function App() {
     if (update.app != 'whom') {
       return;
     }
+    console.log(update);
     switch(update.path) {
       case SubscribePath.Contacts: {
         setContacts(update.data);
@@ -64,7 +65,7 @@ export function App() {
       }
       case SubscribePath.Pals: {
         setPalsInfo(update.data);
-        break
+        break;
       }
     }
   }

@@ -25,7 +25,7 @@ export default function Sigil(props: { ship: string }): JSX.Element | null {
     renderer: sigilJS.reactRenderer,
     size: 28
   };
-  const color = rolodex[props.ship]?.color;
+  const color = rolodex[props.ship]?.color; // todo: prefer color from %whom
   if (color) {
     const bgColor = '#' + color.split('x')[1]?.replaceAll('.', '')?.padStart(6, '0');
     config = Object.assign(config, { colors: [ bgColor, '#ffffff' ] } );

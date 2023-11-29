@@ -31,12 +31,19 @@
 ::
 +$  field-def  [name=@t type=field-type-tag]
 ::
-+$  field-type-tag  ?(%text %date)
++$  field-type-tag  ?(%text %date %look %tint %coll)
 ::
 +$  info-field
   $%  [%text @t]
       [%date @da]
+      [%look @t]   :: link to image
+      [%tint @ux]  :: color (0-255)
+      [%coll coll] :: collection of items on Urbit (groups, apps, wikis, etc)
   ==
+::
++$  coll  (set [=ship slug=@ta])
+::
+::  Pals
 ::
 +$  pals-info
   $:  running=?
@@ -45,29 +52,63 @@
 ::
 +$  pal  status=?(%leeche %target %mutual)
 ::
+::  Groups
+::
++$  groups-profile-key  ?(%bio %nickname %status %avatar %color %cover %groups)
+::
+::  Versioned Types
+::
++$  info-field-0
+  $%  [%text @t]
+      [%date @da]
+  ==
+::
++$  info-field-1  info-field
+::
 +$  contact-0
-  $:  info=(map @tas info-field)
+  $:  info=(map @tas info-field-0)
       profile=(unit profile-0)
   ==
 ::
-+$  contact-1  contact
++$  contact-1
+  $:  info=(map @tas info-field-0)
+      profile=(unit profile-1)
+  ==
+::
++$  contact-2  contact
 ::
 +$  contacts-0  (map (each @p @t) contact-0)
 ::
 +$  contacts-1  (map (each @p @t) contact-1)
 ::
-+$  fields-0  (list [@tas field-def])
++$  contacts-2  (map (each @p @t) contact-2)
 ::
-+$  self-0  info=(map @tas info-field)
++$  field-def-0  [name=@t type=?(%text %date)]
 ::
-+$  self-1  self
++$  field-def-1  field-def
+::
++$  fields-0  (list [@tas field-def-0])
+::
++$  fields-1  (list [@tas field-def-1])
+::
++$  self-0  info=(map @tas info-field-0)
+::
++$  self-1  info=(map @tas [value=info-field-0 access=access-level])
+::
++$  self-2  self
 ::
 +$  profile-0
-  $:  info=(map @tas info-field)
-      fields=(map @tas field-def)
+  $:  info=(map @tas info-field-0)
+      fields=(map @tas field-def-0)
   ==
 ::
-+$  profile-1  profile
++$  profile-1
+  $:  info=(map @tas [value=info-field-0 access=access-level])
+      fields=(map @tas field-def-0)
+  ==
+::
++$  profile-2  profile
 ::
 +$  pals-0  pals-info
+::
 --
