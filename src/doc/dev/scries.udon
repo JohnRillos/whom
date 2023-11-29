@@ -61,7 +61,9 @@ fields with the newer types `look`, `tint`, and `coll` for compatibility.
 - `/1/profile/public` - Remote user's public profile
   - mark: `whom-profile-2`
 
-### Deprecated:
+
+### Deprecated
+
 - `/0/profile/public` - Remote user's public profile
   - mark: `whom-profile-0`
   - Starting with %whom 1.12.0, profiles will no longer be published to this path.

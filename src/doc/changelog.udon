@@ -5,10 +5,10 @@
 Date: ~2023.11.28
 - sync the entire `%groups` profile
 - new default fields
-  - %avatar
-  - %color
-  - %cover
-  - %groups
+  - `%avatar`
+  - `%color`
+  - `%cover`
+  - `%groups`
 - added support for new field types
   - %look: image link
   - %tint: color hex code

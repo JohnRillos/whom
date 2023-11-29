@@ -28,7 +28,8 @@ The user can do this by editing the "Urbit" field in the UI, or by poking `%whom
   ==
 ::
 +$  info-field
-  $%  [%date @da]
+  $%  [%text @t]
+      [%date @da]
       [%look @t]   :: link to image
       [%tint @ux]  :: color hex code (0-255)
       [%coll coll] :: collection of items on Urbit (groups, apps, wikis, etc)
