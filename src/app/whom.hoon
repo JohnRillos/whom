@@ -15,6 +15,7 @@
       state-5
       state-6
       state-7
+      state-8
   ==
 ::
 +$  state-0
@@ -46,6 +47,8 @@
 ::
 +$  state-7  $:(%7 base-state)
 ::
++$  state-8  $:(%8 base-state)
+::
 +$  base-state-0
   $:  self=self-1
       contacts=(map (each @p @t) contact-1)
@@ -63,7 +66,7 @@
   ==
 --
 ::
-=|  state-7
+=|  state-8
 =*  state  -
 ::
 %-  agent:dbug
@@ -80,7 +83,7 @@
 ++  on-init
   ^-  (quip card _this)
   =^  cards  state
-    =|  state=state-7
+    =|  state=state-8
     =.  fields.state  default-fields:whom-fields
     :_  state
     %+  weld  watch-pals:main
@@ -101,11 +104,12 @@
   ::
   ++  build-state
     |=  old=versioned-state
-    ^-  (quip card state-7)
+    ^-  (quip card state-8)
     =|  cards=(list card)
     |-
     ?-  -.old
-      %7  [cards old]
+      %8  [cards old]
+      %7  $(old old(- %8), cards (weld cards (cards-7-to-8 old)))
       %6  $(old old(- %7), cards (weld cards cards-6-to-7))
       %5  $(old (state-5-to-6 old), cards (weld cards (cards-5-to-6 old)))
       %4  $(old old(- %5))
@@ -171,8 +175,12 @@
     :-  grow-public-profile:main
     (watch-v1-profiles state-5)
   ::
-  ++  cards-6-to-7
-    refresh-groups-profile
+  ++  cards-6-to-7  refresh-groups-profile
+  ::
+  ++  cards-7-to-8
+    |=  =state-7
+    =.  state  state-7(- %8)
+    give-mutual-profile:main
   ::
   ++  watch-mutual-profiles
     |=  =state-1
@@ -608,7 +616,7 @@
   ^-  (list card)
   :~
     [%give %fact ~[/0/profile/mutual] %whom-profile-1 !>((profile-2-to-1 mutual-profile))]
-    [%give %fact ~[/1/profile/public] %whom-profile-2 !>(public-profile)]
+    [%give %fact ~[/1/profile/mutual] %whom-profile-2 !>(mutual-profile)]
   ==
 ::
 ++  give-import-pals

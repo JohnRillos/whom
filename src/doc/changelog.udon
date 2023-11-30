@@ -1,5 +1,16 @@
 ;>
 
+
+## 1.12.3
+
+Date: ~2023.11.30
+- bugfix: fix mutual profile subscriptions
+- UI: render avatars in contact list
+- UI: render color next to %tint fields
+- UI: prefer user-override color when rendering sigils
+- UI: prefer user-override name/nickname to profile name/nickname in list
+
+
 ## 1.12.2
 
 Date: ~2023.11.29
