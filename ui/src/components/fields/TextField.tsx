@@ -9,7 +9,7 @@ function renderValue(value: string | null) {
   if (value == null) {
     return '______________';
   }
-  return <p>{value}</p>;
+  return <p className='max-w-xs break-words max-h-16 overflow-y-auto'>{value}</p>;
 }
 
 export default function TextField(
@@ -17,7 +17,7 @@ export default function TextField(
 ): JSX.Element {
   const value = props.value || null;
   return (
-    <div className='flex'>
+    <div className='flex flex-row text-left'>
       {renderLabel(props.label, value)}
       {renderValue(value)}
     </div>

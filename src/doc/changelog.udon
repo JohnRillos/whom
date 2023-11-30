@@ -1,5 +1,12 @@
 ;>
 
+## 1.12.2
+
+Date: ~2023.11.29
+- UI: improve rendering of long %text/%look fields
+- UI: hide %coll fields in contact view
+
+
 ## 1.12.1
 
 Date: ~2023.11.28

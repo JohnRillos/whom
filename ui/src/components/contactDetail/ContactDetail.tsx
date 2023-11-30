@@ -66,7 +66,8 @@ export default function ContactDetail(): JSX.Element {
   function renderInfoFields(info: InfoFields, defs: Record<string, FieldDef>) {
     return (
       <ul>
-        {fieldOrder.map((key: string) => ({
+        {fieldOrder.filter(key => fieldSettings.defs[key]?.type !== 'coll')
+        .map((key: string) => ({
           key: key,
           value: info[key],
         }))
@@ -84,7 +85,8 @@ export default function ContactDetail(): JSX.Element {
     const allPublic = !Object.values(info).find(field => field.access == 'mutual');
     return (
       <ul>
-        {fieldOrder.map((key: string) => ({
+        {fieldOrder.filter(key => fieldSettings.defs[key]?.type !== 'coll')
+        .map((key: string) => ({
           key: key,
           value: info[key],
         }))
