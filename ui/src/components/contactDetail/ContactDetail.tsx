@@ -11,6 +11,7 @@ import Menu from './Menu';
 import { FieldDef } from '../../types/SettingTypes';
 import { AccessLevel, ProfileField, ProfileFields } from '../../types/ProfileTypes';
 import LockIcon from '../icons/LockIcon';
+import TintField from '../fields/TintField';
 
 export default function ContactDetail(): JSX.Element {
   const { contacts, selectedContactKey, editContactMode, fieldSettings } = useContext(AppContext);
@@ -33,18 +34,17 @@ export default function ContactDetail(): JSX.Element {
     return <TextField label='Urbit' value={contact.ship}/>
   }
 
-  function renderInfoField(key: string, val: InfoValue | undefined, fieldDef: FieldDef) {
+  function renderInfoField(key: string, val: InfoValue, fieldDef: FieldDef) {
     const label = fieldDef.name || key;
     switch (fieldDef.type) {
       case 'text':
-        return <TextField label={label} value={val as string | undefined}/>;
+        return <TextField label={label} value={val as string}/>;
       case 'date':
-        return <DateField label={label} value={val as InfoDate | undefined}/>;
+        return <DateField label={label} value={val as InfoDate}/>;
       case 'look':
-        return <TextField label={label} value={(val as InfoLook | undefined)?.look}/>;
+        return <TextField label={label} value={(val as InfoLook).look}/>;
       case 'tint': {
-        const tint = (val as InfoTint | undefined)?.tint;
-        return <TextField label={label} value={tint ? '#' + tint : undefined}/>;
+        return <TintField label={label} value={(val as InfoTint)}/>;
       }
       default:
         return <span>{JSON.stringify(val)}</span>;
@@ -74,7 +74,7 @@ export default function ContactDetail(): JSX.Element {
         .filter((arg: { key: string, value: InfoValue | undefined}) => arg.value !== undefined)
         .map((arg: {key: string, value: InfoValue | undefined}) => (
           <li key={arg.key}>
-            {renderInfoField(arg.key, arg.value, defs[arg.key]!)}
+            {renderInfoField(arg.key, arg.value!, defs[arg.key]!)}
           </li>
         ))}
       </ul>
@@ -82,7 +82,7 @@ export default function ContactDetail(): JSX.Element {
   }
 
   function renderProfileFields(info: ProfileFields, defs: Record<string, FieldDef>) {
-    const allPublic = !Object.values(info).find(field => field.access == 'mutual');
+    const allPublic = !Object.values(info).find(field => field?.access == 'mutual');
     return (
       <ul>
         {fieldOrder.filter(key => fieldSettings.defs[key]?.type !== 'coll')
@@ -94,7 +94,7 @@ export default function ContactDetail(): JSX.Element {
         .map((arg: {key: string, value: ProfileField | undefined}) => (
           <li key={arg.key} className='flex'>
             {allPublic ? null : renderAccessLevel(arg.value?.access)}
-            {renderInfoField(arg.key, arg.value?.value, defs[arg.key]!)}
+            {renderInfoField(arg.key, arg.value!.value, defs[arg.key]!)}
           </li>
         ))}
       </ul>

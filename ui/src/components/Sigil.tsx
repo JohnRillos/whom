@@ -1,30 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../context/AppContext';
 import { Ast, Config } from '@tlon/sigil-js/types';
-import { GroupsProfile } from '../types/GroupsTypes';
+import { getRolodexColor, sanitizeColor } from '../util/ColorUtil';
 
 declare type SigilJS = {
   sigil: (props: Config) => JSX.Element,
   reactRenderer: (node: Ast, i: string) => JSX.Element
 };
-
-function getRolodexColor(
-  rolodex: Record<string, GroupsProfile>,
-  ship: string
-): string | null {
-  const color = rolodex[ship]?.color;
-  if (!color) {
-    return null;
-  }
-  return color.split('x')[1]?.replaceAll('.', '') || null;
-}
-
-function sanitizeColor(raw: string | null): string | null {
-  if (!raw) {
-    return null;
-  }
-  return '#' + raw.padStart(6, '0');
-}
 
 export default function Sigil(props: { ship: string }): JSX.Element | null {
   useEffect(() => { import('@tlon/sigil-js').then(setSigilJS) });
@@ -49,9 +31,10 @@ export default function Sigil(props: { ship: string }): JSX.Element | null {
   const ourColor = contact?.info.color?.tint;
   const theirColor = contact?.profile?.info.color?.value.tint;
   const rolodexColor = () => getRolodexColor(rolodex, props.ship);
-  const color = sanitizeColor(ourColor || theirColor || rolodexColor());
+  const color = ourColor || theirColor || rolodexColor();
   if (color) {
-    config = Object.assign(config, { colors: [ color, '#ffffff' ] } );
+    const saneColor = sanitizeColor(color);
+    config = Object.assign(config, { colors: [ saneColor, '#ffffff' ] } );
   }
   return sigilJS.sigil(config);
 }
