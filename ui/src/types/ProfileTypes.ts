@@ -1,4 +1,4 @@
-import { InfoTint, InfoValue } from './ContactTypes';
+import { InfoLook, InfoTint, InfoValue } from './ContactTypes';
 import { FieldDef } from './SettingTypes';
 
 export declare type Self = {
@@ -11,10 +11,11 @@ export declare type Profile = {
 }
 
 export declare type ProfileFields = {
-  'first-name'?: { value: string, access: AccessLevel},
-  'last-name'?: { value: string, access: AccessLevel},
-  'nickname'?: { value: string, access: AccessLevel},
-  'color'?: { value: InfoTint, access: AccessLevel},
+  'first-name'?: { value: string, access: AccessLevel },
+  'last-name'?: { value: string, access: AccessLevel },
+  'nickname'?: { value: string, access: AccessLevel },
+  'avatar'?: { value: InfoLook, access: AccessLevel },
+  'color'?: { value: InfoTint, access: AccessLevel },
   [key: string]: ProfileField | undefined
 }
 

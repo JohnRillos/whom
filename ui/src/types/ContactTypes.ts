@@ -16,6 +16,7 @@ export type InfoFields = {
   'first-name'?: string,
   'last-name'?: string,
   'nickname'?: string,
+  'avatar'?: InfoLook,
   'color'?: InfoTint,
   [key: string]: InfoValue | undefined
 };
