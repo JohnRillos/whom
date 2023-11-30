@@ -1,24 +1,35 @@
 import { Contact, Contacts, ContactWithKey } from '../types/ContactTypes';
 
-function getFullName(contact: ContactWithKey): string {
-  const first = contact.info['first-name'] || contact.profile?.info['first-name']?.value;
-  const last = contact.info['last-name'] || contact.profile?.info['last-name']?.value;
+function getFullNameFromMe(contact: Contact): string {
+  const first = contact.info['first-name'];
+  const last = contact.info['last-name'];
   return [first, last].filter(s => !!s).join(' ');
 }
 
+function getFullNameFromThem(contact: Contact): string {
+  const first = contact.profile?.info['first-name']?.value;
+  const last = contact.profile?.info['last-name']?.value;
+  return [first, last].filter(s => !!s).join(' ');
+}
+
+function getNicknameFromMe(contact: Contact): string | undefined {
+  return contact.info.nickname;
+}
+
+function getNicknameFromThem(contact: Contact): string | undefined {
+  return contact.profile?.info.nickname?.value;
+}
+
 export function getDisplayName(contact: ContactWithKey): string {
-  const fullName = getFullName(contact);
+  const alias = getNicknameFromMe(contact) || getFullNameFromMe(contact) ||
+              getFullNameFromThem(contact) || getNicknameFromThem(contact);
+  if (contact.ship && alias) {
+    return alias + ' (' + contact.ship + ')';
+  }
   if (contact.ship) {
-    if (fullName) {
-      return fullName + ' (' + contact.ship + ')';
-    }
     return contact.ship
   }
-  if (fullName) {
-    return fullName;
-  }
-  const nickname = contact.info.nickname || contact.profile?.info.nickname?.value as string | undefined;
-  return nickname || '(New Contact)';
+  return alias || '(New Contact)';
 }
 
 export function withKey(entry: [string, Contact]): ContactWithKey {
