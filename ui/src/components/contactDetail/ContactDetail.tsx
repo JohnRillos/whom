@@ -12,6 +12,7 @@ import { FieldDef } from '../../types/SettingTypes';
 import { AccessLevel, ProfileField, ProfileFields } from '../../types/ProfileTypes';
 import LockIcon from '../icons/LockIcon';
 import TintField from '../fields/TintField';
+import LookField from '../fields/LookField';
 
 export default function ContactDetail(): JSX.Element {
   const { contacts, selectedContactKey, editContactMode, fieldSettings } = useContext(AppContext);
@@ -42,9 +43,9 @@ export default function ContactDetail(): JSX.Element {
       case 'date':
         return <DateField label={label} value={val as InfoDate}/>;
       case 'look':
-        return <TextField label={label} value={(val as InfoLook).look}/>;
+        return <LookField label={label} value={val as InfoLook}/>;
       case 'tint': {
-        return <TintField label={label} value={(val as InfoTint)}/>;
+        return <TintField label={label} value={val as InfoTint}/>;
       }
       default:
         return <span>{JSON.stringify(val)}</span>;

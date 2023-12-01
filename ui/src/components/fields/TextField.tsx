@@ -6,7 +6,7 @@ function renderLabel(label: string, val: string) {
 }
 
 function renderValue(value: string) {
-  return <p className='max-w-xs break-words max-h-16 overflow-y-auto'>{value}</p>;
+  return <p className='max-w-xs break-words max-h-18 overflow-y-auto'>{value}</p>;
 }
 
 export default function TextField(

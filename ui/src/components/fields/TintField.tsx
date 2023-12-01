@@ -11,7 +11,7 @@ function renderValue(value: InfoTint) {
   const sane = sanitizeColor(value.tint);
   return (
     <div className='max-w-xs flex'>
-      <div className='w-5 h-5 mr-2 rounded items-center' style={{background: sane}}/>
+      <div className='w-6 h-6 mr-2 rounded border-dark items-center' style={{background: sane}}/>
       <span>{sane}</span>
     </div>
   );

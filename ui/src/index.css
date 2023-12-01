@@ -12,4 +12,7 @@
   .button-secondary {
     @apply bg-light dark:bg-black border border-black dark:border-light text-black dark:text-light
   }
+  .border-dark {
+    @apply border border-black dark:border-light
+  }
 }
