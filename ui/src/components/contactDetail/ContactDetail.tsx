@@ -1,7 +1,7 @@
 import React from 'react';
 import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
-import { InfoValue, InfoDate, ContactWithKey, InfoFields, InfoLook, InfoTint } from '../../types/ContactTypes';
+import { InfoValue, InfoDate, ContactWithKey, InfoFields, InfoLook, InfoTint, InfoColl } from '../../types/ContactTypes';
 import { getContactWithKey, getDisplayName } from '../../util/ContactUtil';
 import { combineFieldOrders } from '../../util/FieldUtil';
 import EditForm from './EditForm';
@@ -13,6 +13,7 @@ import { AccessLevel, ProfileField, ProfileFields } from '../../types/ProfileTyp
 import LockIcon from '../icons/LockIcon';
 import TintField from '../fields/TintField';
 import LookField from '../fields/LookField';
+import CollField from '../fields/CollField';
 
 export default function ContactDetail(): JSX.Element {
   const { contacts, selectedContactKey, editContactMode, fieldSettings } = useContext(AppContext);
@@ -44,9 +45,10 @@ export default function ContactDetail(): JSX.Element {
         return <DateField label={label} value={val as InfoDate}/>;
       case 'look':
         return <LookField label={label} value={val as InfoLook}/>;
-      case 'tint': {
+      case 'tint':
         return <TintField label={label} value={val as InfoTint}/>;
-      }
+      case 'coll':
+        return <CollField label={label} value={val as InfoColl}/>;
       default:
         return <span>{JSON.stringify(val)}</span>;
     }
@@ -67,11 +69,7 @@ export default function ContactDetail(): JSX.Element {
   function renderInfoFields(info: InfoFields, defs: Record<string, FieldDef>) {
     return (
       <ul>
-        {fieldOrder.filter(key => fieldSettings.defs[key]?.type !== 'coll')
-        .map((key: string) => ({
-          key: key,
-          value: info[key],
-        }))
+        {fieldOrder.map((key: string) => ({ key: key, value: info[key] }))
         .filter((arg: { key: string, value: InfoValue | undefined}) => arg.value !== undefined)
         .map((arg: {key: string, value: InfoValue | undefined}) => (
           <li key={arg.key}>
@@ -86,11 +84,7 @@ export default function ContactDetail(): JSX.Element {
     const allPublic = !Object.values(info).find(field => field?.access == 'mutual');
     return (
       <ul>
-        {fieldOrder.filter(key => fieldSettings.defs[key]?.type !== 'coll')
-        .map((key: string) => ({
-          key: key,
-          value: info[key],
-        }))
+        {fieldOrder.map((key: string) => ({ key: key, value: info[key] }))
         .filter((arg: { key: string, value: ProfileField | undefined}) => arg.value !== undefined)
         .map((arg: {key: string, value: ProfileField | undefined}) => (
           <li key={arg.key} className='flex'>

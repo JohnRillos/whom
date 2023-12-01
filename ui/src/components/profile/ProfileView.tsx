@@ -187,16 +187,16 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
         <div className='mr-auto'>
           {renderInfoValue(key, field?.value)}
         </div>
-        {renderGroupsIcon(key)}
+        {renderGroupsIcon(key, !!field)}
         {renderAccessLevel(key, field?.access)}
       </div>
     );
   }
 
-  function renderGroupsIcon(key: string) {
+  function renderGroupsIcon(key: string, full: boolean) {
     if (GROUPS_PROFILE_FIELDS.has(key)) {
-      return <div className='py-1'>
-        <GroupsIcon title='synced with %groups'/>
+      return <div className={`py-1 ${full ? '' : 'opacity-25'}`}>
+        <GroupsIcon title='synced with Groups'/>
       </div>
     }
     return null;
@@ -293,7 +293,7 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
           {palsBlurb}
         </div>
         <div>
-          All fields from your <b>%groups</b> profile are synced with this app.
+          All fields from your <b>Groups</b> profile are synced with this app.
         </div>
       </div>
     );
