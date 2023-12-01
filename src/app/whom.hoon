@@ -519,7 +519,7 @@
       =/  =update:g-contacts  !<(update:g-contacts q.cage)
       :_  state
       ?~  con.update  ~
-      =/  prof=(map groups-profile-key info-field)
+      =/  prof=(map groups-profile-key (unit info-field))
         (contact-as-map:groups con.update)
       %-  zing
       %+  turn  ~(tap by prof)
@@ -738,24 +738,22 @@
   |=  [key=@tas type=@tas]
   ^-  (list card)
   ?.  ?=(groups-profile-key key)  ~
-  =/  value=(unit info-field)  (scry-profile-field:groups key)
-  ?~  value                      ~
-  (import-groups-profile-field key u.value)
+  =/  field=(unit info-field)  (scry-profile-field:groups key)
+  (import-groups-profile-field key field)
 ::
 ++  import-groups-profile-field
-  |=  [key=groups-profile-key value=info-field]
+  |=  [key=groups-profile-key value=(unit info-field)]
   ^-  (list card)
   %-  drop
   %+  biff  (~(get by fields) key)
   |=  =field-def
   =/  old  (~(get by info.self) key)
-  ?:  ?~(old %| =(value value.u.old))  ~
+  ?:  =((bind old head) value)  ~
   =/  access=access-level
     ?~  old  %public
     access.u.old
   =/  change=(unit [info-field access-level])
-    ?:  =(~ +.value)  ~
-    `[value access]
+    (bind value (late access))
   =/  changes  (my [key change]~)
   `[(poke-self [%mod-self changes])]
 --

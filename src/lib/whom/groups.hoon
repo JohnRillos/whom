@@ -77,13 +77,13 @@
   %+  biff  scry-profile
   |=  con=contact:gc
   ?+  key      ~
-    %bio       `[%text bio.con]
-    %nickname  `[%text nickname.con]
-    %status    `[%text status.con]
-    %avatar    (bind avatar.con (lead %look))
-    %color     `[%tint color.con]
-    %cover     (bind cover.con (lead %look))
-    %groups    `[%coll groups.con]
+    %bio       (as-text bio.con)
+    %nickname  (as-text nickname.con)
+    %status    (as-text status.con)
+    %avatar    (as-look avatar.con)
+    %color     (as-tint color.con)
+    %cover     (as-look cover.con)
+    %groups    (as-coll groups.con)
   ==
 ::
 ++  scry-contact
@@ -105,12 +105,12 @@
       ^-  (list (pair @tas [info-field:whom access-level:whom]))
       %+  murn
         ^-  (list [@tas (unit info-field:whom)])
-        :~  :-  %bio       `[%text bio.con]
-            :-  %nickname  `[%text nickname.con]
-            :-  %avatar    (bind avatar.con (lead %look))
-            :-  %color     `[%tint color.con]
-            :-  %cover     (bind cover.con (lead %look))
-            :-  %groups    `[%coll groups.con]
+        :~  :-  %bio       (as-text bio.con)
+            :-  %nickname  (as-text nickname.con)
+            :-  %avatar    (as-look avatar.con)
+            :-  %color     (as-tint color.con)
+            :-  %cover     (as-look cover.con)
+            :-  %groups    (as-coll groups.con)
         ==
       |=  [key=@tas field=(unit info-field:whom)]
       ^-  (unit (pair @tas [info-field:whom access-level:whom]))
@@ -127,21 +127,37 @@
 ::
 ++  contact-as-map
   |=  con=contact:gc
-  ^-  (map groups-profile-key:whom info-field:whom)
+  ^-  (map groups-profile-key:whom (unit info-field:whom))
   %-  my
-  ^-  (list (pair groups-profile-key:whom info-field:whom))
-  %+  murn
-    ^-  (list [groups-profile-key:whom (unit info-field:whom)])
-    :~  :-  %bio       `[%text bio.con]
-        :-  %nickname  `[%text nickname.con]
-        :-  %status    `[%text status.con]
-        :-  %avatar    (bind avatar.con (lead %look))
-        :-  %color     `[%tint color.con]
-        :-  %cover     (bind cover.con (lead %look))
-        :-  %groups    `[%coll groups.con]
-    ==
-  |=  [key=groups-profile-key:whom field=(unit info-field:whom)]
-  ^-  (unit (pair groups-profile-key:whom info-field:whom))
-  (bind field (lead key))
+  ^-  (list (pair groups-profile-key:whom (unit info-field:whom)))
+  :~  :-  %bio       (as-text bio.con)
+      :-  %nickname  (as-text nickname.con)
+      :-  %status    (as-text status.con)
+      :-  %avatar    (as-look avatar.con)
+      :-  %color     (as-tint color.con)
+      :-  %cover     (as-look cover.con)
+      :-  %groups    (as-coll groups.con)
+  ==
+::
+++  as-text
+  |=  =cord
+  ?~  cord  ~
+  `[%text cord]
+::
+++  as-tint
+  |=  hex=@ux
+  ?~  hex  ~
+  `[%tint hex]
+::
+++  as-look
+  |=  luk=(unit @t)
+  ?~    luk  ~
+  ?~  u.luk  ~
+  `[%look u.luk]
+::
+++  as-coll
+  |=  col=coll:whom
+  ?~  col  ~
+  `[%coll col]
 ::
 --
