@@ -19,6 +19,8 @@ export declare type ProfileFields = {
   [key: string]: ProfileField | undefined
 }
 
+export declare type NullableProfileFields = Record<string, ProfileField | null>
+
 export declare type ProfileField = {
   value: InfoValue,
   access: AccessLevel

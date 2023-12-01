@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { editSelf } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
 import { InfoValue, InfoDate, InfoLook, InfoTint } from '../../types/ContactTypes';
-import { AccessLevel, ProfileField } from '../../types/ProfileTypes';
+import { AccessLevel, NullableProfileFields, ProfileField } from '../../types/ProfileTypes';
 import BackButton from '../buttons/BackButton';
 import SubmitButton from '../buttons/SubmitButton';
 import DateInput from '../input/DateInput';
@@ -20,7 +20,8 @@ const GROUPS_PROFILE_FIELDS = new Set(['bio', 'nickname', 'avatar', 'status', 'c
 export default function ProfileView(props: { closeContainer: () => void }): JSX.Element {
   const { api, displayError, fieldSettings, palsInfo, self } = useContext(AppContext);
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const [infoFields, setInfoFields] = useState<Record<string, ProfileField | null>>(self.info);
+  const [infoFields, setInfoFields] =
+    useState<NullableProfileFields>(self.info as NullableProfileFields);
   const [showPrivacyHelp, setShowPrivacyHelp] = useState<boolean>(false);
 
   function submitChanges() {
@@ -40,7 +41,7 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
     displayError(error || 'Error editing profile!');
   }
 
-  function sanitizeInfo(info: Record<string, ProfileField | null>): Record<string, ProfileField | null> {
+  function sanitizeInfo(info: NullableProfileFields): NullableProfileFields {
     return Object.fromEntries(
       Object.entries(info)
       .filter(([key, val]) => {
@@ -233,7 +234,7 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
   const canSubmit: boolean = !submitting && hasEdits;
 
   function resetChanges() {
-    setInfoFields(self.info);
+    setInfoFields(self.info as NullableProfileFields);
   }
 
   function renderProfile() {
@@ -292,8 +293,7 @@ export default function ProfileView(props: { closeContainer: () => void }): JSX.
           {palsBlurb}
         </div>
         <div>
-          Some fields like <b>Nickname</b> and <b>Bio</b> are
-          synced with your <b>%groups</b> profile.
+          All fields from your <b>%groups</b> profile are synced with this app.
         </div>
       </div>
     );
