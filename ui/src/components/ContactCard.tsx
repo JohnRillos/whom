@@ -17,7 +17,7 @@ export const ContactCard = (props:{contact:ContactWithKey}) => {
       }}
     >
       <div className='p-2 text-left text-lg flex flex-row'>
-        <div className='w-7 mr-2'>
+        <div className='w-7 h-7 mr-2 shrink-0'>
           <Avatar contact={props.contact}/>
         </div>
         <p>{getDisplayName(props.contact)}</p>
