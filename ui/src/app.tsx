@@ -113,7 +113,7 @@ export function App() {
           <ContactList/>
         </div>
         <button
-          className='absolute bottom-8 right-4 px-1 py-1 rounded-3xl border-2 text-lg button-secondary hover:button-primary shadow-md'
+          className='absolute bottom-8 right-4 px-2 py-1 rounded-3xl border-2 text-lg button-secondary hover:button-primary shadow-md'
           onClick={() => setAddContactModalOpen(true)}
           >
           Add Contact
