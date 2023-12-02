@@ -46,5 +46,7 @@ export declare type InfoColl = {
 
 export declare type CollItem = {
   ship: string,
-  slug: string
+  slug: string,
+  editing?: boolean,
+  slash?: boolean
 }

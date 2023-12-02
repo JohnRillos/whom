@@ -1,13 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { editContact, editContactShip } from '../../api/WhomPokes';
 import { AppContext } from '../../context/AppContext';
-import { InfoValue, InfoDate, ContactWithKey, InfoFields, InfoLook, InfoTint } from '../../types/ContactTypes';
+import { InfoValue, InfoDate, ContactWithKey, InfoFields, InfoLook, InfoTint, InfoColl } from '../../types/ContactTypes';
 import { getDisplayName } from '../../util/ContactUtil';
 import SubmitButton from '../buttons/SubmitButton';
 import DateInput from '../input/DateInput';
 import ShipInput from '../input/ShipInput';
 import TextInput from '../input/TextInput';
 import TintInput from '../input/TintInput';
+import CollInput from '../input/CollInput';
 
 export default function EditForm(props: { contact: ContactWithKey }) {
   const { api, closeModal, selectContact, displayError, setEditContactMode, fieldSettings } = useContext(AppContext);
@@ -65,9 +66,24 @@ export default function EditForm(props: { contact: ContactWithKey }) {
         if (val == '' || val == undefined) {
           return [key, null];
         }
-        return [key, val];
+        return [key, sanitizeInfoColl(val)];
       })
     );
+  }
+
+  function sanitizeInfoColl(infoValue: InfoValue): InfoValue {
+    if (isInfoColl(infoValue)) {
+      const sane = infoValue.coll.map(item => ({
+        ship: item.ship,
+        slug: item.slug
+      }));
+      return ({...infoValue, coll: sane });
+    }
+    return infoValue;
+  }
+
+  function isInfoColl(val: InfoValue): val is InfoColl {
+    return typeof val === 'object' && ('coll' in val);
   }
 
   function onInfoTextChange(key: string): (arg: string) => void {
@@ -106,6 +122,15 @@ export default function EditForm(props: { contact: ContactWithKey }) {
     }
   }
 
+  function onInfoCollChange(key: string): (arg: InfoColl | undefined) => void {
+    return (value: InfoColl | undefined) => {
+      setInfoFields({
+        ...infoFields,
+        [key]: value
+      });
+    }
+  }
+
   function renderShipName() {
     return <ShipInput label='Urbit' value={ship} onChange={setShip}/>
   }
@@ -121,6 +146,8 @@ export default function EditForm(props: { contact: ContactWithKey }) {
         return <TextInput label={label} value={(val as InfoLook | undefined)?.look} onChange={onInfoLookChange(key)}/>;
       case 'tint':
         return <TintInput label={label} value={val as InfoTint | undefined} onChange={onInfoTintChange(key)}/>;
+      case 'coll':
+        return <CollInput label={label} value={val as InfoColl | undefined} onChange={onInfoCollChange(key)}/>;
       default:
         return <span>error</span>;
     }
@@ -130,7 +157,6 @@ export default function EditForm(props: { contact: ContactWithKey }) {
     return (
       <ul>
         {fieldSettings.order
-          .filter(key => fieldSettings.defs[key]?.type !== 'coll') // todo
           .map(key => {
             return <li key={key}>
               {renderInfoField(key, infoFields[key])}

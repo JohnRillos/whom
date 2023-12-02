@@ -2,13 +2,14 @@ import React, { useContext, useState } from 'react';
 import { isValidPatp } from 'urbit-ob';
 import { createContact } from '../api/WhomPokes';
 import { AppContext } from '../context/AppContext';
-import { InfoValue, InfoDate, InfoFields, InfoLook, InfoTint } from '../types/ContactTypes';
+import { InfoValue, InfoDate, InfoFields, InfoLook, InfoTint, InfoColl } from '../types/ContactTypes';
 import CloseButton from './buttons/CloseButton';
 import SubmitButton from './buttons/SubmitButton';
 import DateInput from './input/DateInput';
 import ShipInput from './input/ShipInput';
 import TextInput from './input/TextInput';
 import TintInput from './input/TintInput';
+import CollInput from './input/CollInput';
 
 export default function AddContactForm() {
   const { api, closeAddContactModal, displayError, fieldSettings } = useContext(AppContext);
@@ -46,7 +47,26 @@ export default function AddContactForm() {
   function sanitizeInfo(info: InfoFields): InfoFields {
     return Object.fromEntries(
       Object.entries(info).filter(([, val]) => val != '')
+        .map(([key, val]) => [ key, sanitizeInfoColl(val) ])
     );
+  }
+
+  function sanitizeInfoColl(infoValue: InfoValue | undefined): InfoValue | undefined {
+    if (!infoValue) {
+      return infoValue;
+    }
+    if (isInfoColl(infoValue)) {
+      const sane = infoValue.coll.map(item => ({
+        ship: item.ship,
+        slug: item.slug
+      }));
+      return ({...infoValue, coll: sane });
+    }
+    return infoValue;
+  }
+
+  function isInfoColl(val: InfoValue): val is InfoColl {
+    return typeof val === 'object' && ('coll' in val);
   }
 
   function onInfoTextChange(key: string): (arg: string) => void {
@@ -85,6 +105,15 @@ export default function AddContactForm() {
     }
   }
 
+  function onInfoCollChange(key: string): (arg: InfoColl | undefined) => void {
+    return (value: InfoColl | undefined) => {
+      setInfoFields({
+        ...infoFields,
+        [key]: value
+      });
+    }
+  }
+
   function renderShipName() {
     return <ShipInput label='Urbit' value={ship} onChange={setShip}/>
   }
@@ -100,6 +129,8 @@ export default function AddContactForm() {
         return <TextInput label={label} value={(val as InfoLook | undefined)?.look} onChange={onInfoLookChange(key)}/>;
       case 'tint':
         return <TintInput label={label} value={val as InfoTint | undefined} onChange={onInfoTintChange(key)}/>;
+      case 'coll':
+        return <CollInput label={label} value={val as InfoColl | undefined} onChange={onInfoCollChange(key)}/>;
       default:
         return <span>error</span>;
     }
@@ -109,7 +140,6 @@ export default function AddContactForm() {
     return (
       <ul>
         {fieldSettings.order
-          .filter(key => fieldSettings.defs[key]?.type !== 'coll') // todo
           .map(key => {
             return <li key={key}>
               {renderInfoField(key, infoFields[key])}
