@@ -54,6 +54,3 @@ including all fields in the `%groups` profile:
 - sigil color
 - cover image
 - favorite groups
-
-%whom does not yet have UI for viewing or editing "favorite groups" but the data 
-is available in the backend like the other fields.

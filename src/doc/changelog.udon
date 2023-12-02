@@ -1,5 +1,14 @@
 ;>
 
+## 1.12.4
+
+Date: ~2023.12.2
+- imported 0-value fields are unset
+- UI: user can edit %coll fields
+- UI: show %coll fields in contact detail
+- UI: inline image previews
+- UI: fix stretchy avatars
+
 
 ## 1.12.3
 
