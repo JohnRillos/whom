@@ -12,6 +12,6 @@
 ::
 ++  grab
   |%
-  ++  noun  contact-1
+  ++  noun  (unit contact-1)
   --
 --

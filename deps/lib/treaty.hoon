@@ -25,9 +25,11 @@
     %+  frond  -.c
     ?-  -.c
       %da   s+(scot %da p.c)
-      %tas  s+(scot %tas p.c)  
+      %tas  s+(scot %tas p.c)
       %ud   (numb p.c)
+      %uv   s+(scot %uv p.c)
     ==
+  ::
   ++  foreign-desk
     |=  [s=^ship =desk]
     ^-  cord
@@ -36,7 +38,7 @@
   ++  alliance
     |=  a=^alliance
     ^-  json
-    :-  %a 
+    :-  %a
     %+  turn  ~(tap in a)
     |=  [=^ship =desk]
     ^-  json
@@ -75,6 +77,17 @@
       :~  ship+s+(scot %p ship.u)
           alliance+(alliance alliance.u)
       ==
+    ==
+  --
+++  dejs
+  =,  dejs:format
+  |%
+  ++  ship  (su ;~(pfix sig fed:ag))
+  ++  ally-update
+    ^-  $-(json update:ally)
+    %-  of
+    :~  add+ship
+        del+ship
     ==
   --
 --
